@@ -3336,7 +3336,7 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-button@^2.0.0:
+react-native-button@^2.0.0, react-native-button@^2.1.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/react-native-button/download/react-native-button-2.1.0.tgz#a39e23292922afeea4f7be141dd43e18f1b51876"
   dependencies:

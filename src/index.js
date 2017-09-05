@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
-import { Provider } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 import { createStore } from 'redux'
-import RouteContainer from './route'
+import { Router } from 'react-native-router-flux'
+import Scenes from './route'
 import rootReducer from './reducer/rootReducer'
 
-const initState = {}
 const store = createStore(rootReducer)
+const ConnectedRouter = connect()(Router)
 
 export default class App extends Component {
     render () {
         return (
             <Provider store={store}>
-                <RouteContainer />
+                <ConnectedRouter scenes={Scenes} />
             </Provider>
         )
     }
