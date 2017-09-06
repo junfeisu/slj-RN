@@ -21,17 +21,9 @@
   },
   "homepage": "https://github.com/junfeisu/slj-RN#readme",
   "dependencies": {
-    "body-parser": "^1.17.2",
-    "consolidate": "^0.14.5",
-    "cookie-parser": "^1.4.3",
-    "core-js": "^2.5.1",
-    "cron": "^1.2.1",
-    "express": "^4.15.4",
-    "husky": "^0.14.3",
-    "jest-cli": "^21.0.1",
-    "json-mock-kuitos": "^1.2.0",
+    "hapi": "^16.5.2",
+    "joi": "^10.6.0",
     "mongoose": "^4.11.10",
-    "morgan": "^1.8.2",
     "socket.io": "^2.0.3"
   }
 }
