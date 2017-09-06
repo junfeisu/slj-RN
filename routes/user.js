@@ -1,6 +1,24 @@
 const Joi = require('joi')
-const validate = require('../utils/validate')
 const userModel = require('../schemas/userSchema')
+
+// 获取用户信息
+let getUser = {
+    method: 'GET',
+    path: '/user/{userId}',
+    config: {
+        validate: {
+            params: {
+                userId: Joi.number().integer().min(1).required()
+            }
+        }
+    },
+    handler: (req, reply) => {
+        let userId = req.params.userId
+        userModel.find({user_id: userId}, (err, result) => {
+            err ? reply(err).code(500) : reply(result)
+        })
+    }
+}
 
 // 新增用户
 let addUser = {
@@ -28,4 +46,4 @@ let addUser = {
     }
 }
 
-module.exports = [addUser]
+module.exports = [getUser, addUser]

@@ -17,8 +17,9 @@ const userSchema = new Schema({
         required: true
     },
     birthday: {
-        type: Date,
-        required: false
+        type: String,
+        required: false,
+        default: '1996-07-28'
     },
     user_icon: {
         type: String,
