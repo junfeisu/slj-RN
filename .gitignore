@@ -46,6 +46,10 @@ app/buck-out/
 app/\.buckd/
 app/*.keystore
 
+buck-out/
+\.buckd/
+*.keystore
+
 # fastlane
 #
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
@@ -56,3 +60,7 @@ app/*.keystore
 app/fastlane/report.xml
 app/fastlane/Preview.html
 app/fastlane/screenshots
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
