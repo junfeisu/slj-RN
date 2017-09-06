@@ -32,6 +32,8 @@ const userSchema = new Schema({
     }
 }, {versionKey: false})
 
+userSchema.index({username: 1, password: 1}, {unique: true})
+
 // userId自增
 userSchema.pre('save', next => {
     if (this.isNew) {

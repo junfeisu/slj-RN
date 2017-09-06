@@ -14,7 +14,7 @@ let getUser = {
     },
     handler: (req, reply) => {
         let userId = req.params.userId
-        
+
         userModel.find({user_id: userId}, (err, result) => {
             err ? reply(err).code(500) : reply(result)
         })
@@ -75,4 +75,38 @@ let updateUser = {
     }
 }
 
-module.exports = [getUser, addUser, updateUser]
+let loginUser = {
+    method: 'POST',
+    path: '/user/login',
+    config: {
+        validate: {
+            payload: {
+                username: Joi.string().min(1).required(),
+                password: Joi.string().min(6).required()
+            }
+        }
+    },
+    handler: (req, reply) => {
+        let userInfo = req.payload
+
+        userModel.find({username: userInfo.username}, (err, result) => {
+            if (err) {
+                reply(err).code(500)
+            } else {
+                if (result.length) {
+                    for (let i = 0, userLen = result.length; i < userLen; i++) {
+                        if (result[i].password === userInfo.password) {
+                            reply(result[i])
+                            return
+                        }
+                    }
+                    reply({msg: 'password is not right'}).code(403)
+                } else {
+                    reply({msg: 'user is not found'}).code(400)
+                }
+            }
+        })
+    }
+}
+
+module.exports = [getUser, addUser, updateUser, loginUser]
