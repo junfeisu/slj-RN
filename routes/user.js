@@ -3,6 +3,14 @@ const Joi = require('joi')
 const userModel = require('../schemas/userSchema')
 const deepCopy = require('../utils/deepCopy')
 
+const returnInfo = {
+    _id: 0,
+    username: 1,
+    user_id: 1,
+    birthday: 1,
+    slogan: 1
+}
+
 // 获取用户信息
 let getUser = {
     method: 'GET',
@@ -16,17 +24,16 @@ let getUser = {
     },
     handler: (req, reply) => {
         let userId = req.params.userId
+        let matchInfo = {
+            user_id: userId
+        }
 
-        userModel.find({user_id: userId}, (err, result) => {
+        userModel.aggregate([{$match: matchInfo}, {$project: returnInfo}], (err, result) => {
             if (err) {
                 reply(err).code(500)
             } else {
                 if (result.length) {
-                    let copiedResult = deepCopy(result[0])
-
-                    delete copiedResult._doc.password
-                    delete copiedResult._doc._id
-                    reply(copiedResult._doc)
+                    reply(result[0])
                 } else {
                     reply({msg: 'user_id is not exist'}).code(400)
                 }
@@ -78,7 +85,7 @@ let updateUser = {
                 userId: Joi.number().integer().min(1).required()
             },
             payload: {
-                username: Joi.string().min(1).required(),
+                username: Joi.string().min(1),
                 slogan: Joi.string().min(1),
                 user_icon: Joi.string().regex(/^.+\.[jpg|jpeg|png|gif]$/),
                 birthday: Joi.string().regex(/^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/)
