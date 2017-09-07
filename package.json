@@ -4,7 +4,7 @@
   "description": "A react-native app for girlfriend",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js || node app.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/junfeisu/slj-RN#readme",
   "dependencies": {
+    "boom": "^5.2.0",
     "hapi": "^16.5.2",
     "joi": "^10.6.0",
     "mongoose": "^4.11.10",

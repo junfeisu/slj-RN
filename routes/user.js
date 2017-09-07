@@ -1,5 +1,7 @@
+const Boom = require('boom')
 const Joi = require('joi')
 const userModel = require('../schemas/userSchema')
+const deepCopy = require('../utils/deepCopy')
 
 // 获取用户信息
 let getUser = {
@@ -16,7 +18,19 @@ let getUser = {
         let userId = req.params.userId
 
         userModel.find({user_id: userId}, (err, result) => {
-            err ? reply(err).code(500) : reply(result)
+            if (err) {
+                reply(err).code(500)
+            } else {
+                if (result.length) {
+                    let copiedResult = deepCopy(result[0])
+
+                    delete copiedResult._doc.password
+                    delete copiedResult._doc._id
+                    reply(copiedResult._doc)
+                } else {
+                    reply({msg: 'user_id is not exist'}).code(400)
+                }
+            }
         })
     }
 }
@@ -41,8 +55,15 @@ let addUser = {
         let userInfo = req.payload
 
         new userModel(userInfo).save((err, result) => {
-            console.log(result)
-            err ? reply(err).code(500) : reply(result)
+            if (err) {
+                reply(err).code(500)
+            } else {
+                let copiedResult = deepCopy(result[0])
+                        
+                delete copiedResult._doc.password
+                delete copiedResult._doc._id
+                reply(copiedResult._doc)
+            }
         })
     }
 }
@@ -58,7 +79,6 @@ let updateUser = {
             },
             payload: {
                 username: Joi.string().min(1).required(),
-                password: Joi.string().min(6).required(),
                 slogan: Joi.string().min(1),
                 user_icon: Joi.string().regex(/^.+\.[jpg|jpeg|png|gif]$/),
                 birthday: Joi.string().regex(/^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/)
@@ -75,6 +95,7 @@ let updateUser = {
     }
 }
 
+// 用户登录
 let loginUser = {
     method: 'POST',
     path: '/user/login',
@@ -96,7 +117,11 @@ let loginUser = {
                 if (result.length) {
                     for (let i = 0, userLen = result.length; i < userLen; i++) {
                         if (result[i].password === userInfo.password) {
-                            reply(result[i])
+                            let copiedResult = deepCopy(result[0])
+                        
+                            delete copiedResult._doc.password
+                            delete copiedResult._doc._id
+                            reply(copiedResult._doc)
                             return
                         }
                     }
