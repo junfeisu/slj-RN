@@ -1,5 +1,6 @@
 const Boom = require('boom')
 const Joi = require('joi')
+const cryptic = require('../utils/cryptic')
 const userModel = require('../schemas/userSchema')
 
 const returnInfo = {
@@ -59,6 +60,7 @@ let addUser = {
     },
     handler: (req, reply) => {
         let userInfo = req.payload
+        userInfo.password = cryptic(userInfo.password)
 
         new userModel(userInfo).save((err, result) => {
             if (err) {
@@ -117,6 +119,7 @@ let loginUser = {
     },
     handler: (req, reply) => {
         let userInfo = req.payload
+        userInfo.password = cryptic(userInfo.password)
 
         userModel.find({username: userInfo.username}, (err, result) => {
             if (err) {
