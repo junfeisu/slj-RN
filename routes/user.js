@@ -63,10 +63,11 @@ let addUser = {
 
         new userModel(userInfo).save((err, result) => {
             if (err) {
-                reply(err).code(500)
+                console.log(err.message)
+                reply(Boom.badImplementation(err.message))
             } else {
-                let copiedResult = deepCopy(result[0])
-                        
+                let copiedResult = deepCopy(result)
+                
                 delete copiedResult._doc.password
                 delete copiedResult._doc._id
                 reply(copiedResult._doc)

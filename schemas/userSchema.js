@@ -34,13 +34,14 @@ const userSchema = new Schema({
 userSchema.index({username: 1, password: 1}, {unique: true})
 
 // userId自增
-userSchema.pre('save', next => {
+userSchema.pre('save', function(next) {
+    let self = this
     if (this.isNew) {
-        userGenerate.increase('User', (err, result) => {
+        userGenerate.increase('User', function (err, result) {
             if (err) {
                 console.log('err is ' + JSON.stringify(err))
             } else {
-                this.user_id = result.value.next
+                self.user_id = result.value.next
                 next()
             }
         })

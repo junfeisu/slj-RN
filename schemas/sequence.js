@@ -10,7 +10,7 @@ const UserGenerateSchema = new Schema({
     }
 })
 
-const increase = (schemaName, cb) => {
+const increase = function (schemaName, cb) {
     return this.collection.findOneAndUpdate(
         {"_id": schemaName},
         {$inc: {"next": 1}},

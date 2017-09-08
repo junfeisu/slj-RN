@@ -12,7 +12,7 @@ const isStaictObject = (obj) => {
 
 const deepCopy = (source) => {
   if (!isArray(source) && !isStaictObject(source)) {
-    throw 'the source you support can not be copied'
+    throw new Error('the source you support can not be copied')
   }
 
   var copySource = isArray(source) ? [] : {}
