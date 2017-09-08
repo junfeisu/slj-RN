@@ -29,12 +29,12 @@ let getUser = {
 
         userModel.aggregate([{$match: matchInfo}, {$project: returnInfo}], (err, result) => {
             if (err) {
-                reply(err).code(500)
+                reply(Boom.badImplementation(err.message))
             } else {
                 if (result.length) {
                     reply(result[0])
                 } else {
-                    reply({msg: 'user_id is not exist'}).code(400)
+                    reply({message: 'user_id is not exist'}).code(400)
                 }
             }
         })
@@ -92,9 +92,13 @@ let updateUser = {
     handler: (req, reply) => {
         let userId = req.params.userId
         let modifiedInfo = req.payload
-        
+
         userModel.update({user_id: userId}, {$set: modifiedInfo}, (err, result) => {
-            err ? reply(err).code(500) : reply(result)
+            if (err) {
+                reply(Boom.badImplementation(err.message))
+            } else {
+                result.nModified ? reply({message: '更改信息成功'}) : reply({message: '更改信息失败'})
+            }
         })
     }
 }
@@ -116,7 +120,7 @@ let loginUser = {
 
         userModel.find({username: userInfo.username}, (err, result) => {
             if (err) {
-                reply(err).code(500)
+                reply(Boom.badImplementation(err.message))
             } else {
                 if (result.length) {
                     for (let i = 0, userLen = result.length; i < userLen; i++) {
@@ -127,9 +131,9 @@ let loginUser = {
                             return
                         }
                     }
-                    reply({msg: 'password is not right'}).code(403)
+                    reply(Boom.forbidden('password is not right'))
                 } else {
-                    reply({msg: 'user is not found'}).code(400)
+                    reply(Boom.badRequest('user is not found'))
                 }
             }
         })
