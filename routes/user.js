@@ -1,7 +1,6 @@
 const Boom = require('boom')
 const Joi = require('joi')
 const userModel = require('../schemas/userSchema')
-const deepCopy = require('../utils/deepCopy')
 
 const returnInfo = {
     _id: 0,
@@ -63,14 +62,11 @@ let addUser = {
 
         new userModel(userInfo).save((err, result) => {
             if (err) {
-                console.log(err.message)
                 reply(Boom.badImplementation(err.message))
             } else {
-                let copiedResult = deepCopy(result)
-                
-                delete copiedResult._doc.password
-                delete copiedResult._doc._id
-                reply(copiedResult._doc)
+                delete result._doc.password
+                delete result._doc._id
+                reply(result._doc)
             }
         })
     }
@@ -94,10 +90,10 @@ let updateUser = {
         }
     },
     handler: (req, reply) => {
-        let userId = req.params.id
+        let userId = req.params.userId
         let modifiedInfo = req.payload
-
-        userModel.update(({user_id: userId}, {$set: modifiedInfo}), (err, result) => {
+        
+        userModel.update({user_id: userId}, {$set: modifiedInfo}, (err, result) => {
             err ? reply(err).code(500) : reply(result)
         })
     }
@@ -125,11 +121,9 @@ let loginUser = {
                 if (result.length) {
                     for (let i = 0, userLen = result.length; i < userLen; i++) {
                         if (result[i].password === userInfo.password) {
-                            let copiedResult = deepCopy(result[0])
-                        
-                            delete copiedResult._doc.password
-                            delete copiedResult._doc._id
-                            reply(copiedResult._doc)
+                            delete result[i]._doc.password
+                            delete result[i]._doc._id
+                            reply(result[i]._doc)
                             return
                         }
                     }
