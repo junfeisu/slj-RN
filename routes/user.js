@@ -3,12 +3,14 @@ const Joi = require('joi')
 const cryptic = require('../utils/cryptic')
 const userModel = require('../schemas/userSchema')
 const token = require('../utils/token')
+const validateToken = require('../utils/interceptor')
 
 const returnInfo = {
     _id: 0,
     username: 1,
     user_id: 1,
     birthday: 1,
+    user_icon: 1,
     slogan: 1
 }
 
@@ -24,22 +26,24 @@ let getUser = {
         }
     },
     handler: (req, reply) => {
-        let userId = req.params.userId
-        let matchInfo = {
-            user_id: userId
-        }
-
-        userModel.aggregate([{$match: matchInfo}, {$project: returnInfo}], (err, result) => {
-            if (err) {
-                reply(Boom.badImplementation(err.message))
-            } else {
-                if (result.length) {
-                    reply(result[0])
-                } else {
-                    reply({message: 'user_id is not exist'}).code(400)
-                }
+        if (validateToken(req, reply)) {
+            let userId = req.params.userId
+            let matchInfo = {
+                user_id: userId
             }
-        })
+
+            userModel.aggregate([{$match: matchInfo}, {$project: returnInfo}], (err, result) => {
+                if (err) {
+                    reply(Boom.badImplementation(err.message))
+                } else {
+                    if (result.length) {
+                        reply(result[0])
+                    } else {
+                        reply({message: 'user_id is not exist'}).code(400)
+                    }
+                }
+            })
+        }
     }
 }
 
@@ -60,18 +64,20 @@ let addUser = {
         }
     },
     handler: (req, reply) => {
-        let userInfo = req.payload
-        userInfo.password = cryptic(userInfo.password)
+        if (validateToken(req, reply)) {
+            let userInfo = req.payload
+            userInfo.password = cryptic(userInfo.password)
 
-        new userModel(userInfo).save((err, result) => {
-            if (err) {
-                reply(Boom.badImplementation(err.message))
-            } else {
-                delete result._doc.password
-                delete result._doc._id
-                reply(result._doc)
-            }
-        })
+            new userModel(userInfo).save((err, result) => {
+                if (err) {
+                    reply(Boom.badImplementation(err.message))
+                } else {
+                    delete result._doc.password
+                    delete result._doc._id
+                    reply(result._doc)
+                }
+            })
+        }
     }
 }
 
@@ -93,16 +99,18 @@ let updateUser = {
         }
     },
     handler: (req, reply) => {
-        let userId = req.params.userId
-        let modifiedInfo = req.payload
+        if (validateToken(req, reply)) {
+            let userId = req.params.userId
+            let modifiedInfo = req.payload
 
-        userModel.update({user_id: userId}, {$set: modifiedInfo}, (err, result) => {
-            if (err) {
-                reply(Boom.badImplementation(err.message))
-            } else {
-                result.nModified ? reply({message: '更改信息成功'}) : reply({message: '更改信息失败'})
-            }
-        })
+            userModel.update({user_id: userId}, {$set: modifiedInfo}, (err, result) => {
+                if (err) {
+                    reply(Boom.badImplementation(err.message))
+                } else {
+                    result.nModified ? reply({message: '更改信息成功'}) : reply({message: '更改信息失败'})
+                }
+            })
+        }
     }
 }
 
