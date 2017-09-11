@@ -10,6 +10,22 @@ const UserGenerateSchema = new Schema({
     }
 })
 
+const ArticleGenerateSchema = new Schema({
+    _id: String,
+    next: {
+        type: Number,
+        default: 1
+    }
+})
+
+const CommentGenerateSchema = new Schema({
+    _id: String,
+    next: {
+        type: Number,
+        default: 1
+    }
+})
+
 const increase = function (schemaName, cb) {
     return this.collection.findOneAndUpdate(
         {"_id": schemaName},
@@ -20,7 +36,11 @@ const increase = function (schemaName, cb) {
 }
 
 UserGenerateSchema.statics.increase = increase
+ArticleGenerateSchema.statics.increase = increase
+CommentGenerateSchema.statics.increase = increase
 
 models.user = mongoose.model('UserGenerate', UserGenerateSchema)
+models.article = mongoose.model('ArticleGenerate', UserGenerateSchema)
+models.comment = mongoose.model('CommentGenerate', CommentGenerateSchema)
 
 module.exports = models
