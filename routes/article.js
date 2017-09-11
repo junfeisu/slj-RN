@@ -86,4 +86,30 @@ let addArticle = {
     }
 }
 
-module.exports = [getArticleList, getSingleArticle, addArticle]
+// 删除文章
+let removeArticle = {
+    method: 'DELETE',
+    path: '/article/remove',
+    config: {
+        validate: {
+            payload: {
+                articleId: Joi.number().integer().min(1).required()
+            }
+        }
+    },
+    handler: (req, reply) => {
+        if (validateToken(req, reply)) {
+            let articleId = req.payload.articleId
+
+            articleModel.remove({article_id: articleId}, (err, result) => {
+                if (err) {
+                    reply(Boom.badImplementation(err.message))
+                } else {
+                    result.result.n ? reply({message: '删除文章成功'}) : reply({message: '删除文章失败'})
+                }
+            })
+        }
+    }
+}
+
+module.exports = [getArticleList, getSingleArticle, addArticle, removeArticle]
