@@ -8,24 +8,27 @@ const generateToken = () => {
     }, secret, {
         expiresIn: '1h' // 过期时间
     })
-    console.log('token is ' + token)
 
     return token
 }
 
 // 验证token
 const verify = (token) => {
+    let result = {
+        isValid: true,
+        error: ''
+    }
+
     try {
         let decoded = jsonWebToken.verify(token, secret)
 
-        if (decoded) {
-            return decoded.name === 'slj'
-        } else {
-            return false
+        if (decoded.name === 'slj') {
+            return result
         }
     } catch (err) {
-        console.log(err)
-        return false
+        result.isValid = false
+        result.error = err
+        return result
     }
 }
 
