@@ -1,7 +1,10 @@
 const Joi = require('joi')
 const Boom = require('boom')
+const EventEmitter = require('events')
 const validateToken = require('../utils/interceptor')
 const articleModel = require('../schemas/articleSchema')
+const commentUtil = require('../utils/commentUtil')
+const events = new EventEmitter()
 
 // 获取文章列表
 let getArticleList = {
@@ -132,14 +135,37 @@ let removeArticle = {
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
             let articleId = req.payload.articleId
+            let comments = commentUtil.getComments(articleId)
 
-            articleModel.remove({article_id: articleId}, (err, result) => {
-                if (err) {
-                    reply(Boom.badImplementation(err.message))
+            commentUtil.getComments(articleId, events)
+            // 出现错误的处理
+            events.on('deleteArticleError', err => {
+                reply(Boom.badImplementation(err))
+            })
+            // 获取该文章的评论数正常时
+            events.on('getCommentsNormal', commentsLen => {
+                if (commentsLen) {
+                    commentUtil.deleteComments(articleId, events)
                 } else {
-                    result.result.n ? reply({message: '删除文章成功'}) : reply({message: '删除文章失败'})
+                    events.emit('deleteArticle')
                 }
             })
+            // 删除该文章的评论正常时
+            events.on('deleteCommentsNormal', modifiedNum => {
+                if (!modifiedNum) {
+                    reply(Boom.badImplementation('删除文章评论失败'))
+                } else {
+                    events.emit('deleteArticle')
+                }
+            })
+
+            events.on('deleteArticle', () => {
+                articleModel.remove({article_id: articleId}, (err, result) => {
+                    err ? reply(Boom.badImplementation(err.message))
+                        : result.result.n ? reply({message: '删除文章成功'}) : reply({message: '删除文章失败'})
+                })
+            })
+
         }
     }
 }

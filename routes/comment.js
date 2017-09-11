@@ -22,7 +22,7 @@ let addComment = {
 
             new commentModel(commentInfo).save((err, result) => {
                 if (err) {
-                    reply(Boom.badImplementation(err.messagr))
+                    reply(Boom.badImplementation(err.message))
                 } else {
                     reply(result)
                 }
