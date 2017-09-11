@@ -4,8 +4,7 @@ const commentGenerate = require('./sequence').comment
 
 let commentSchema = new Schema({
     comment_id: {
-        type: Number,
-        required: true
+        type: Number
     },
     comment_user: {
         type: Number,

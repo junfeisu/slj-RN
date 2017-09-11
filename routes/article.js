@@ -66,12 +66,13 @@ let addArticle = {
                 title: Joi.string().min(1).required(),
                 content: Joi.string().min(1).required(),
                 author: Joi.number().integer().min(1).required(),
-                create_date: Joi.string().regex(/^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/)
+                create_date: Joi.string().regex(/^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/),
+                tags: Joi.array().required()
             }
         }
     },
     handler: (req, reply) => {
-        if (validateToken(req, reply) => {
+        if (validateToken(req, reply)) {
             let articleInfo = req.payload
 
             new articleModel(articleInfo).save((err, result) => {
@@ -81,6 +82,8 @@ let addArticle = {
                     reply(result)
                 }
             })
-        })
+        }
     }
 }
+
+module.exports = [getArticleList, getSingleArticle, addArticle]
