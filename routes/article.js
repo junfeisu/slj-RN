@@ -86,6 +86,39 @@ let addArticle = {
     }
 }
 
+// 修改文章
+let updateArticle = {
+    method: 'POST',
+    path: '/article/update/{articleId}',
+    config: {
+        validate: {
+            params: {
+                articleId: Joi.number().integer().min(1).required()
+            },
+            payload: {
+                title: Joi.string().min(1),
+                content: Joi.string().min(1),
+                create_date: Joi.string().regex(/^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/),
+                tags: Joi.array()
+            }
+        }
+    },
+    handler: (req, reply) => {
+        if (validateToken(req, reply)) {
+            let articleId = req.params.articleId
+            let articleInfo = req.payload
+
+            articleModel.update({article_id: articleId}, {$set: articleInfo}, (err, result) => {
+                if (err) {
+                    reply(Boom.badImplementation(err.message))
+                } else {
+                    result.nModified ? reply({message: '修改文章成功'}) : reply({message: '修改文章失败'})
+                }
+            })
+        }
+    }
+}
+
 // 删除文章
 let removeArticle = {
     method: 'DELETE',
@@ -112,4 +145,4 @@ let removeArticle = {
     }
 }
 
-module.exports = [getArticleList, getSingleArticle, addArticle, removeArticle]
+module.exports = [getArticleList, getSingleArticle, addArticle, updateArticle, removeArticle]
