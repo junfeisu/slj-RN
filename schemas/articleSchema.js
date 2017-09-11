@@ -22,7 +22,7 @@ let articleSchema = new Schema({
     },
     create_date: {
         type: Date,
-        required: true,
+        required: false,
         default: Date.now()
     },
     tags: {

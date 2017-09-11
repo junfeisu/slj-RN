@@ -21,7 +21,7 @@ let commentSchema = new Schema({
     },
     comment_date: {
         type: Date,
-        required: true,
+        required: false,
         default: Date.now()
     }
 }, {versionKey: false})

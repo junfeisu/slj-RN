@@ -55,3 +55,32 @@ let getSingleArticle = {
         }
     }
 }
+
+// 添加新文章
+let addArticle = {
+    method: 'PUT',
+    path: '/article/add',
+    config: {
+        validate: {
+            payload: {
+                title: Joi.string().min(1).required(),
+                content: Joi.string().min(1).required(),
+                author: Joi.number().integer().min(1).required(),
+                create_date: Joi.string().regex(/^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/)
+            }
+        }
+    },
+    handler: (req, reply) => {
+        if (validateToken(req, reply) => {
+            let articleInfo = req.payload
+
+            new articleModel(articleInfo).save((err, result) => {
+                if (err) {
+                    reply(Boom.badImplementation(err.message))
+                } else {
+                    reply(result)
+                }
+            })
+        })
+    }
+}
