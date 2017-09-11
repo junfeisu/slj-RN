@@ -1,4 +1,4 @@
-const jsonWebToken = require('jsonwentoken')
+const jsonWebToken = require('jsonwebtoken')
 const secret = 'sjf203529'
 
 // 生成token

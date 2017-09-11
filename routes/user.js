@@ -2,6 +2,7 @@ const Boom = require('boom')
 const Joi = require('joi')
 const cryptic = require('../utils/cryptic')
 const userModel = require('../schemas/userSchema')
+const token = require('../utils/token')
 
 const returnInfo = {
     _id: 0,
@@ -130,6 +131,7 @@ let loginUser = {
                         if (result[i].password === userInfo.password) {
                             delete result[i]._doc.password
                             delete result[i]._doc._id
+                            result[i]._doc['token'] = token.generateToken()
                             reply(result[i]._doc)
                             return
                         }
