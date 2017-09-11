@@ -5,7 +5,8 @@ const commentSchema = require('./commentSchema').schema
 
 let articleSchema = new Schema({
     article_id: {
-        type: Number
+        type: Number,
+        unique: true
     },
     title: {
         type: String,
@@ -31,7 +32,7 @@ let articleSchema = new Schema({
     comments: [commentSchema]
 }, {versionKey: false})
 
-articleSchema.index({article_id: 1}, {unique: true})
+articleSchema.index({author: -1, title: 1}, {unique: true})
 
 articleSchema.pre('save', function (next) {
     let self = this
