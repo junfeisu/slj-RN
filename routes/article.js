@@ -10,16 +10,16 @@ let getArticleList = {
     path: '/article/list',
     config: {
         validate: {
-            params: {
+            query: {
                 skip: Joi.number().integer().min(0).required()
             }
         }
     },
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
-            let skipNum = req.params.skip
+            let skipNum = req.query.skip
             
-            articleModel.aggreate({$skip: skipNum}, {$sort: {article_id: -1}}, {$limit: 10}, (err, result) => {
+            articleModel.aggregate({$skip: skipNum}, {$sort: {article_id: -1}}, {$limit: 10}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
