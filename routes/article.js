@@ -2,7 +2,6 @@ const Joi = require('joi')
 const Boom = require('boom')
 const validateToken = require('../utils/interceptor')
 const articleModel = require('../schemas/articleSchema')
-const commentModel = require('../schemas/commentSchema').model
 
 // 获取文章列表
 let getArticleList = {

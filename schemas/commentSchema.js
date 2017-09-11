@@ -34,6 +34,7 @@ commentSchema.pre('save', function (next) {
             if (err) {
                 console.log('err is' + JSON.stringify(err))
             } else{
+                console.log('result is ', result)
                 self.comment_id = result.value.next
                 next()
             }
