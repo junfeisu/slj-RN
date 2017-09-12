@@ -90,6 +90,15 @@ export default class Login extends Component {
     }
 
     login = () => {
+        console.log('username is ' + this.state.username)
+        console.log('password is ' + this.state.password)
+    }
+
+    forgetPassword = () => {
+        console.log('forget password')
+    }
+
+    jumpRegister = () => {
         Actions.register()
     }
 
@@ -121,6 +130,7 @@ export default class Login extends Component {
     }
 
     render () {
+        const { username, password, keyboardSpaceHeight } = this.state
         return (
                 <Image 
                     style={styles.background} 
@@ -131,14 +141,14 @@ export default class Login extends Component {
                             <Text style={styles.title}>登录</Text>
                             <TextInput 
                                 style={styles.loginInput}
-                                value={this.state.username}
+                                value={username}
                                 placeholder="Username"
                                 underlineColorAndroid='transparent'
                                 onChangeText={(text) => this.setState({username: text})}
                             />
                             <TextInput 
                                 style={styles.loginInput}
-                                value={this.state.password}
+                                value={password}
                                 placeholder="Password"
                                 secureTextEntry={true}
                                 underlineColorAndroid='transparent'
@@ -151,12 +161,12 @@ export default class Login extends Component {
                                 登录
                             </Button>
                             <View style={styles.otherOperation}>
-                                <Text style={styles.otherOperationText}>忘记密码</Text>
+                                <Text style={styles.otherOperationText} onPress={this.forgetPassword}>忘记密码</Text>
                                 <Text style={styles.separator}></Text>
-                                <Text style={styles.otherOperationText}>注册</Text>
+                                <Text style={styles.otherOperationText} onPress={this.jumpRegister}>注册</Text>
                             </View>
                         </View>
-                        <KeyboardSpacer keyboardSpaceHeight={this.state.keyboardSpaceHeight} />
+                        <KeyboardSpacer keyboardSpaceHeight={keyboardSpaceHeight} />
                     </ScrollView>
                 </Image>
         )
