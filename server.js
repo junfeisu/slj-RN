@@ -5,7 +5,10 @@ const connectMongo = require('./utils/mongoConnect')()
 
 const serverConf = {
   port: 8000,
-  host: 'localhost'
+  host: 'localhost',
+  routes: {
+    cors: true
+  }
 }
 
 server.connection(serverConf)

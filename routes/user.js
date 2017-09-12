@@ -64,20 +64,18 @@ let addUser = {
         }
     },
     handler: (req, reply) => {
-        if (validateToken(req, reply)) {
-            let userInfo = req.payload
-            userInfo.password = cryptic(userInfo.password)
+        let userInfo = req.payload
+        userInfo.password = cryptic(userInfo.password)
 
-            new userModel(userInfo).save((err, result) => {
-                if (err) {
-                    reply(Boom.badImplementation(err.message))
-                } else {
-                    delete result._doc.password
-                    delete result._doc._id
-                    reply(result._doc)
-                }
-            })
-        }
+        new userModel(userInfo).save((err, result) => {
+            if (err) {
+                reply(Boom.badImplementation(err.message))
+            } else {
+                delete result._doc.password
+                delete result._doc._id
+                reply(result._doc)
+            }
+        })
     }
 }
 

@@ -11,6 +11,7 @@ import {
 import Button from 'react-native-button'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
+import axios from 'axios'
 
 const styles = StyleSheet.create({
     background: {
@@ -90,8 +91,16 @@ export default class Login extends Component {
     }
 
     login = () => {
-        console.log('username is ' + this.state.username)
-        console.log('password is ' + this.state.password)
+        axios.post('http://localhost:8000/user/login', JSON.stringify({
+            username: this.state.username,
+            password: this.state.password
+        }))
+            .then(response => {
+                console.log('response')
+            })
+            .catch(err => {
+                console.log('err is ', err)
+            })
         Actions.main()
     }
 
