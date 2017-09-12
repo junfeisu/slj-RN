@@ -58,13 +58,27 @@ let getSingleArticle = {
     },
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
+            let events = new EventEmitter()
             let articleId = req.params.articleId
 
             articleModel.find({article_id: articleId}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    !result.length ? reply(Boom.badRequest('article_id is not found')) : reply(result[0])
+                    if (!result.length) {
+                        reply(Boom.badRequest('article_id is not found'))
+                        return
+                    }
+                    
+                    commentUtil.getComments(result[0].article_id, events)
+                    events.on('Error', err => {
+                        reply(Boom.badImplementation(err))
+                    })
+
+                    events.on('getCommentsNormal', comments => {
+                        result[0]['comments'] = comments
+                        reply(result[0])
+                    })
                 }
             })
         }
