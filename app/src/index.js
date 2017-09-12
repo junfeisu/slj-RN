@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Provider, connect } from 'react-redux'
-import { createStore } from 'redux'
+import createStore from './reducer/createStore'
 import { Router } from 'react-native-router-flux'
 import Scenes from './route'
-import rootReducer from './reducer/rootReducer'
 
-const store = createStore(rootReducer)
+const initialState = window.___INITIAL_STATE__
+const store = createStore(initialState)
 const ConnectedRouter = connect()(Router)
 
 export default class App extends Component {

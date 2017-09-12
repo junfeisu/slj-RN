@@ -1,5 +1,3 @@
-const initState = {}
-
-export default (state = initState, action) => {
+export default (state, action) => {
     return state
 }
