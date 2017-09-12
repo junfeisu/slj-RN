@@ -91,17 +91,21 @@ export default class Login extends Component {
     }
 
     login = () => {
-        axios.post('http://localhost:8000/user/login', JSON.stringify({
+        axios.post('http://localhost:8000/user/login', {
             username: this.state.username,
             password: this.state.password
-        }))
+        }, {
+           headers: {
+            'Content-Type': 'application/json'
+           }
+        })
             .then(response => {
                 console.log('response')
+                Actions.main()
             })
             .catch(err => {
                 console.log('err is ', err)
             })
-        Actions.main()
     }
 
     forgetPassword = () => {
