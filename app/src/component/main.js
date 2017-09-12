@@ -53,7 +53,7 @@ export default class Test extends Component {
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'picture'}
-                    title="图片"
+                    title="美图"
                     titleStyle={styles.tabText}
                     selectedTitleStyle={styles.selectedTabText}
                     renderIcon={() => <Icon name="photo" size={px2dp(22)} color="#3496f0"/>}
@@ -63,7 +63,7 @@ export default class Test extends Component {
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'profile'}
-                    title="个人"
+                    title="我的"
                     titleStyle={styles.tabText}
                     selectedTitleStyle={styles.selectedTabText}
                     renderIcon={() => <Icon name="user" size={px2dp(22)} color="#3496f0"/>}
