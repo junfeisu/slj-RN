@@ -13,6 +13,14 @@ import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
 
 const styles = StyleSheet.create({
+    background: {
+        resizeMode: 'cover',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: null,
+        height: null
+    },
     login: {
         flex: 1,
         justifyContent: 'center',
@@ -26,15 +34,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 4
     },
-    loginBtn: {
-        borderWidth: 0,
-        width: 70,
-        height: 30,
-        marginTop: 20,
-        borderRadius: 4,
-        backgroundColor: 'blue',
-        color: 'white',
-        textAlignVertical: 'center'
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black',
+        marginBottom: 20
     },
     loginInput: {
         width: 200,
@@ -47,19 +51,31 @@ const styles = StyleSheet.create({
         padding: 0,
         paddingLeft: 10
     },
-    background: {
-        resizeMode: 'cover',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: null,
-        height: null
+    loginBtn: {
+        width: 200,
+        height: 40,
+        textAlignVertical: 'center',
+        borderWidth: 0,
+        borderRadius: 4,
+        backgroundColor: '#3b99fc',
+        color: 'white'
     },
-    title: {
+    otherOperation: {
+        width: 150,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginTop: 10,
+        marginBottom: 10
+    },
+    otherOperationText: {
+        color: '#3b99fc',
         fontSize: 16,
-        fontWeight: 'bold',
-        color: 'black',
-        marginBottom: 20
+        fontWeight: 'bold'
+    },
+    separator: {
+        height: 25,
+        width: 1,
+        backgroundColor: 'rgba(0, 0, 0, .9)'
     }
 })
 
@@ -78,7 +94,6 @@ export default class Login extends Component {
     }
 
     keyboardDidShowHandler = () => {
-        console.log('show')
         if (!this.endCoordinates) {
             return
         }
@@ -90,14 +105,12 @@ export default class Login extends Component {
     }
 
     keyboardDidHideHandler = () => {
-        console.log('hide')
         this.setState({
             keyboardSpaceHeight: 0
         })
     }
 
     componentWillMount () {
-        console.log('willMount')
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler)
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler)
     }
@@ -137,6 +150,11 @@ export default class Login extends Component {
                             >
                                 登录
                             </Button>
+                            <View style={styles.otherOperation}>
+                                <Text style={styles.otherOperationText}>忘记密码</Text>
+                                <Text style={styles.separator}></Text>
+                                <Text style={styles.otherOperationText}>注册</Text>
+                            </View>
                         </View>
                         <KeyboardSpacer keyboardSpaceHeight={this.state.keyboardSpaceHeight} />
                     </ScrollView>
