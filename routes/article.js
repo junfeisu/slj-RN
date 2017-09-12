@@ -4,7 +4,6 @@ const EventEmitter = require('events')
 const validateToken = require('../utils/interceptor')
 const articleModel = require('../schemas/articleSchema')
 const commentUtil = require('../utils/commentUtil')
-const events = new EventEmitter()
 
 // 获取文章列表
 let getArticleList = {
@@ -20,12 +19,26 @@ let getArticleList = {
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
             let skipNum = req.query.skip
+            let events = new EventEmitter()
             
             articleModel.aggregate({$skip: skipNum}, {$sort: {article_id: -1}}, {$limit: 10}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    reply(result)
+                    result.forEach((article, index) => {
+                        commentUtil.getComments(article.article_id, events, index)
+                    })
+                    
+                    events.on('Error', err => {
+                        reply(Boom.badImplementation(err))
+                    })
+
+                    events.on('getCommentsNormal', (comments, index) => {
+                        result[index]['comments'] = comments
+                        if (index === result.length - 1) {
+                            reply(result)
+                        }
+                    })
                 }
             })
         }
@@ -135,16 +148,16 @@ let removeArticle = {
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
             let articleId = req.payload.articleId
-            let comments = commentUtil.getComments(articleId)
+            let events = new EventEmitter()
 
             commentUtil.getComments(articleId, events)
             // 出现错误的处理
-            events.on('deleteArticleError', err => {
+            events.on('Error', err => {
                 reply(Boom.badImplementation(err))
             })
             // 获取该文章的评论数正常时
-            events.on('getCommentsNormal', commentsLen => {
-                if (commentsLen) {
+            events.on('getCommentsNormal', comments => {
+                if (comments.length) {
                     commentUtil.deleteComments(articleId, events)
                 } else {
                     events.emit('deleteArticle')
@@ -161,8 +174,11 @@ let removeArticle = {
 
             events.on('deleteArticle', () => {
                 articleModel.remove({article_id: articleId}, (err, result) => {
-                    err ? reply(Boom.badImplementation(err.message))
-                        : result.result.n ? reply({message: '删除文章成功'}) : reply({message: '删除文章失败'})
+                    if (err) {
+                        reply(Boom.badImplementation(err.message))
+                    } else {
+                        result.result.n ? reply({message: '删除文章成功'}) : reply({message: '删除文章失败'})
+                    }
                 })
             })
 
