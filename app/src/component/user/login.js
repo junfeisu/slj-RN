@@ -92,6 +92,7 @@ export default class Login extends Component {
     login = () => {
         console.log('username is ' + this.state.username)
         console.log('password is ' + this.state.password)
+        Actions.main()
     }
 
     forgetPassword = () => {

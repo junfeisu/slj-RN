@@ -56,10 +56,10 @@ export default class Test extends Component {
                     title="图片"
                     titleStyle={styles.tabText}
                     selectedTitleStyle={styles.selectedTabText}
-                    renderIcon={() => <Icon name="picture" size={px2dp(22)} color="#666666"/>}
+                    renderIcon={() => <Icon name="photo" size={px2dp(22)} color="#3496f0"/>}
                     onPress={() => this.setState({selectedTab: 'picture'})}
                 >
-                    <Article />
+                    <Picture />
                 </TabNavigator.Item>
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'profile'}

@@ -20,7 +20,7 @@ export default class Profile extends Component {
         return (
             <ScrollView>
                 <View>
-                    <Text>This Profile</Text>
+                    <Text>This is Profile</Text>
                 </View>
             </ScrollView>
         )
