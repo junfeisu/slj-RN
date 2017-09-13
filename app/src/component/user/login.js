@@ -8,6 +8,7 @@ import {
     Keyboard,
     StyleSheet
 } from 'react-native'
+import { connect } from 'react-redux'
 import Button from 'react-native-button'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
@@ -80,7 +81,13 @@ const styles = StyleSheet.create({
     }
 })
 
-export default class Login extends Component {
+const mapStateToProps = (state) => ({
+    user: state.user,
+    status: state.status,
+    err: state.err
+})
+
+class Login extends Component {
     constructor () {
         super()
         this.state = {
@@ -182,3 +189,6 @@ export default class Login extends Component {
         )
     }
 }
+
+export default connect(mapStateToProps)(Login)
+

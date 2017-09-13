@@ -4,7 +4,8 @@
 	"private": true,
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
+		"test": "jest",
+		"postinstall": "remotedev-debugger --hostname localhost --port 5000 --injectserver"
 	},
 	"dependencies": {
 		"axios": "^0.16.2",
@@ -24,6 +25,7 @@
 		"jest": "21.0.1",
 		"react-test-renderer": "16.0.0-alpha.12",
 		"remote-redux-devtools": "^0.5.12",
+		"remote-redux-devtools-on-debugger": "^0.8.2",
 		"remotedev-server": "^0.2.4"
 	},
 	"jest": {
