@@ -27,5 +27,8 @@
     "jsonwebtoken": "^8.0.0",
     "mongoose": "^4.11.10",
     "socket.io": "^2.0.3"
+  },
+  "devDependencies": {
+    "lab": "^14.2.2"
   }
 }

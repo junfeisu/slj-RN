@@ -4116,7 +4116,7 @@ remotedev-serialize@^0.1.0:
   dependencies:
     jsan "^3.1.0"
 
-remotedev-server@^0.2.3, remotedev-server@^0.2.4:
+remotedev-server@^0.2.3:
   version "0.2.4"
   resolved "http://registry.npm.taobao.org/remotedev-server/download/remotedev-server-0.2.4.tgz#b019b015132064cd76024cb91eb026801f24cd67"
   dependencies:
