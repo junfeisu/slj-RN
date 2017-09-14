@@ -4,7 +4,8 @@
   "description": "A react-native app for girlfriend",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js || node app.js"
+    "start": "nodemon app.js || node app.js",
+    "test": "lab -t 100"
   },
   "repository": {
     "type": "git",

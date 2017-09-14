@@ -17,4 +17,7 @@ routes.forEach(route => {
     server.route(route)
 })
 
-module.exports = server
+module.exports = {
+    server: server,
+    conf: serverConf
+}
