@@ -30,6 +30,7 @@
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "lab": "^14.2.2"
   }
 }
