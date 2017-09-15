@@ -520,7 +520,13 @@ describe('get user API', () => {
     const options = {
         method: 'GET'
     }
-    
+
+    let testUserInfo = {
+        user_id: '1',
+        username: 'test',
+        password: 'testget'
+    }
+
     /* 对参数userId的一系列检测
      * 是否有userId参数
      * 是否为number类型
@@ -569,4 +575,17 @@ describe('get user API', () => {
      * 没有Authorization的header
      * token过期
      */
+    it('should return 400', 'token is not add to headers', done => {
+        // let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+
+        // before(done => {
+        //     new userModel(copyUserInfo).save((err, result) => {
+        //         done()
+        //     })
+        // })
+
+        // before(done => {
+
+        // })
+    })
 })
