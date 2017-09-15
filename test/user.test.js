@@ -35,11 +35,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" is required]')
+            let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -52,11 +49,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" must be a string]')
+            let badRequestMessage = 'child \"username\" fails because [\"username\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -69,11 +63,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" is not allowed to be empty]')
+            let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -91,11 +82,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"user_id\" fails because [\"user_id\" is required]')
+            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" is required]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -108,11 +96,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"user_id\" fails because [\"user_id\" must be a number]')
+            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be a number]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -125,11 +110,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"user_id\" fails because [\"user_id\" must be an integer]')
+            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be an integer]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -142,11 +124,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"user_id\" fails because [\"user_id\" must be larger than or equal to 1]')
+            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be larger than or equal to 1]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -163,11 +142,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"password\" fails because [\"password\" is required]')
+            let badRequestMessage = 'child \"password\" fails because [\"password\" is required]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -180,11 +156,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"password\" fails because [\"password\" must be a string]')
+            let badRequestMessage = 'child \"password\" fails because [\"password\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -197,11 +170,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"password\" fails because [\"password\" length must be at least 6 characters long]')
+            let badRequestMessage = 'child \"password\" fails because [\"password\" length must be at least 6 characters long]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -219,11 +189,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"user_icon\" fails because [\"user_icon\" must be a string]')
+            let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -237,11 +204,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"user_icon\" fails because [\"user_icon\" with value \"http:&#x2f;&#x2f;test.jng\" fails to match the required pattern: /^.+\\.(jpg|jpeg|png|gif)$/]')
+            let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" with value \"http:&#x2f;&#x2f;test.jng\" fails to match the required pattern: /^.+\\.(jpg|jpeg|png|gif)$/]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -259,11 +223,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"slogan\" fails because [\"slogan\" must be a string]')
+            let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -277,11 +238,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"slogan\" fails because [\"slogan\" is not allowed to be empty]')
+            let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" is not allowed to be empty]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -299,11 +257,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"birthday\" fails because [\"birthday\" must be a string]')
+            let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -317,11 +272,8 @@ describe('add user API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"birthday\" fails because [\"birthday\" with value \"' + options.payload.birthday + '\" fails to match the required pattern: /^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/]')
+            let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" with value \"' + options.payload.birthday + '\" fails to match the required pattern: /^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
