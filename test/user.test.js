@@ -5,6 +5,7 @@ const expect = require('chai').expect
 const Hapi = require('hapi')
 const server = require('../server').server
 const userModel = require('../schemas/userSchema')
+const testUtils = require('../utils/testUtil')
 
 // 在测试之前启动服务
 describe('server start', () => {
@@ -453,11 +454,8 @@ describe('user login API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" is required]')
+            let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -469,11 +467,8 @@ describe('user login API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" must be a string]')
+            let badRequestMessage = 'child \"username\" fails because [\"username\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
@@ -485,11 +480,8 @@ describe('user login API', () => {
         }
 
         server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 400)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('statusCode', 400)
-            expect(response.result).to.have.property('error', 'Bad Request')
-            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" is not allowed to be empty]')
+            let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
