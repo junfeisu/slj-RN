@@ -6,12 +6,15 @@ const Hapi = require('hapi')
 const server = require('../server').server
 const userModel = require('../schemas/userSchema')
 const testUtils = require('../utils/testUtil')
+const cryptic = require('../utils/cryptic')
 
 // 在测试之前启动服务
 describe('server start', () => {
     before(done => {
         server.start()
-        done()
+        userModel.remove({username: 'test'}, (err, result) => {
+            done()
+        })
     })
 })
 
@@ -395,6 +398,12 @@ describe('user login API', () => {
         payload: {}
     }
 
+    const testUserInfo = {
+        username: 'test',
+        password: 'testlogin',
+        user_id: '1'
+    }
+
     /* 对参数username的一系列测试
      * 是否有username参数
      * 是否为string类型
@@ -402,7 +411,7 @@ describe('user login API', () => {
      */
     it('should return 400, username is need', done => {
         options.payload = {
-            password: 'testlogin'
+            password: testUserInfo.password
         }
 
         server.inject(options, response => {
@@ -415,7 +424,7 @@ describe('user login API', () => {
     it('should return 400, username is not string', done => {
         options.payload = {
             username: {name: '123'},
-            password: 'testlogin'
+            password: testUserInfo.password
         }
 
         server.inject(options, response => {
@@ -428,13 +437,80 @@ describe('user login API', () => {
     it('should return 400, username length less than 1', done => {
         options.payload = {
             username: '',
-            password: 'testlogin'
+            password: testUserInfo.password
         }
 
         server.inject(options, response => {
             let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
             testUtils.badParam(response, badRequestMessage)
             done()
+        })
+    })
+
+    /* 对参数password的一系列检测
+     * 是否有password参数
+     * 是否为string类型
+     * 是否长度小于6
+     */
+    it('should return 400, password is need', done => {
+        options.payload = {
+            username: testUserInfo.username
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"password\" fails because [\"password\" is required]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, password is not string', done => {
+        options.payload = {
+            username: testUserInfo.username,
+            password: {value: 'testlogin'}
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"password\" fails because [\"password\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, password length less than 6', done => {
+        options.payload = {
+            username: testUserInfo.username,
+            password: 'test'
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"password\" fails because [\"password\" length must be at least 6 characters long]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    /* 正常响应的一系列检测
+     * 是否返回password
+     * 是否返回token
+     * 是否返回user_id
+     */
+    it('should return 200, return info should have token, user_id and not have password', done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            options.payload = {
+                username: testUserInfo.username,
+                password: testUserInfo.password
+            }
+
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.not.have.property('password')
+                expect(response.result).to.have.property('user_id')
+                expect(response.result).to.have.property('token')
+                done()
+            })
         })
     })
 })
