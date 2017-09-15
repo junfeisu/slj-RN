@@ -27,7 +27,8 @@ const userSchema = new Schema({
     },
     slogan: {
         type: String,
-        required: false
+        required: false,
+        default: 'slj is forever'
     }
 }, {versionKey: false})
 
