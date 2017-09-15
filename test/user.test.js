@@ -516,35 +516,57 @@ describe('user login API', () => {
 })
 
 // 获取用户信息API的测试
-// describe('get user API', () => {
-//     let userId = 1
-//     const options = {
-//         method: 'GET',
-//         url: '/user/' + userId,
-//         params: {}
-//     }
+describe('get user API', () => {
+    const options = {
+        method: 'GET'
+    }
     
-//     /* 对参数userId的一系列检测
-//      * 是否有参数userId
-//      * 是否为number类型
-//      * 是否为integer类型
-//      * 是否小于1
-//      */
-//     it('should return 400, params does not have userId', done => {
-//         let testUserInfo = {
-//             username: 'test',
-//             password: 'testgetuser',
-//             user_id: '1'
-//         }
-//         new userModel(testUserInfo).save((err, result) => {
+    /* 对参数userId的一系列检测
+     * 是否有userId参数
+     * 是否为number类型
+     * 是否为integer类型
+     * 是否小于1
+     */
+    it('should return 404, does not have userId', done => {
+        options.url = '/user/'
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 404)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('error', 'Not Found')
+            expect(response.result).to.have.property('message', 'Not Found')
+            done()
+        })
+    })
 
-//         })
-//         server.inject(options, response => {
-//             expect(response).to.have.property('statusCode', 400)
-//             expect(response).to.have.property('result')
-//             expect(response.result).to.have.property('statusCode', 400)
-//             expect(response.result).to.have.property('error', 'Bad Request')
-//             expect(response.result).to.have.property('message', 400)
-//         })
-//     })
-// })
+    it('should return 400, userId is not the number', done => {
+        options.url = '/user/s'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be a number]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, userId is not the integer', done => {
+        options.url = '/user/1.1'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be an integer]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, userId is less than 1', done => {
+        options.url = '/user/0'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be larger than or equal to 1]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    /*
+     * 没有Authorization的header
+     * token过期
+     */
+})
