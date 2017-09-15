@@ -12,6 +12,14 @@ const generateToken = () => {
     return token
 }
 
+const generateTestToken = () => {
+    let testToken = jsonWebToken.sign({
+        name: 'slj'
+    }, secret, {
+        expiresIn: '1m'
+    })
+}
+
 // 验证token
 const verify = (token) => {
     let result = {
