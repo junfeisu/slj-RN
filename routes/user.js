@@ -137,7 +137,7 @@ let loginUser = {
                         if (result[i].password === userInfo.password) {
                             delete result[i]._doc.password
                             delete result[i]._doc._id
-                            result[i]._doc['token'] = token.generateToken()
+                            result[i]._doc['token'] = process.env.NODE_ENV === 'test' ? token.generateToken('5m') : token.generateToken()
                             reply(result[i]._doc)
                             return
                         }
