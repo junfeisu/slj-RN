@@ -433,3 +433,98 @@ describe('add user API', () => {
         })
     })
 })
+
+// 测试登录API的测试
+describe('user login API', () => {
+    const options = {
+        method: 'POST',
+        url: '/user/login',
+        payload: {}
+    }
+
+    /* 对参数username的一系列测试
+     * 是否有username参数
+     * 是否为string类型
+     * 是否长度小于1
+     */
+    it('should return 400, username is need', done => {
+        options.payload = {
+            password: 'testlogin'
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 400)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('statusCode', 400)
+            expect(response.result).to.have.property('error', 'Bad Request')
+            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" is required]')
+            done()
+        })
+    })
+
+    it('should return 400, username is not string', done => {
+        options.payload = {
+            username: {name: '123'},
+            password: 'testlogin'
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 400)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('statusCode', 400)
+            expect(response.result).to.have.property('error', 'Bad Request')
+            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" must be a string]')
+            done()
+        })
+    })
+
+    it('should return 400, username length less than 1', done => {
+        options.payload = {
+            username: '',
+            password: 'testlogin'
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 400)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('statusCode', 400)
+            expect(response.result).to.have.property('error', 'Bad Request')
+            expect(response.result).to.have.property('message', 'child \"username\" fails because [\"username\" is not allowed to be empty]')
+            done()
+        })
+    })
+})
+
+// 获取用户信息API的测试
+// describe('get user API', () => {
+//     let userId = 1
+//     const options = {
+//         method: 'GET',
+//         url: '/user/' + userId,
+//         params: {}
+//     }
+    
+//     /* 对参数userId的一系列检测
+//      * 是否有参数userId
+//      * 是否为number类型
+//      * 是否为integer类型
+//      * 是否小于1
+//      */
+//     it('should return 400, params does not have userId', done => {
+//         let testUserInfo = {
+//             username: 'test',
+//             password: 'testgetuser',
+//             user_id: '1'
+//         }
+//         new userModel(testUserInfo).save((err, result) => {
+
+//         })
+//         server.inject(options, response => {
+//             expect(response).to.have.property('statusCode', 400)
+//             expect(response).to.have.property('result')
+//             expect(response.result).to.have.property('statusCode', 400)
+//             expect(response.result).to.have.property('error', 'Bad Request')
+//             expect(response.result).to.have.property('message', 400)
+//         })
+//     })
+// })
