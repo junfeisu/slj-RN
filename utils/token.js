@@ -2,22 +2,14 @@ const jsonWebToken = require('jsonwebtoken')
 const secret = 'sjf203529'
 
 // 生成token
-const generateToken = () => {
+const generateToken = (expire = '1h') => {
     let token = jsonWebToken.sign({
         name: 'slj',
     }, secret, {
-        expiresIn: '1h' // 过期时间
+        expiresIn: expire // 过期时间
     })
 
     return token
-}
-
-const generateTestToken = () => {
-    let testToken = jsonWebToken.sign({
-        name: 'slj'
-    }, secret, {
-        expiresIn: '1m'
-    })
 }
 
 // 验证token
