@@ -15,19 +15,21 @@ describe('server start', () => {
 
 // 添加用户API的测试
 describe('add user API', () => {
+    const options = {
+        method: 'PUT',
+        url: '/user/add',
+        payload: {}
+    }
+
     /* 对参数username的一系列检测
      * 是否有username参数
      * 是否为string类型
      * string的长度是否小于1
      */
     it('should return 400, username is need', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                password: '1234445'
-            }
+        options.payload = {
+            user_id: '1',
+            password: '1234445'
         }
 
         server.inject(options, response => {
@@ -41,14 +43,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, username is not string', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                username: {name: '123'},
-                password: '123456',
-                user_id: '1'
-            }
+        options.payload = {
+            username: {name: '123'},
+            password: '123456',
+            user_id: '1'
         }
 
         server.inject(options, response => {
@@ -62,14 +60,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, username length less than 1', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                username: '',
-                password: '123456',
-                user_id: '1'
-            }
+        options.payload = {
+            username: '',
+            password: '123456',
+            user_id: '1'
         }
 
         server.inject(options, response => {
@@ -89,13 +83,9 @@ describe('add user API', () => {
      * number的值是否小于1
      */
     it('should return 400, user_id is need', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                password: '1234445',
-                username: 'sujunfei'
-            }
+        options.payload = {
+            password: '1234445',
+            username: 'sujunfei'
         }
 
         server.inject(options, response => {
@@ -109,14 +99,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, user_id is not number', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                username: '123',
-                password: '123456',
-                user_id: 'qwer'
-            }
+        options.payload = {
+            username: '123',
+            password: '123456',
+            user_id: 'qwer'
         }
 
         server.inject(options, response => {
@@ -130,14 +116,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, user_id is not integer', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                username: '123',
-                password: '123456',
-                user_id: '1.1'
-            }
+        options.payload = {
+            username: '123',
+            password: '123456',
+            user_id: '1.1'
         }
 
         server.inject(options, response => {
@@ -151,14 +133,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, user_id less than 1', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                username: '1231',
-                password: '123456',
-                user_id: '0'
-            }
+        options.payload = {
+            username: '1231',
+            password: '123456',
+            user_id: '0'
         }
 
         server.inject(options, response => {
@@ -177,13 +155,9 @@ describe('add user API', () => {
      * string的长度是否小于6
      */
     it('should return 400, password is need', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sujunfei'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sujunfei'
         }
 
         server.inject(options, response => {
@@ -197,14 +171,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, password is not string', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                password: {name: '123'},
-                username: '123456',
-                user_id: '1'
-            }
+        options.payload = {
+            password: {name: '123'},
+            username: '123456',
+            user_id: '1'
         }
 
         server.inject(options, response => {
@@ -218,14 +188,10 @@ describe('add user API', () => {
     })
 
     it('should return 400, password length less than 6', done => {
-        const options = {
-            method: 'PUT',
-            url: '/user/add',
-            payload: {
-                username: '123',
-                password: '12356',
-                user_id: '1'
-            }
+        options.payload = {
+            username: '123',
+            password: '12356',
+            user_id: '1'
         }
 
         server.inject(options, response => {
@@ -243,15 +209,11 @@ describe('add user API', () => {
      * 是否符合格式
      */
     it('should return 400, user_icon is not a string', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sjffly',
-                password: '123456',
-                user_icon: {src: 'test.png'}
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sjffly',
+            password: '123456',
+            user_icon: {src: 'test.png'}
         }
 
         server.inject(options, response => {
@@ -265,15 +227,11 @@ describe('add user API', () => {
     })
 
     it('should return 400, user_icon format is not valid', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sjffly',
-                password: '123456',
-                user_icon: 'http://test.jng'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sjffly',
+            password: '123456',
+            user_icon: 'http://test.jng'
         }
 
         server.inject(options, response => {
@@ -291,15 +249,11 @@ describe('add user API', () => {
      * 长度是否小于1
      */
     it('should return 400, slogan is not a string', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sjffly',
-                password: '123456',
-                slogan: {src: 'test.png'}
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sjffly',
+            password: '123456',
+            slogan: {src: 'test.png'}
         }
 
         server.inject(options, response => {
@@ -313,15 +267,11 @@ describe('add user API', () => {
     })
 
     it('should return 400, slogan length less than 1', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sjffly',
-                password: '123456',
-                slogan: ''
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sjffly',
+            password: '123456',
+            slogan: ''
         }
 
         server.inject(options, response => {
@@ -339,15 +289,11 @@ describe('add user API', () => {
      * 格式是否符合
      */
     it('should return 400, birthday is not a string', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sjffly',
-                password: '123456',
-                birthday: {src: 'test.png'}
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sjffly',
+            password: '123456',
+            birthday: {src: 'test.png'}
         }
 
         server.inject(options, response => {
@@ -361,15 +307,11 @@ describe('add user API', () => {
     })
 
     it('should return 400, birthday format is not valid', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'sjffly',
-                password: '12345642342',
-                birthday: '1996-13-12'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'sjffly',
+            password: '12345642342',
+            birthday: '1996-13-12'
         }
 
         server.inject(options, response => {
@@ -390,14 +332,10 @@ describe('add user API', () => {
      * 返回的信息是否和提交的信息是否一致
      */
     it('should return 200, return the result does not have password', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'test',
-                password: '123456'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'test',
+            password: '123456'
         }
 
         server.inject(options, response => {
@@ -409,16 +347,12 @@ describe('add user API', () => {
     })
 
     it('should return 200, return the default slogan', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'test',
-                password: '123456',
-                user_icon: 'http://test.png',
-                birthday: '2017-09-15'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'test',
+            password: '123456',
+            user_icon: 'http://test.png',
+            birthday: '2017-09-15'
         }
 
         server.inject(options, response => {
@@ -430,16 +364,12 @@ describe('add user API', () => {
     })
 
     it('should return 200, return the default birthday', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'test',
-                password: '123456',
-                user_icon: 'http://test.png',
-                slogan: 'this is for test'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'test',
+            password: '123456',
+            user_icon: 'http://test.png',
+            slogan: 'this is for test'
         }
 
         server.inject(options, response => {
@@ -451,16 +381,12 @@ describe('add user API', () => {
     })
 
     it('should return 200, return the default user_icon', done => {
-        const options = {
-            method: 'PUT',
-            url: 'http://localhost:8000/user/add',
-            payload: {
-                user_id: '1',
-                username: 'test',
-                password: '123456',
-                birthday: '2017-09-15',
-                slogan: 'this is for test'
-            }
+        options.payload = {
+            user_id: '1',
+            username: 'test',
+            password: '123456',
+            birthday: '2017-09-15',
+            slogan: 'this is for test'
         }
 
         server.inject(options, response => {
@@ -472,10 +398,7 @@ describe('add user API', () => {
     })
 
     it('should return 200, return info is same with the payload', done => {
-        const options = {
-            user_id: '1',
-            username: 'test',
-            password: '123456',
+        options.payload = {
             user_icon: 'http://test.png',
             slogan: 'this is for test',
             birthday: '2017-09-15'
