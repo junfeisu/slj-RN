@@ -4,6 +4,7 @@ const { describe, it, before } = lab
 const expect = require('chai').expect
 const Hapi = require('hapi')
 const server = require('../server').server
+const userModel = require('../schemas/userSchema')
 
 // 在测试之前启动服务
 describe('server start', () => {
@@ -338,11 +339,13 @@ describe('add user API', () => {
             password: '123456'
         }
 
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 200)
-            expect(response).to.have.property('result')
-            expect(response.result).to.not.have.property('password')
-            done()
+        userModel.remove({username: 'test'}, (err, result) => {
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.not.have.property('password')
+                done()
+            })
         })
     })
 
@@ -354,12 +357,14 @@ describe('add user API', () => {
             user_icon: 'http://test.png',
             birthday: '2017-09-15'
         }
-
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 200)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('slogan', 'slj is forever') // default value
-            done()
+        
+        userModel.remove({username: 'test'}, (err, result) => {
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.have.property('slogan', 'slj is forever') // default value
+                done()
+            })
         })
     })
 
@@ -371,12 +376,14 @@ describe('add user API', () => {
             user_icon: 'http://test.png',
             slogan: 'this is for test'
         }
-
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 200)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('birthday', '1996-07-28') // default value
-            done()
+        
+        userModel.remove({username: 'test'}, (err, result) => {
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.have.property('birthday', '1996-07-28') // default value
+                done()
+            })
         })
     })
 
@@ -388,30 +395,41 @@ describe('add user API', () => {
             birthday: '2017-09-15',
             slogan: 'this is for test'
         }
-
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 200)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('user_icon', 'https://ohjoq511u.qnssl.com/2016-10-19-07-21-15-290709/1-14092G22551.jpg') // default value
-            done()
+        
+        userModel.remove({username: 'test'}, (err, result) => {
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.have.property('user_icon', 'https://ohjoq511u.qnssl.com/2016-10-19-07-21-15-290709/1-14092G22551.jpg') // default value
+                done()
+            })
         })
     })
 
     it('should return 200, return info is same with the payload', done => {
         options.payload = {
+            user_id: '1',
+            username: 'test',
+            password: '123456',
             user_icon: 'http://test.png',
             slogan: 'this is for test',
             birthday: '2017-09-15'
         }
+        
+        userModel.remove({username: 'test'}, (err, result) => {
+            if (err) {
+                throw err
+            }
 
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 200)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('username', options.payload.username)
-            expect(response.result).to.have.property('birthday', options.payload.birthday)
-            expect(response.result).to.have.property('user_icon', options.payload.user_icon)
-            expect(response.result).to.have.property('slogan', options.payload.user_icon)
-            done()
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.have.property('username', options.payload.username)
+                expect(response.result).to.have.property('birthday', options.payload.birthday)
+                expect(response.result).to.have.property('user_icon', options.payload.user_icon)
+                expect(response.result).to.have.property('slogan', options.payload.slogan)
+                done()
+            })
         })
     })
 })
