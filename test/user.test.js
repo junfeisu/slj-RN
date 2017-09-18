@@ -404,6 +404,24 @@ describe('user login API', () => {
         user_id: '1'
     }
 
+    let addSuccessInfo = {
+        username: 'test',
+        password: '123456'
+    }
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            if (result) {
+                addSuccessInfo.username = result.username
+                addSuccessInfo.password = testUserInfo.password
+            } else {
+                console.error.bind(console, 'add login user failed')
+            }
+            done()
+        })
+    })
+
     /* 对参数username的一系列测试
      * 是否有username参数
      * 是否为string类型
@@ -490,27 +508,56 @@ describe('user login API', () => {
         })
     })
 
+    /*
+     * password is not right
+     */
+    it('should return 403, password is not right', done => {
+        let passwordLen = addSuccessInfo.password.length
+        options.payload = {
+            username: addSuccessInfo.username,
+            password: passwordLen > 6 ? addSuccessInfo.password.substring(0, passwordLen - 1) : addSuccessInfo.password
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 403)
+            expect(response).to.have.property('result')
+            expect(response).to.have.property('statusMessage', 'Forbidden')
+            expect(response.result).to.have.property('message', 'password is not right')
+            done()
+        })
+    })
+
+    /*
+     * username is not exist
+     */
+    it('should return 400, user is not found', done => {
+        options.payload = {
+            username: 'testlogin',
+            password: addSuccessInfo.password
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = 'user is not found'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
     /* 正常响应的一系列检测
      * 是否返回password
      * 是否返回token
      * 是否返回user_id
      */
     it('should return 200, return info should have token, user_id and not have password', done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        new userModel(copyUserInfo).save((err, result) => {
-            options.payload = {
-                username: testUserInfo.username,
-                password: testUserInfo.password
-            }
+        options.payload = addSuccessInfo
 
-            server.inject(options, response => {
-                expect(response).to.have.property('statusCode', 200)
-                expect(response).to.have.property('result')
-                expect(response.result).to.not.have.property('password')
-                expect(response.result).to.have.property('user_id')
-                expect(response.result).to.have.property('token')
-                done()
-            })
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 200)
+            expect(response).to.have.property('result')
+            expect(response.result).to.not.have.property('password')
+            expect(response.result).to.have.property('user_id')
+            expect(response.result).to.have.property('token')
+            done()
         })
     })
 })
