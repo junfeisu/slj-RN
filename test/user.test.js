@@ -60,25 +60,29 @@ const userParamsCheck = {
             })
         })
     },
-    username (options) {
+    username (options, isRequired) {
         /* 对参数username的一系列检测
          * 是否有username参数
          * 是否为string类型
          * string的长度是否小于1
          */
         it('should return 400, username is need', done => {
-            delete options.payload.username
+            if (isRequired) {
+                delete options.payload.username
 
-            server.inject(options, response => {
-                let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
-                testUtils.badParam(response, badRequestMessage)
+                server.inject(options, response => {
+                    let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
+                    testUtils.badParam(response, badRequestMessage)
+                    done()
+                })
+            } else {
                 done()
-            })
+            }
         })
 
         it('should return 400, username is not string', done => {
             options.payload.username = {
-                name: 'test',
+                name: 'test'
             }
 
             server.inject(options, response => {
@@ -286,7 +290,7 @@ describe('add user API', () => {
 
     userParamsCheck.userId(deepCopy(options))
 
-    userParamsCheck.username(deepCopy(options))
+    userParamsCheck.username(deepCopy(options), true)
 
     userParamsCheck.password(deepCopy(options))
 
@@ -304,12 +308,6 @@ describe('add user API', () => {
      * 返回的信息是否和提交的信息是否一致
      */
     it('should return 200, return the result does not have password', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'test',
-            password: '123456'
-        }
-
         userModel.remove({username: 'test'}, (err, result) => {
             server.inject(options, response => {
                 expect(response).to.have.property('statusCode', 200)
@@ -321,13 +319,8 @@ describe('add user API', () => {
     })
 
     it('should return 200, return the default slogan', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'test',
-            password: '123456',
-            user_icon: 'http://test.png',
-            birthday: '2017-09-15'
-        }
+        options.payload.user_icon = 'http://test.png',
+        options.payload.birthday = '2017-09-15'
         
         userModel.remove({username: 'test'}, (err, result) => {
             server.inject(options, response => {
@@ -340,13 +333,8 @@ describe('add user API', () => {
     })
 
     it('should return 200, return the default birthday', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'test',
-            password: '123456',
-            user_icon: 'http://test.png',
-            slogan: 'this is for test'
-        }
+        delete options.payload.birthday
+        options.payload.slogan = 'this is for test'
         
         userModel.remove({username: 'test'}, (err, result) => {
             server.inject(options, response => {
@@ -359,13 +347,8 @@ describe('add user API', () => {
     })
 
     it('should return 200, return the default user_icon', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'test',
-            password: '123456',
-            birthday: '2017-09-15',
-            slogan: 'this is for test'
-        }
+        delete options.payload.user_icon
+        options.payload.birthday = '2017-09-15'
         
         userModel.remove({username: 'test'}, (err, result) => {
             server.inject(options, response => {
@@ -378,20 +361,9 @@ describe('add user API', () => {
     })
 
     it('should return 200, return info is same with the payload', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'test',
-            password: '123456',
-            user_icon: 'http://test.png',
-            slogan: 'this is for test',
-            birthday: '2017-09-15'
-        }
+        options.payload.user_icon = 'http://test.png',
         
         userModel.remove({username: 'test'}, (err, result) => {
-            if (err) {
-                throw err
-            }
-
             server.inject(options, response => {
                 expect(response).to.have.property('statusCode', 200)
                 expect(response).to.have.property('result')
@@ -440,7 +412,7 @@ describe('user login API', () => {
         })
     })
 
-    userParamsCheck.username(deepCopy(options))
+    userParamsCheck.username(deepCopy(options), true)
 
     userParamsCheck.password(deepCopy(options))
 
@@ -612,6 +584,18 @@ describe('update user API', () => {
             done()
         })
     })
+    
+    options.url = '/user/update/' + loginSuccessInfo.userId
 
-    userParamsCheck.userId(options, '/update')
+    userParamsCheck.userId(deepCopy(options), '/update')
+
+    userParamsCheck.username(deepCopy(options))
+
+    userParamsCheck.userIcon(deepCopy(options))
+
+    userParamsCheck.birthday(deepCopy(options))
+
+    userParamsCheck.slogan(deepCopy(options))
+    
+    userParamsCheck.token(deepCopy(options), loginSuccessInfo)
 })
