@@ -4,5 +4,5 @@ services:
   - mongodb
 
 before_script: 
-  - npm install lab -
+  - npm install lab -g
   - mongo -- eval 'use sljRN'
