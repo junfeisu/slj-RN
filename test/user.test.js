@@ -584,10 +584,70 @@ describe('update user API', () => {
             done()
         })
     })
-    
-    options.url = '/user/update/' + loginSuccessInfo.userId
 
     userParamsCheck.userId(deepCopy(options), '/update')
+
+    options.url = '/user/update/' + loginSuccessInfo.userId
+
+    // 正确的返回检测
+    it('should return 200, update fail no message updated', done => {
+        let copyOptions = deepCopy(options)
+        copyOptions.headers = {
+            Authorization: loginSuccessInfo.token
+        }
+
+        server.inject(copyOptions, response => {
+            expect(response).to.have.property('statusCode', 200)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('message', '更改信息失败')
+            done()
+        })
+    })
+
+    it('should return 200, update success', done => {
+        let copyOptions = deepCopy(options)
+        copyOptions.payload = {
+            slogan: 'this is for test'
+        }
+        copyOptions.headers = {
+            Authorization: loginSuccessInfo.token
+        }
+
+        server.inject(copyOptions, response => {
+            expect(response).to.have.property('statusCode', 200)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('message', '更改信息成功')
+            done()
+        })
+    })
+
+    // 不能修改password, 不能修改user_id
+    it('should return 400, password is not allowed', done => {
+        options.payload.password = '123456'
+        options.headers = {
+            Authorization: loginSuccessInfo.token
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = '"password" is not allowed'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, user_id is not allowed', done => {
+        delete options.payload.password
+        options.payload.user_id = '123456'
+        options.headers = {
+            Authorization: loginSuccessInfo.token
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = '"user_id" is not allowed'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
 
     userParamsCheck.username(deepCopy(options))
 
