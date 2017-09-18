@@ -6,7 +6,7 @@ services:
 before_script: 
   - npm install lab -g
   - sleep 15
-  - mongo sljRN  --eval 'show collections'
+  - mongo sljRN  --eval 'show collections;'
 
 script:
   - npm run test
