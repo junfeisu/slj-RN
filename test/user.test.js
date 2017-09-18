@@ -625,8 +625,31 @@ describe('get user API', () => {
         }
 
         server.inject(options, response => {
-            console.log(response)
+            let badRequestMessage = 'invalid signature'
+            testUtils.badParam(response, badRequestMessage)
             done()
         })
     })
+
+    it('should return 400, token is expired', {timeout: 5000}, done => {
+        options.url = '/user/' + loginSuccessInfo.userId
+        options.headers = {
+            Authorization: loginSuccessInfo.token
+        }
+
+        setTimeout(() => {
+            server.inject(options, response => {
+                let badRequestMessage = 'jwt expired'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        }, 1000 * 2)
+    })
+
+    // /*
+    //  * 正确的检测
+    //  */
+    // it('should return 200, return info is match to the testUserInfo', done => {
+        
+    // })
 })

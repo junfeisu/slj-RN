@@ -16,7 +16,7 @@ const generateToken = (expire = '1h') => {
 const verify = (token) => {
     let result = {
         isValid: true,
-        error: ''
+        message: ''
     }
 
     try {
@@ -27,7 +27,7 @@ const verify = (token) => {
         }
     } catch (err) {
         result.isValid = false
-        result.message = err
+        result.message = err.message
         return result
     }
 }
