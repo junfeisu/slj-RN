@@ -2,6 +2,7 @@ language: node_js
 node_js: stable
 services: 
   - mongodb
-  
+
 before_script: 
-  - npm install lab -g
+  - npm install lab -
+  - mongo -- eval 'use sljRN'
