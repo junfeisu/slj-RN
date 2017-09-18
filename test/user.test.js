@@ -558,6 +558,25 @@ describe('get user API', () => {
             done()
         })
     })
+
+    /*
+     * 正确的检测
+     */
+    it('should return 200, return info is match to the testUserInfo', done => {
+        options.url = '/user/' + loginSuccessInfo.userId
+        options.headers = {
+            Authorization: loginSuccessInfo.token
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 200)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('username', testUserInfo.username)
+            expect(response.result).to.have.property('user_id', loginSuccessInfo.userId)
+            done()
+        })
+    })
+
     /* 对参数userId的一系列检测
      * 是否有userId参数
      * 是否为number类型
@@ -609,6 +628,7 @@ describe('get user API', () => {
      */
     it('should return 400, token is not add to headers', done => {
         options.url = '/user/' + loginSuccessInfo.userId
+        options.headers = {}
         server.inject(options, response => {
             let badRequestMessage = 'Authorization header is need'
             testUtils.badParam(response, badRequestMessage)
@@ -645,11 +665,4 @@ describe('get user API', () => {
             })
         }, 1000 * 2)
     })
-
-    // /*
-    //  * 正确的检测
-    //  */
-    // it('should return 200, return info is match to the testUserInfo', done => {
-        
-    // })
 })
