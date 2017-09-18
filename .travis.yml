@@ -5,6 +5,7 @@ services:
 
 before_script: 
   - npm install lab -g
+  - mongo sljRN --eval 'db.createCollection("usergenerates");'
 
 script:
   - npm run test
