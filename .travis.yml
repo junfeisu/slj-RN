@@ -1,6 +1,7 @@
 language: node_js
-node_js: 
-  - "6"
-
+node_js: stable
+services: 
+  - mongodb
+  
 before_script: 
   - npm install lab -g
