@@ -521,12 +521,23 @@ describe('get user API', () => {
         method: 'GET'
     }
 
-    let testUserInfo = {
+    const testUserInfo = {
         user_id: '1',
         username: 'test',
         password: 'testget'
     }
 
+    let userId = 1
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            if (result && result.username === copyUserInfo.username) {
+                userId = result.user_id
+            }
+            done()
+        })
+    })
     /* 对参数userId的一系列检测
      * 是否有userId参数
      * 是否为number类型
@@ -576,25 +587,16 @@ describe('get user API', () => {
      * 错误的token
      * token过期
      */
-    it('should return 400', 'token is not add to headers', done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        let userId = 1
-
-        before(done => {
-            new userModel(copyUserInfo).save((err, result) => {
-                if (result && result.username === copyUserInfo.username) {
-                    userId = result.user_id
-                }
-                done()
-            })
-        })
-
+    it('should return 400, token is not add to headers', done => {
         options.url = '/user/' + userId
         server.inject(options, response => {
-            console.log(response)
             let badRequestMessage = 'Authorization header is need'
             testUtils.badParam(response, badRequestMessage)
             done()
         })
+    })
+
+    it('should return 400, token is not right', done => {
+        done()
     })
 })
