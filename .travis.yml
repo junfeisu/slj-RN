@@ -7,6 +7,7 @@ before_script:
   - npm install lab -g
   - sleep 5
   - mongo sljRN --eval 'db.createCollection("usergenerates");'
+  - mongo sljRN --eval 'db.usergenerates.save({_id:"User", next:1});'
 
 script:
   - npm run test
