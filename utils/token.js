@@ -27,7 +27,7 @@ const verify = (token) => {
         }
     } catch (err) {
         result.isValid = false
-        result.error = err
+        result.message = err
         return result
     }
 }

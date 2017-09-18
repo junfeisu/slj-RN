@@ -608,7 +608,6 @@ describe('get user API', () => {
      * token过期
      */
     it('should return 400, token is not add to headers', done => {
-        console.log('userId is ', loginSuccessInfo.userId)
         options.url = '/user/' + loginSuccessInfo.userId
         server.inject(options, response => {
             let badRequestMessage = 'Authorization header is need'
@@ -618,7 +617,16 @@ describe('get user API', () => {
     })
 
     it('should return 400, token is not right', done => {
+        let tokenLen = loginSuccessInfo.token.length
+
         options.url = '/user/' + loginSuccessInfo.userId
-        done()
+        options.headers = {
+            'Authorization': tokenLen > 0 ? loginSuccessInfo.token.substring(0, tokenLen - 1) : loginSuccessInfo.token
+        }
+
+        server.inject(options, response => {
+            console.log(response)
+            done()
+        })
     })
 })
