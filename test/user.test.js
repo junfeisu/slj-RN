@@ -1,6 +1,6 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const { describe, it, before } = lab
+const { describe, it, before, after } = lab
 const expect = require('chai').expect
 const Hapi = require('hapi')
 const server = require('../server').server
@@ -581,17 +581,17 @@ describe('update user API', () => {
                 loginSuccessInfo.userId = response.result.user_id
                 loginSuccessInfo.token = response.result.token
             }
+            event.emit('checkParams')
             done()
         })
     })
 
     userParamsCheck.userId(deepCopy(options), '/update')
 
-    options.url = '/user/update/' + loginSuccessInfo.userId
-
     // 正确的返回检测
     it('should return 200, update fail no message updated', done => {
         let copyOptions = deepCopy(options)
+        copyOptions.url = '/user/update/' + loginSuccessInfo.userId
         copyOptions.headers = {
             Authorization: loginSuccessInfo.token
         }
@@ -609,10 +609,10 @@ describe('update user API', () => {
         copyOptions.payload = {
             slogan: 'this is for test'
         }
+        copyOptions.url = '/user/update/' + loginSuccessInfo.userId
         copyOptions.headers = {
             Authorization: loginSuccessInfo.token
         }
-
         server.inject(copyOptions, response => {
             expect(response).to.have.property('statusCode', 200)
             expect(response).to.have.property('result')
@@ -623,6 +623,7 @@ describe('update user API', () => {
 
     // 不能修改password, 不能修改user_id
     it('should return 400, password is not allowed', done => {
+        options.url = '/user/update/' + loginSuccessInfo.userId
         options.payload.password = '123456'
         options.headers = {
             Authorization: loginSuccessInfo.token
@@ -648,7 +649,9 @@ describe('update user API', () => {
             done()
         })
     })
-
+    
+    options.url = '/user/update/' + loginSuccessInfo.userId
+    
     userParamsCheck.username(deepCopy(options))
 
     userParamsCheck.userIcon(deepCopy(options))

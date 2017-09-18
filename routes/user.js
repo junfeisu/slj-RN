@@ -105,7 +105,7 @@ let updateUser = {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    result.nModified ? reply({message: '更改信息成功'}) : reply({message: '更改信息失败'})
+                    result.ok ? reply({message: '更改信息成功'}) : reply({message: '更改信息失败'})
                 }
             })
         }

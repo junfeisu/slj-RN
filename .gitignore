@@ -3,6 +3,9 @@
 .DS_Store
 app/.DS_Store
 
+# test/reporter
+test/reporters/*
+
 # Xcode
 #
 build/
