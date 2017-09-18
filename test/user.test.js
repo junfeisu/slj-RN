@@ -527,13 +527,33 @@ describe('get user API', () => {
         password: 'testget'
     }
 
-    let userId = 1
-
+    let loginSuccessInfo = {
+        userId: 1,
+        token: ''
+    }
+    // 添加测试用户
     before(done => {
         let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
         new userModel(copyUserInfo).save((err, result) => {
-            if (result && result.username === copyUserInfo.username) {
-                userId = result.user_id
+            done()
+        })
+    })
+    
+    // 测试用户登录
+    before(done => {
+        const loginOptions = {
+            method: 'POST',
+            url: '/user/login',
+            payload: {
+                username: testUserInfo.username,
+                password: testUserInfo.password
+            }
+        }
+
+        server.inject(loginOptions, response => {
+            if (+response.statusCode === 200) {
+                loginSuccessInfo.userId = response.result.user_id
+                loginSuccessInfo.token = response.result.token
             }
             done()
         })
@@ -588,7 +608,8 @@ describe('get user API', () => {
      * token过期
      */
     it('should return 400, token is not add to headers', done => {
-        options.url = '/user/' + userId
+        console.log('userId is ', loginSuccessInfo.userId)
+        options.url = '/user/' + loginSuccessInfo.userId
         server.inject(options, response => {
             let badRequestMessage = 'Authorization header is need'
             testUtils.badParam(response, badRequestMessage)
@@ -597,6 +618,7 @@ describe('get user API', () => {
     })
 
     it('should return 400, token is not right', done => {
+        options.url = '/user/' + loginSuccessInfo.userId
         done()
     })
 })
