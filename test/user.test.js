@@ -629,6 +629,7 @@ describe('get user API', () => {
      * 是否为number类型
      * 是否为integer类型
      * 是否小于1
+     * userId不存在
      */
     it('should return 404, does not have userId', done => {
         options.url = '/user/'
@@ -663,6 +664,15 @@ describe('get user API', () => {
         options.url = '/user/0'
         server.inject(options, response => {
             let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be larger than or equal to 1]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, userId is not exist', done => {
+        options.url = '/user/' + (+loginSuccessInfo.userId + 1)
+        server.inject(options, response => {
+            let badRequestMessage = 'user_id is not exist'
             testUtils.badParam(response, badRequestMessage)
             done()
         })
