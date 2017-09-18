@@ -542,6 +542,7 @@ describe('get user API', () => {
     userParamsCheck.token(deepCopy(options), loginSuccessInfo)
 })
 
+// 更改用户信息API的测试
 describe('update user API', () => {
     const options = {
         method: 'POST',
@@ -581,7 +582,6 @@ describe('update user API', () => {
                 loginSuccessInfo.userId = response.result.user_id
                 loginSuccessInfo.token = response.result.token
             }
-            event.emit('checkParams')
             done()
         })
     })
