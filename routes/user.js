@@ -17,17 +17,17 @@ const returnInfo = {
 // 获取用户信息
 let getUser = {
     method: 'GET',
-    path: '/user/{userId}',
+    path: '/user/{user_id}',
     config: {
         validate: {
             params: {
-                userId: Joi.number().integer().min(1).required()
+                user_id: Joi.number().integer().min(1).required()
             }
         }
     },
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
-            let userId = req.params.userId
+            let userId = req.params.user_id
             let matchInfo = {
                 user_id: userId
             }
@@ -82,11 +82,11 @@ let addUser = {
 // 修改用户信息
 let updateUser = {
     method: 'POST',
-    path: '/user/update/{userId}',
+    path: '/user/update/{user_id}',
     config: {
         validate: {
             params: {
-                userId: Joi.number().integer().min(1).required()
+                user_id: Joi.number().integer().min(1).required()
             },
             payload: {
                 username: Joi.string().min(1),
@@ -98,7 +98,7 @@ let updateUser = {
     },
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
-            let userId = req.params.userId
+            let userId = req.params.user_id
             let modifiedInfo = req.payload
 
             userModel.update({user_id: userId}, {$set: modifiedInfo}, (err, result) => {

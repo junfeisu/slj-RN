@@ -7,6 +7,260 @@ const server = require('../server').server
 const userModel = require('../schemas/userSchema')
 const testUtils = require('../utils/testUtil')
 const cryptic = require('../utils/cryptic')
+const deepCopy = require('../utils/deepCopy')
+
+const userParamsCheck = {
+    userId (options, subPath) {
+        /* 对参数userId的一系列检测
+         * 是否有userId参数
+         * 是否为number类型
+         * 是否为integer类型
+         * 是否小于1
+         */
+        it('user_id is need', done => {
+            typeof subPath !== 'undefined' ? options.url = '/user' + subPath : delete options.payload.user_id
+            server.inject(options, response => {
+                if (typeof subPath !== 'undefined') {
+                    expect(response).to.have.property('statusCode', 404)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.have.property('error', 'Not Found')
+                    expect(response.result).to.have.property('message', 'Not Found')
+                } else {
+                    let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" is required]'
+                    testUtils.badParam(response, badRequestMessage)
+                }
+                done()
+            })
+        })
+
+        it('should return 400, user_id is not the number', done => {
+            typeof subPath !== 'undefined' ? options.url = '/user' + subPath + '/s' : options.payload.user_id = 'test'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be a number]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, user_id is not the integer', done => {
+            typeof subPath !== 'undefined' ? options.url = '/user' + subPath + '/1.1' : options.payload.user_id = '1.1'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be an integer]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, user_id is less than 1', done => {
+            typeof subPath !== 'undefined' ? options.url = '/user' + subPath + '/0' : options.payload.user_id = '0'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be larger than or equal to 1]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    username (options) {
+        /* 对参数username的一系列检测
+         * 是否有username参数
+         * 是否为string类型
+         * string的长度是否小于1
+         */
+        it('should return 400, username is need', done => {
+            delete options.payload.username
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, username is not string', done => {
+            options.payload.username = {
+                name: 'test',
+            }
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"username\" fails because [\"username\" must be a string]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, username length less than 1', done => {
+            options.payload.username = ''
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    password (options) {
+        /* 对参数password的一系列检测
+         * 是否有password参数
+         * 是否为string类型
+         * string的长度是否小于6
+         */
+        it('should return 400, password is need', done => {
+            delete options.payload.password
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"password\" fails because [\"password\" is required]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, password is not string', done => {
+            options.payload.password = {
+                name: 'testadd'
+            }
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"password\" fails because [\"password\" must be a string]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, password length less than 6', done => {
+            options.payload.password = 'test'
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"password\" fails because [\"password\" length must be at least 6 characters long]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    slogan (options) {
+        /* 对slogan参数的一系列检测
+         * 是否为string类型
+         * 长度是否小于1
+         */
+        it('should return 400, slogan is not a string', done => {
+            options.payload.slogan = {
+                value: 'this is for test'
+            }
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" must be a string]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, slogan length less than 1', done => {
+            options.payload.slogan = ''
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" is not allowed to be empty]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    birthday (options) {
+        /* 对birthday参数的一系列检测
+         * 是否为string类型
+         * 格式是否符合
+         */
+        it('should return 400, birthday is not a string', done => {
+            options.payload.birthday = {
+                value: '1996-07-28'
+            }
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" must be a string]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, birthday format is not valid', done => {
+            options.payload.birthday = '1996-13-12'
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" with value \"' + options.payload.birthday + '\" fails to match the required pattern: /^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    userIcon (options) {
+        /* 对参数user_icon的一系列检测
+         * 是否为string类型
+         * 是否符合格式
+         */
+        it('should return 400, user_icon is not a string', done => {
+            options.payload.user_icon = {
+                src: 'test.png'
+            }
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" must be a string]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, user_icon format is not valid', done => {
+            options.payload.user_icon = 'http://test.jng'
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" with value \"http:&#x2f;&#x2f;test.jng\" fails to match the required pattern: /^.+\\.(jpg|jpeg|png|gif)$/]'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    token (options, loginSuccessInfo) {
+        /*
+         * 没有Authorization的header
+         * 错误的token
+         * token过期
+         */
+        it('should return 400, token is not add to headers', done => {
+            options.headers = {}
+            server.inject(options, response => {
+                let badRequestMessage = 'Authorization header is need'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, token is not right', done => {
+            let tokenLen = loginSuccessInfo.token.length
+
+            options.headers = {
+                'Authorization': tokenLen > 0 ? loginSuccessInfo.token.substring(0, tokenLen - 1) : loginSuccessInfo.token
+            }
+
+            server.inject(options, response => {
+                let badRequestMessage = 'invalid signature'
+                testUtils.badParam(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, token is expired', {timeout: 5000}, done => {
+            options.headers = {
+                Authorization: loginSuccessInfo.token
+            }
+
+            setTimeout(() => {
+                server.inject(options, response => {
+                    let badRequestMessage = 'jwt expired'
+                    testUtils.badParam(response, badRequestMessage)
+                    done()
+                })
+            }, 1000 * 2)
+        })
+    }
+}
 
 // 在测试之前启动服务
 describe('server start', () => {
@@ -23,264 +277,25 @@ describe('add user API', () => {
     const options = {
         method: 'PUT',
         url: '/user/add',
-        payload: {}
+        payload: {
+            user_id: '1',
+            username: 'test',
+            password: 'testadd'
+        }
     }
 
-    /* 对参数username的一系列检测
-     * 是否有username参数
-     * 是否为string类型
-     * string的长度是否小于1
-     */
-    it('should return 400, username is need', done => {
-        options.payload = {
-            user_id: '1',
-            password: '1234445'
-        }
+    userParamsCheck.userId(deepCopy(options))
 
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
+    userParamsCheck.username(deepCopy(options))
 
-    it('should return 400, username is not string', done => {
-        options.payload = {
-            username: {name: '123'},
-            password: '123456',
-            user_id: '1'
-        }
+    userParamsCheck.password(deepCopy(options))
 
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"username\" fails because [\"username\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, username length less than 1', done => {
-        options.payload = {
-            username: '',
-            password: '123456',
-            user_id: '1'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
+    userParamsCheck.userIcon(deepCopy(options))
     
-    /* 对参数user_id的一系列检测
-     * 是否有user_id参数
-     * 是否为number类型
-     * 是否为integer类型
-     * number的值是否小于1
-     */
-    it('should return 400, user_id is need', done => {
-        options.payload = {
-            password: '1234445',
-            username: 'sujunfei'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" is required]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, user_id is not number', done => {
-        options.payload = {
-            username: '123',
-            password: '123456',
-            user_id: 'qwer'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, user_id is not integer', done => {
-        options.payload = {
-            username: '123',
-            password: '123456',
-            user_id: '1.1'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, user_id less than 1', done => {
-        options.payload = {
-            username: '1231',
-            password: '123456',
-            user_id: '0'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be larger than or equal to 1]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
+    userParamsCheck.birthday(deepCopy(options))
     
-    /* 对参数password的一系列检测
-     * 是否有password参数
-     * 是否为string类型
-     * string的长度是否小于6
-     */
-    it('should return 400, password is need', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sujunfei'
-        }
+    userParamsCheck.slogan(deepCopy(options))
 
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"password\" fails because [\"password\" is required]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, password is not string', done => {
-        options.payload = {
-            password: {name: '123'},
-            username: '123456',
-            user_id: '1'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"password\" fails because [\"password\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, password length less than 6', done => {
-        options.payload = {
-            username: '123',
-            password: '12356',
-            user_id: '1'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"password\" fails because [\"password\" length must be at least 6 characters long]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    /* 对参数user_icon的一系列检测
-     * 是否为string类型
-     * 是否符合格式
-     */
-    it('should return 400, user_icon is not a string', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sjffly',
-            password: '123456',
-            user_icon: {src: 'test.png'}
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, user_icon format is not valid', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sjffly',
-            password: '123456',
-            user_icon: 'http://test.jng'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" with value \"http:&#x2f;&#x2f;test.jng\" fails to match the required pattern: /^.+\\.(jpg|jpeg|png|gif)$/]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    /* 对slogan参数的一系列检测
-     * 是否为string类型
-     * 长度是否小于1
-     */
-    it('should return 400, slogan is not a string', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sjffly',
-            password: '123456',
-            slogan: {src: 'test.png'}
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, slogan length less than 1', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sjffly',
-            password: '123456',
-            slogan: ''
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    /* 对birthday参数的一系列检测
-     * 是否为string类型
-     * 格式是否符合
-     */
-    it('should return 400, birthday is not a string', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sjffly',
-            password: '123456',
-            birthday: {src: 'test.png'}
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, birthday format is not valid', done => {
-        options.payload = {
-            user_id: '1',
-            username: 'sjffly',
-            password: '12345642342',
-            birthday: '1996-13-12'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" with value \"' + options.payload.birthday + '\" fails to match the required pattern: /^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-    
     /* 对200返回的一系列检测
      * 不应该返回password
      * 没填slogan，是否返回默认slogan
@@ -395,7 +410,10 @@ describe('user login API', () => {
     const options = {
         method: 'POST',
         url: '/user/login',
-        payload: {}
+        payload: {
+            username: 'test',
+            password: 'testlogin'
+        }
     }
 
     const testUserInfo = {
@@ -422,95 +440,11 @@ describe('user login API', () => {
         })
     })
 
-    /* 对参数username的一系列测试
-     * 是否有username参数
-     * 是否为string类型
-     * 是否长度小于1
-     */
-    it('should return 400, username is need', done => {
-        options.payload = {
-            password: testUserInfo.password
-        }
+    userParamsCheck.username(deepCopy(options))
 
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
+    userParamsCheck.password(deepCopy(options))
 
-    it('should return 400, username is not string', done => {
-        options.payload = {
-            username: {name: '123'},
-            password: testUserInfo.password
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"username\" fails because [\"username\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, username length less than 1', done => {
-        options.payload = {
-            username: '',
-            password: testUserInfo.password
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    /* 对参数password的一系列检测
-     * 是否有password参数
-     * 是否为string类型
-     * 是否长度小于6
-     */
-    it('should return 400, password is need', done => {
-        options.payload = {
-            username: testUserInfo.username
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"password\" fails because [\"password\" is required]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, password is not string', done => {
-        options.payload = {
-            username: testUserInfo.username,
-            password: {value: 'testlogin'}
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"password\" fails because [\"password\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, password length less than 6', done => {
-        options.payload = {
-            username: testUserInfo.username,
-            password: 'test'
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"password\" fails because [\"password\" length must be at least 6 characters long]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    /*
-     * password is not right
-     */
+    // password is not right
     it('should return 403, password is not right', done => {
         let passwordLen = addSuccessInfo.password.length
         options.payload = {
@@ -527,9 +461,7 @@ describe('user login API', () => {
         })
     })
 
-    /*
-     * username is not exist
-     */
+    // username is not exist
     it('should return 400, user is not found', done => {
         options.payload = {
             username: 'testlogin',
@@ -606,9 +538,7 @@ describe('get user API', () => {
         })
     })
 
-    /*
-     * 正确的检测
-     */
+    // 正确的检测
     it('should return 200, return info is match to the testUserInfo', done => {
         options.url = '/user/' + loginSuccessInfo.userId
         options.headers = {
@@ -623,53 +553,10 @@ describe('get user API', () => {
             done()
         })
     })
-
-    /* 对参数userId的一系列检测
-     * 是否有userId参数
-     * 是否为number类型
-     * 是否为integer类型
-     * 是否小于1
-     * userId不存在
-     */
-    it('should return 404, does not have userId', done => {
-        options.url = '/user/'
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 404)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('error', 'Not Found')
-            expect(response.result).to.have.property('message', 'Not Found')
-            done()
-        })
-    })
-
-    it('should return 400, userId is not the number', done => {
-        options.url = '/user/s'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, userId is not the integer', done => {
-        options.url = '/user/1.1'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, userId is less than 1', done => {
-        options.url = '/user/0'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"userId\" fails because [\"userId\" must be larger than or equal to 1]'
-            testUtils.badParam(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, userId is not exist', done => {
+    
+    // 对user_id的检测
+    userParamsCheck.userId(deepCopy(options), '')
+    it('should return 400, user_id is not exist', done => {
         options.url = '/user/' + (+loginSuccessInfo.userId + 1)
         server.inject(options, response => {
             let badRequestMessage = 'user_id is not exist'
@@ -677,49 +564,54 @@ describe('get user API', () => {
             done()
         })
     })
+    
+    // 对token的检测
+    options.url = '/user/' + loginSuccessInfo.userId
+    userParamsCheck.token(deepCopy(options), loginSuccessInfo)
+})
 
-    /*
-     * 没有Authorization的header
-     * 错误的token
-     * token过期
-     */
-    it('should return 400, token is not add to headers', done => {
-        options.url = '/user/' + loginSuccessInfo.userId
-        options.headers = {}
-        server.inject(options, response => {
-            let badRequestMessage = 'Authorization header is need'
-            testUtils.badParam(response, badRequestMessage)
+describe('update user API', () => {
+    const options = {
+        method: 'POST',
+        payload: {}
+    }
+
+    const testUserInfo = {
+        username: 'test',
+        password: 'testupdate',
+        user_id: '1'
+    }
+
+    const loginSuccessInfo = {
+        userId: 1,
+        token: ''
+    }
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
             done()
         })
     })
 
-    it('should return 400, token is not right', done => {
-        let tokenLen = loginSuccessInfo.token.length
-
-        options.url = '/user/' + loginSuccessInfo.userId
-        options.headers = {
-            'Authorization': tokenLen > 0 ? loginSuccessInfo.token.substring(0, tokenLen - 1) : loginSuccessInfo.token
+    before(done => {
+        const loginOptions = {
+            method: 'POST',
+            url: '/user/login',
+            payload: {
+                username: testUserInfo.username,
+                password: testUserInfo.password
+            }
         }
 
-        server.inject(options, response => {
-            let badRequestMessage = 'invalid signature'
-            testUtils.badParam(response, badRequestMessage)
+        server.inject(loginOptions, response => {
+            if (+response.statusCode === 200) {
+                loginSuccessInfo.userId = response.result.user_id
+                loginSuccessInfo.token = response.result.token
+            }
             done()
         })
     })
 
-    it('should return 400, token is expired', {timeout: 5000}, done => {
-        options.url = '/user/' + loginSuccessInfo.userId
-        options.headers = {
-            Authorization: loginSuccessInfo.token
-        }
-
-        setTimeout(() => {
-            server.inject(options, response => {
-                let badRequestMessage = 'jwt expired'
-                testUtils.badParam(response, badRequestMessage)
-                done()
-            })
-        }, 1000 * 2)
-    })
+    userParamsCheck.userId(options, '/update')
 })
