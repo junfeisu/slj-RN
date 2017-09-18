@@ -5,4 +5,5 @@ services:
 
 before_script: 
   - npm install lab -g
-  - mongo -- eval 'use sljRN'
+  - sleep 15
+  - mongo sljRN
