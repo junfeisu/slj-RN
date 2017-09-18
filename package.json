@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon app.js || node app.js",
     "test": "set NODE_ENV='test' && lab",
-    "test-cov": "lab -r html -o test/reporters/coverage.html"
+    "test-cov": "set NODE_ENV='test' && lab -r html -o test/reporters/coverage.html"
   },
   "repository": {
     "type": "git",
