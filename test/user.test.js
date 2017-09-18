@@ -573,19 +573,28 @@ describe('get user API', () => {
 
     /*
      * 没有Authorization的header
+     * 错误的token
      * token过期
      */
     it('should return 400', 'token is not add to headers', done => {
-        // let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        let userId = 1
 
-        // before(done => {
-        //     new userModel(copyUserInfo).save((err, result) => {
-        //         done()
-        //     })
-        // })
+        before(done => {
+            new userModel(copyUserInfo).save((err, result) => {
+                if (result && result.username === copyUserInfo.username) {
+                    userId = result.user_id
+                }
+                done()
+            })
+        })
 
-        // before(done => {
-
-        // })
+        options.url = '/user/' + userId
+        server.inject(options, response => {
+            console.log(response)
+            let badRequestMessage = 'Authorization header is need'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
     })
 })
