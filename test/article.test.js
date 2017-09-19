@@ -9,13 +9,7 @@ const userModel = require('../schemas/userSchema')
 const testUtils = require('../utils/testUtil')
 const cryptic = require('../utils/cryptic')
 
-const testUserInfo = {
-    user_id: '1',
-    username: 'testarticle',
-    password: 'article'
-}
-
-const login = () => {
+const login = (testUserInfo) => {
     const loginInfo = {
         method: 'POST',
         url: '/user/login',
@@ -31,12 +25,35 @@ const login = () => {
     })
 }
 
+const addUser = (articleInfo, token) => {
+    const addArticleOptions = {
+        method: 'PUT',
+        url: '/article/add',
+        payload: articleInfo,
+        headers: {
+            Authorization: token
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        server.inject(addArticleOptions, response => {
+            resolve(response.result)
+        })
+    })
+}
+
 // 测试新增文章
 describe('test add article', () => {
     const options = {
         method: 'PUT',
         url: '/article/add',
         payload: {}
+    }
+
+    const testUserInfo = {
+        user_id: '1',
+        username: 'testarticle',
+        password: 'article'
     }
 
     before(done => {
@@ -48,7 +65,7 @@ describe('test add article', () => {
 
     // 对title的检测
     it('should return 400, title is need', done => {
-        login()
+        login(testUserInfo)
             .then(userInfo => {
                 options.payload = {
                     content: 'this is test',
@@ -157,7 +174,7 @@ describe('test add article', () => {
 
     // 对tags的检测
     it('should return 400, tags is need', done => {
-        login()
+        login(testUserInfo)
             .then(userInfo => {
                 options.payload.author = userInfo.user_id
                 delete options.payload.tags
@@ -199,6 +216,106 @@ describe('test add article', () => {
 
     after(done => {
         userModel.remove({username: 'testarticle'}, (err, result) => {
+            done()
+        })
+    })
+})
+
+// 测试获得单个文章
+describe('get single article', () => {
+    const options = {
+        method: 'GET',
+        url: '/article/'
+    }
+
+    const testUserInfo = {
+        user_id: '1',
+        username: 'testget',
+        password: 'article'
+    }
+
+    const testArticleInfo = {
+        title: 'test add',
+        content: 'this is for test',
+        author: 1,
+        tags: ['test', 'add']
+    }
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            done()
+        })
+    })
+
+    it('should return 404, articleId is need', done => {
+        login(testUserInfo)
+            .then(user => {
+                options.headers = {
+                    Authorization: user.token
+                }
+                testArticleInfo.author = user.user_id
+
+                server.inject(options, response => {
+                    expect(response).to.have.property('statusCode', 404)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.have.property('error', 'Not Found')
+                    expect(response.result).to.have.property('message', 'Not Found')
+                    done()
+                })
+            })
+            .catch(done)
+    })
+
+    it('should return 400, articleId is not a number', done => {
+        options.url += 'ss'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, articleId is not a integer', done => {
+        options.url = '/article/1.1'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, articleId is less than 1', done => {
+        options.url = '/article/0',
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 200, return right info', done => {
+        addUser(testArticleInfo, options.headers.Authorization)
+            .then(article => {
+                options.url = '/article/' + article.article_id
+                server.inject(options, response => {
+                    expect(response).to.have.property('statusCode', 200)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.have.property('comments')
+                    expect(response.result).to.have.property('create_date')
+                    expect(response.result).to.have.property('article_id', article.article_id)
+                    expect(response.result).to.have.property('title', testArticleInfo.title)
+                    expect(response.result).to.have.property('content', testArticleInfo.content)
+                    expect(response.result).to.have.property('author', testArticleInfo.author)
+                    expect(response.result.tags).to.deep.equal(testArticleInfo.tags)
+                    done()
+                })
+            })
+            .catch(done)
+    })
+
+    after(done => {
+        userModel.remove({username: 'testget'}, (err, result) => {
             done()
         })
     })
