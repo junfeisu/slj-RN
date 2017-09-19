@@ -25,7 +25,7 @@ const login = (testUserInfo) => {
     })
 }
 
-const addUser = (articleInfo, token) => {
+const addArticle = (articleInfo, token) => {
     const addArticleOptions = {
         method: 'PUT',
         url: '/article/add',
@@ -41,6 +41,14 @@ const addUser = (articleInfo, token) => {
         })
     })
 }
+
+describe('remove article before test', () => {
+    before(done => {
+        articleModel.remove({content: 'this is test'}, (err, result) => {
+            done()
+        })
+    })
+})
 
 // 测试新增文章
 describe('test add article', () => {
@@ -236,7 +244,7 @@ describe('get single article', () => {
 
     const testArticleInfo = {
         title: 'test add',
-        content: 'this is for test',
+        content: 'this is test',
         author: 1,
         tags: ['test', 'add']
     }
@@ -295,7 +303,7 @@ describe('get single article', () => {
     })
 
     it('should return 200, return right info', done => {
-        addUser(testArticleInfo, options.headers.Authorization)
+        addArticle(testArticleInfo, options.headers.Authorization)
             .then(article => {
                 options.url = '/article/' + article.article_id
                 server.inject(options, response => {
@@ -316,6 +324,175 @@ describe('get single article', () => {
 
     after(done => {
         userModel.remove({username: 'testget'}, (err, result) => {
+            done()
+        })
+    })
+})
+
+// 测试修改文章
+describe('update article', () => {
+    const options = {
+        method: 'POST',
+        url: '/article/update',
+        payload: {}
+    }
+
+    const testUserInfo = {
+        username: 'testupdate',
+        password: 'article',
+        user_id: '1'
+    }
+
+    const testArticleInfo = {
+        title: 'test update',
+        content: 'this is test',
+        author: '1',
+        tags: ['test', 'update']
+    }
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            done()
+        })
+    })
+
+    it('should return 404, articleId is need', done => {
+        login(testUserInfo)
+            .then(user => {
+                options.headers = {
+                    Authorization: user.token
+                }
+                testArticleInfo.author = user.user_id
+
+                server.inject(options, response => {
+                    expect(response).to.have.property('statusCode', 404)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.have.property('error', 'Not Found')
+                    expect(response.result).to.have.property('message', 'Not Found')
+                    done()
+                })
+            })
+            .catch(done)
+    })
+
+    it('should return 400, articleId is not a number', done => {
+        options.url += '/s'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, articleId is not a integer', done => {
+        options.url = '/article/update/1.1'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, articleId is less than 1', done => {
+        options.url = '/article/update/0',
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, title is not a string', done => {
+        addArticle(testArticleInfo, options.headers.Authorization)
+            .then(article => {
+                options.url = '/article/update/' + article.article_id
+                options.payload = {
+                    title: {value: 'test update'}
+                }
+
+                server.inject(options, response => {
+                    let badRequestMessage = 'child \"title\" fails because [\"title\" must be a string]'
+                    testUtils.badParam(response, badRequestMessage)
+                    done()
+                })
+            })
+    })
+
+    it('should return 400, title length less than 1', done => {
+        options.payload.title = ''
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"title\" fails because [\"title\" is not allowed to be empty]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, content is not a string', done => {
+        options.payload = {
+            title: 'test update',
+            content: {value: 'this is test'}
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"content\" fails because [\"content\" must be a string]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, content length less than 1', done => {
+        options.payload.content = ''
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"content\" fails because [\"content\" is not allowed to be empty]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, tags is not an array', done => {
+        options.payload = {
+            content: 'this is the updated content',
+            tags: {name: 'test'}
+        }
+
+        server.inject(options, response => {
+            let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 200, update fail because none is update', done => {
+        options.payload = {
+            title: 'test update',
+            content: 'this is test'
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 200)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('message', '修改文章失败')
+            done()
+        })
+    })
+
+    it('should return 200, update success', done => {
+        options.payload = {
+            title: 'this is the updated title',
+            tags: ['test', 'upadte']
+        }
+
+        server.inject(options, response => {
+            expect(response).to.have.property('statusCode', 200)
+            expect(response).to.have.property('result')
+            expect(response.result).to.have.property('message', '修改文章成功')
+            done()
+        })
+    })
+
+    after(done => {
+        userModel.remove({username: 'testupdate'}, (err, result) => {
             done()
         })
     })

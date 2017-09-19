@@ -139,7 +139,7 @@ let updateArticle = {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    result.nModified ? reply({message: '修改文章成功'}) : reply({message: '修改文章失败'})
+                    result.ok && result.nModified ? reply({message: '修改文章成功'}) : reply({message: '修改文章失败'})
                 }
             })
         }
