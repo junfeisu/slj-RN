@@ -3,6 +3,9 @@ node_js: stable
 services: 
   - mongodb
 
+before_install:
+  - npm install
+
 install:
   - npm install lab -g
 
