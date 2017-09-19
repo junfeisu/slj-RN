@@ -12,7 +12,8 @@ before_script:
   - mongo sljRN --eval 'db.usergenerates.save({_id:"User", next:1});'
 
 script:
-  - npm run report
+  - npm run test
 
 after_script:
+  - npm run report
   - npm run coverage
