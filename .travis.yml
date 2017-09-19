@@ -6,9 +6,6 @@ services:
 before_install:
   - npm install
 
-install:
-  - npm install lab -g
-
 before_script: 
   - sleep 5
   - mongo sljRN --eval 'db.createCollection("usergenerates");'
