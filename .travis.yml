@@ -10,6 +10,10 @@ before_script:
   - sleep 5
   - mongo sljRN --eval 'db.createCollection("usergenerates");'
   - mongo sljRN --eval 'db.usergenerates.save({_id:"User", next:1});'
+  - mongo sljRN --eval 'db.createCollection("articlegenerates")'
+  - mongo sljRN --eval 'db.articlegenerates.save({_id:"Article", next:1});'
+  - mongo sljRN --eval 'db.createCollection("commentgenerates")'
+  - mongo sljRN --eval 'db.commentgenerates.save({_id:"Comment", next:1});'
 
 script:
   - npm run test
