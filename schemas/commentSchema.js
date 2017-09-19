@@ -25,8 +25,6 @@ let commentSchema = new Schema({
     }
 }, {versionKey: false})
 
-commentSchema.index({comment_id: 1}, {unique: true})
-
 commentSchema.pre('save', function (next) {
     let self = this
     if (self.isNew) {
