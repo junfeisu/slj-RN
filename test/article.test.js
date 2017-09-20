@@ -230,7 +230,7 @@ describe('test add article', () => {
 })
 
 // 测试获得单个文章
-describe('get single article', () => {
+describe('test get single article', () => {
     const options = {
         method: 'GET',
         url: '/article/'
@@ -330,7 +330,7 @@ describe('get single article', () => {
 })
 
 // 测试修改文章
-describe('update article', () => {
+describe('test update article', () => {
     const options = {
         method: 'POST',
         url: '/article/update',
@@ -495,5 +495,93 @@ describe('update article', () => {
         userModel.remove({username: 'testupdate'}, (err, result) => {
             done()
         })
+    })
+})
+
+// 测试删除文章
+describe('test remove article', () => {
+    const options = {
+        method: 'DELETE',
+        url: '/article/remove',
+        payload: {}
+    }
+
+    const testUserInfo = {
+        username: 'testdelete',
+        password: 'article',
+        user_id: '1'
+    }
+
+    const testArticleInfo = {
+        title: 'test delete',
+        content: 'this is test',
+        author: '1',
+        tags: ['test', 'delete']
+    }
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            done()
+        })
+    })
+
+    it('should be return 400, articleId is need', done => {
+        login(testUserInfo)
+            .then(user => {
+                options.headers = {
+                    Authorization: user.token
+                }
+
+                server.inject(options, response => {
+                    let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" is required]'
+                    testUtils.badParam(response, badRequestMessage)
+                    done()
+                })
+            })
+            .catch(done)
+    })
+
+    it('should be return 400, articleId is not a number', done => {
+        options.payload = {
+            articleId: {value: 1}
+        }
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should be return 400, articleId is not an integer', done => {
+        options.payload.articleId = '1.1'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should be return 400, articleId is less than 1', done => {
+        options.payload.articleId = '0'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 200, delete success', done => {
+        addArticle(testArticleInfo, options.headers.Authorization)
+            .then(article => {
+                options.payload.articleId = article.article_id
+                server.inject(options, response => {
+                    expect(response).to.have.property('statusCode', 200)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.have.property('message', '删除文章成功')
+                    done()
+                })
+            })
+            .catch(done)
     })
 })

@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 const db = mongoose.connection
 
 const connectMongo = () => {
-    mongoose.connect('mongodb://localhost/sljRN', {
+    let dbName = process.env.NODE_ENV === 'test' ? 'sljTest' : 'sljRN'
+    mongoose.connect('mongodb://localhost/' + dbName, {
         useMongoClient: true
     })
 
