@@ -585,3 +585,84 @@ describe('test remove article', () => {
             .catch(done)
     })
 })
+
+describe('test get article list', () => {
+    const options = {
+        method: 'GET',
+        url: '/article/list'
+    }
+
+    const testUserInfo = {
+        username: 'testgetlist',
+        password: 'article',
+        user_id: '1'
+    }
+
+    const testArticleInfo = {
+        title: 'test get list',
+        content: 'this is test',
+        author: '1',
+        tags: ['test', 'getList']
+    }
+
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            done()
+        })
+    })
+
+    it('should return 400, skip is need', done => {
+        login(testUserInfo)
+            .then(user => {
+                options.headers = {
+                    Authorization: user.token
+                }
+                server.inject(options, response => {
+                    let badRequestMessage = 'child \"skip\" fails because [\"skip\" is required]'
+                    testUtils.badParam(response, badRequestMessage)
+                    done()
+                })
+            })
+            .catch(done)
+    })
+
+    it('should return 400, skip is not a number', done => {
+        options.url += '?skip={name: 1}'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"skip\" fails because [\"skip\" must be a number]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, skip is not an integer', done => {
+        options.url = '/article/list?skip=1.1'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"skip\" fails because [\"skip\" must be an integer]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 400, skip is less than 0', done => {
+        options.url = '/article/list?skip=-1'
+        server.inject(options, response => {
+            let badRequestMessage = 'child \"skip\" fails because [\"skip\" must be larger than or equal to 0]'
+            testUtils.badParam(response, badRequestMessage)
+            done()
+        })
+    })
+
+    it('should return 200, return a empty array', {timeout: 5000}, done => {
+        options.url = '/article/list?skip=0'
+        articleModel.remove({}, (err, result) => {
+            server.inject(options, response => {
+                expect(response).to.have.property('statusCode', 200)
+                expect(response).to.have.property('result')
+                expect(response.result).to.deep.equal([])
+                done()
+            })
+        })
+    })
+})

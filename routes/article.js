@@ -25,20 +25,24 @@ let getArticleList = {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    result.forEach((article, index) => {
-                        commentUtil.getComments(article.article_id, events, index)
-                    })
-                    
-                    events.on('Error', err => {
-                        reply(Boom.badImplementation(err))
-                    })
+                    if (result.length) {
+                        result.forEach((article, index) => {
+                            commentUtil.getComments(article.article_id, events, index)
+                        })
+                        
+                        events.on('Error', err => {
+                            reply(Boom.badImplementation(err))
+                        })
 
-                    events.on('getCommentsNormal', (comments, index) => {
-                        result[index]['comments'] = comments
-                        if (index === result.length - 1) {
-                            reply(result)
-                        }
-                    })
+                        events.on('getCommentsNormal', (comments, index) => {
+                            result[index]['comments'] = comments
+                            if (index === result.length - 1) {
+                                reply(result)
+                            }
+                        })
+                    } else {
+                        reply(result)
+                    }
                 }
             })
         }
