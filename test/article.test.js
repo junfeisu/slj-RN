@@ -10,7 +10,7 @@ const testUtils = require('../utils/testUtil')
 const cryptic = require('../utils/cryptic')
 
 // 登录测试用户比返回Promise
-const login = (testUserInfo) => {
+const login = () => {
     const loginInfo = {
         method: 'POST',
         url: '/user/login',
@@ -70,6 +70,206 @@ const testUserInfo = {
     password: 'article'
 }
 
+// 文章参数的检测
+const articleParamCheck = {
+    articleId (options, testArticleInfo, subPath) {
+        it('should return 404, articleId is need', done => {
+            login()
+                .then(user => {
+                    options.headers = {
+                        Authorization: user.token
+                    }
+                    testArticleInfo.author = user.user_id
+
+                    server.inject(options, response => {
+                        testUtils.notFound(response)
+                        done()
+                    })
+                })
+                .catch(done)
+        })
+
+        it('should return 400, articleId is not a number', done => {
+            options.url += subPath ? subPath + '/ss' : 'ss'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, articleId is not a integer', done => {
+            options.url = subPath ? '/article/' + subPath + '/1.1' : '/article/1.1'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, articleId is less than 1', done => {
+            options.url = subPath ? 'article/' + subPath + '/0' : '/article/0',
+            console.log(options)
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    title (options, isNeed) {
+        it('should return 400, title is need', done => {
+            login()
+                .then(userInfo => {
+                    options.payload = {
+                        content: 'this is test',
+                        tags: ['add', 'test'],
+                        author: userInfo.user_id
+                    }
+                    options.headers = {
+                        Authorization: userInfo.token
+                    }
+
+                    if (isNeed) {
+                        server.inject(options, response => {
+                            let badRequestMessage = 'child \"title\" fails because [\"title\" is required]'
+                            testUtils.badRequest(response, badRequestMessage)
+                            done()
+                        })
+                    } else {
+                        done()
+                    }
+                })
+                .catch(done)
+        })
+
+        it('should return 400, title is not a string', done => {
+            options.payload.title = {value: 'testarticle'}
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"title\" fails because [\"title\" must be a string]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, title length less than 1', done => {
+            options.payload.title = ''
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"title\" fails because [\"title\" is not allowed to be empty]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    content (options, isNeed) {
+        it('should return 400, content is need', done => {
+            if (isNeed) {
+                delete options.payload.content
+                options.payload.title = 'test'
+
+                server.inject(options, response => {
+                    let badRequestMessage = 'child \"content\" fails because [\"content\" is required]'
+                    testUtils.badRequest(response, badRequestMessage)
+                    done()
+                })
+            } else {
+                done()
+            }
+        })
+
+        it('should return 400, content is not a string', done => {
+            options.payload.content = {value: 'testarticle'}
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"content\" fails because [\"content\" must be a string]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, content length less than 1', done => {
+            options.payload.content = ''
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"content\" fails because [\"content\" is not allowed to be empty]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    author (options, isNeed) {
+        it('should return 400, author is need', done => {
+            if (isNeed) {
+                delete options.payload.author
+                options.payload.content = 'this is test'
+
+                server.inject(options, response => {
+                    let badRequestMessage = 'child \"author\" fails because [\"author\" is required]'
+                    testUtils.badRequest(response, badRequestMessage)
+                    done()
+                })
+            } else {
+                done()
+            }
+        })
+
+        it('should return 400, author is not a number', done => {
+            options.payload.author = {value: '1'}
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"author\" fails because [\"author\" must be a number]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, author is not a integer', done => {
+            options.payload.author = '1.1'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"author\" fails because [\"author\" must be an integer]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+
+        it('should return 400, author less than 1', done => {
+            options.payload.author = '0'
+            server.inject(options, response => {
+                let badRequestMessage = 'child \"author\" fails because [\"author\" must be larger than or equal to 1]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+    },
+    tags (options, isNeed) {
+        it('should return 400, tags is need', done => {
+            login()
+                .then(userInfo => {
+                    if (isNeed) {
+                        options.payload.author = userInfo.user_id
+                        delete options.payload.tags
+
+                        server.inject(options, response => {
+                            let badRequestMessage = 'child \"tags\" fails because [\"tags\" is required]'
+                            testUtils.badRequest(response, badRequestMessage)
+                            done()
+                        })
+                    } else {
+                        done()
+                    }
+                })
+                .catch(done)
+        })
+
+        it('should return 400, tags is not an array', done => {
+            options.payload.tags = {name: 'test'}
+
+            server.inject(options, response => {
+                let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
+                testUtils.badRequest(response, badRequestMessage)
+                done()
+            })
+        })
+    }
+}
+
 // 在所有测试之前先删除以前的测试文章
 describe('remove article before test', () => {
     before(done => {
@@ -89,140 +289,10 @@ describe('test add article', () => {
 
     beforeTestOperations(testUserInfo)
 
-    // 对title的检测
-    it('should return 400, title is need', done => {
-        login(testUserInfo)
-            .then(userInfo => {
-                options.payload = {
-                    content: 'this is test',
-                    tags: ['add', 'test'],
-                    author: userInfo.user_id
-                }
-                options.headers = {
-                    Authorization: userInfo.token
-                }
-
-                server.inject(options, response => {
-                    let badRequestMessage = 'child \"title\" fails because [\"title\" is required]'
-                    testUtils.badRequest(response, badRequestMessage)
-                    done()
-                })
-            })
-            .catch(done)
-    })
-
-    it('should return 400, title is not a string', done => {
-        options.payload.title = {value: 'testarticle'}
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"title\" fails because [\"title\" must be a string]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, title length less than 1', done => {
-        options.payload.title = ''
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"title\" fails because [\"title\" is not allowed to be empty]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-    
-    // 对content的检测
-    it('should return 400, content is need', done => {
-        delete options.payload.content
-        options.payload.title = 'test'
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"content\" fails because [\"content\" is required]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, content is not a string', done => {
-        options.payload.content = {value: 'testarticle'}
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"content\" fails because [\"content\" must be a string]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, content length less than 1', done => {
-        options.payload.content = ''
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"content\" fails because [\"content\" is not allowed to be empty]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-    
-    // 对author的检测
-    it('should return 400, author is need', done => {
-        delete options.payload.author
-        options.payload.content = 'this is test'
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"author\" fails because [\"author\" is required]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, author is not a number', done => {
-        options.payload.author = {value: '1'}
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"author\" fails because [\"author\" must be a number]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, author is not a integer', done => {
-        options.payload.author = '1.1'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"author\" fails because [\"author\" must be an integer]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, author less than 1', done => {
-        options.payload.author = '0'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"author\" fails because [\"author\" must be larger than or equal to 1]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    // 对tags的检测
-    it('should return 400, tags is need', done => {
-        login(testUserInfo)
-            .then(userInfo => {
-                options.payload.author = userInfo.user_id
-                delete options.payload.tags
-
-                server.inject(options, response => {
-                    let badRequestMessage = 'child \"tags\" fails because [\"tags\" is required]'
-                    testUtils.badRequest(response, badRequestMessage)
-                    done()
-                })
-            })
-            .catch(done)
-    })
-
-    it('should return 400, tags is not an array', done => {
-        options.payload.tags = {name: 'test'}
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
+    articleParamCheck.title(options, true)
+    articleParamCheck.content(options, true)
+    articleParamCheck.author(options, true)
+    articleParamCheck.tags(options, true)
 
     it('should return 200, return right info', done => {
         options.payload.tags = ["test", "add"]
@@ -259,48 +329,7 @@ describe('test get single article', () => {
 
     beforeTestOperations(testUserInfo)
 
-    it('should return 404, articleId is need', done => {
-        login(testUserInfo)
-            .then(user => {
-                options.headers = {
-                    Authorization: user.token
-                }
-                testArticleInfo.author = user.user_id
-
-                server.inject(options, response => {
-                    testUtils.notFound(response)
-                    done()
-                })
-            })
-            .catch(done)
-    })
-
-    it('should return 400, articleId is not a number', done => {
-        options.url += 'ss'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, articleId is not a integer', done => {
-        options.url = '/article/1.1'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, articleId is less than 1', done => {
-        options.url = '/article/0',
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
+    articleParamCheck.articleId(options, testArticleInfo)
 
     it('should return 200, return right info', done => {
         addArticle(testArticleInfo, options.headers.Authorization)
@@ -329,7 +358,7 @@ describe('test get single article', () => {
 describe('test update article', () => {
     const options = {
         method: 'POST',
-        url: '/article/update',
+        url: '/article/',
         payload: {}
     }
 
@@ -342,108 +371,23 @@ describe('test update article', () => {
 
     beforeTestOperations(testUserInfo)
 
-    it('should return 404, articleId is need', done => {
-        login(testUserInfo)
-            .then(user => {
-                options.headers = {
-                    Authorization: user.token
-                }
-                testArticleInfo.author = user.user_id
+    articleParamCheck.articleId(options, testArticleInfo, 'update')
+    articleParamCheck.title(options, false)
+    articleParamCheck.content(options, false)
 
-                server.inject(options, response => {
-                    testUtils.notFound(response)
-                    done()
-                })
-            })
-            .catch(done)
-    })
+    // it('should return 400, tags is not an array', done => {
+    //     options.payload = {
+    //         content: 'this is the updated content',
+    //         tags: {name: 'test'}
+    //     }
 
-    it('should return 400, articleId is not a number', done => {
-        options.url += '/s'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, articleId is not a integer', done => {
-        options.url = '/article/update/1.1'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, articleId is less than 1', done => {
-        options.url = '/article/update/0',
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, title is not a string', done => {
-        addArticle(testArticleInfo, options.headers.Authorization)
-            .then(article => {
-                options.url = '/article/update/' + article.article_id
-                options.payload = {
-                    title: {value: 'test update'}
-                }
-
-                server.inject(options, response => {
-                    let badRequestMessage = 'child \"title\" fails because [\"title\" must be a string]'
-                    testUtils.badRequest(response, badRequestMessage)
-                    done()
-                })
-            })
-    })
-
-    it('should return 400, title length less than 1', done => {
-        options.payload.title = ''
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"title\" fails because [\"title\" is not allowed to be empty]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, content is not a string', done => {
-        options.payload = {
-            title: 'test update',
-            content: {value: 'this is test'}
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"content\" fails because [\"content\" must be a string]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, content length less than 1', done => {
-        options.payload.content = ''
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"content\" fails because [\"content\" is not allowed to be empty]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should return 400, tags is not an array', done => {
-        options.payload = {
-            content: 'this is the updated content',
-            tags: {name: 'test'}
-        }
-
-        server.inject(options, response => {
-            let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
+    //     server.inject(options, response => {
+    //         let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
+    //         testUtils.badRequest(response, badRequestMessage)
+    //         done()
+    //     })
+    // })
+    articleParamCheck.tags(options, false)
 
     it('should return 200, update fail because none is update', done => {
         options.payload = {
@@ -555,6 +499,7 @@ describe('test remove article', () => {
     afterTestOperations()
 })
 
+// 测试获取文章列表
 describe('test get article list', () => {
     const options = {
         method: 'GET',
