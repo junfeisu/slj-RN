@@ -273,10 +273,7 @@ describe('test get single article', () => {
                 testArticleInfo.author = user.user_id
 
                 server.inject(options, response => {
-                    expect(response).to.have.property('statusCode', 404)
-                    expect(response).to.have.property('result')
-                    expect(response.result).to.have.property('error', 'Not Found')
-                    expect(response.result).to.have.property('message', 'Not Found')
+                    testUtils.notFound(response)
                     done()
                 })
             })
@@ -365,10 +362,7 @@ describe('test update article', () => {
                 testArticleInfo.author = user.user_id
 
                 server.inject(options, response => {
-                    expect(response).to.have.property('statusCode', 404)
-                    expect(response).to.have.property('result')
-                    expect(response.result).to.have.property('error', 'Not Found')
-                    expect(response.result).to.have.property('message', 'Not Found')
+                    testUtils.notFound(response)
                     done()
                 })
             })

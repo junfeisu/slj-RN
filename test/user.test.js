@@ -21,10 +21,7 @@ const userParamsCheck = {
             typeof subPath !== 'undefined' ? options.url = '/user' + subPath : delete options.payload.user_id
             server.inject(options, response => {
                 if (typeof subPath !== 'undefined') {
-                    expect(response).to.have.property('statusCode', 404)
-                    expect(response).to.have.property('result')
-                    expect(response.result).to.have.property('error', 'Not Found')
-                    expect(response.result).to.have.property('message', 'Not Found')
+                    testUtils.notFound(response)
                 } else {
                     let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" is required]'
                     testUtils.badRequest(response, badRequestMessage)
