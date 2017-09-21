@@ -9,6 +9,7 @@ const userModel = require('../schemas/userSchema')
 const testUtils = require('../utils/testUtil')
 const cryptic = require('../utils/cryptic')
 
+// 登录测试用户比返回Promise
 const login = (testUserInfo) => {
     const loginInfo = {
         method: 'POST',
@@ -25,6 +26,7 @@ const login = (testUserInfo) => {
     })
 }
 
+// 添加测试文章并返回Promise
 const addArticle = (articleInfo, token) => {
     const addArticleOptions = {
         method: 'PUT',
@@ -42,6 +44,26 @@ const addArticle = (articleInfo, token) => {
     })
 }
 
+// 每个API测试之前的操作
+const beforeTestOperations = (testUserInfo) => {
+    before(done => {
+        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
+        new userModel(copyUserInfo).save((err, result) => {
+            done()
+        })
+    })
+}
+
+// 每个API测试之后的操作
+const afterTestOperations = () => {
+    after(done => {
+        userModel.remove({username: 'testarticle'}, (err, result) => {
+            done()
+        })
+    })
+}
+
+// 在所有测试之前先删除以前的测试文章
 describe('remove article before test', () => {
     before(done => {
         articleModel.remove({content: 'this is test'}, (err, result) => {
@@ -64,12 +86,7 @@ describe('test add article', () => {
         password: 'article'
     }
 
-    before(done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        new userModel(copyUserInfo).save((err, result) => {
-            done()
-        })
-    })
+    beforeTestOperations(testUserInfo)
 
     // 对title的检测
     it('should return 400, title is need', done => {
@@ -222,11 +239,7 @@ describe('test add article', () => {
         })
     })
 
-    after(done => {
-        userModel.remove({username: 'testarticle'}, (err, result) => {
-            done()
-        })
-    })
+    afterTestOperations()
 })
 
 // 测试获得单个文章
@@ -238,7 +251,7 @@ describe('test get single article', () => {
 
     const testUserInfo = {
         user_id: '1',
-        username: 'testget',
+        username: 'testarticle',
         password: 'article'
     }
 
@@ -249,12 +262,7 @@ describe('test get single article', () => {
         tags: ['test', 'add']
     }
 
-    before(done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        new userModel(copyUserInfo).save((err, result) => {
-            done()
-        })
-    })
+    beforeTestOperations(testUserInfo)
 
     it('should return 404, articleId is need', done => {
         login(testUserInfo)
@@ -322,11 +330,7 @@ describe('test get single article', () => {
             .catch(done)
     })
 
-    after(done => {
-        userModel.remove({username: 'testget'}, (err, result) => {
-            done()
-        })
-    })
+    afterTestOperations()
 })
 
 // 测试修改文章
@@ -338,7 +342,7 @@ describe('test update article', () => {
     }
 
     const testUserInfo = {
-        username: 'testupdate',
+        username: 'testarticle',
         password: 'article',
         user_id: '1'
     }
@@ -350,12 +354,7 @@ describe('test update article', () => {
         tags: ['test', 'update']
     }
 
-    before(done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        new userModel(copyUserInfo).save((err, result) => {
-            done()
-        })
-    })
+    beforeTestOperations(testUserInfo)
 
     it('should return 404, articleId is need', done => {
         login(testUserInfo)
@@ -491,11 +490,7 @@ describe('test update article', () => {
         })
     })
 
-    after(done => {
-        userModel.remove({username: 'testupdate'}, (err, result) => {
-            done()
-        })
-    })
+    afterTestOperations()
 })
 
 // 测试删除文章
@@ -507,7 +502,7 @@ describe('test remove article', () => {
     }
 
     const testUserInfo = {
-        username: 'testdelete',
+        username: 'testarticle',
         password: 'article',
         user_id: '1'
     }
@@ -519,12 +514,7 @@ describe('test remove article', () => {
         tags: ['test', 'delete']
     }
 
-    before(done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        new userModel(copyUserInfo).save((err, result) => {
-            done()
-        })
-    })
+    beforeTestOperations(testUserInfo)
 
     it('should be return 400, articleId is need', done => {
         login(testUserInfo)
@@ -584,6 +574,8 @@ describe('test remove article', () => {
             })
             .catch(done)
     })
+
+    afterTestOperations()
 })
 
 describe('test get article list', () => {
@@ -593,7 +585,7 @@ describe('test get article list', () => {
     }
 
     const testUserInfo = {
-        username: 'testgetlist',
+        username: 'testarticle',
         password: 'article',
         user_id: '1'
     }
@@ -605,12 +597,7 @@ describe('test get article list', () => {
         tags: ['test', 'getList']
     }
 
-    before(done => {
-        let copyUserInfo = Object.assign({}, testUserInfo, {password: cryptic(testUserInfo.password)})
-        new userModel(copyUserInfo).save((err, result) => {
-            done()
-        })
-    })
+    beforeTestOperations(testUserInfo)
 
     it('should return 400, skip is need', done => {
         login(testUserInfo)
@@ -654,7 +641,7 @@ describe('test get article list', () => {
         })
     })
 
-    it('should return 200, return a empty array', {timeout: 5000}, done => {
+    it('should return 200, return a empty array', done => {
         options.url = '/article/list?skip=0'
         articleModel.remove({}, (err, result) => {
             server.inject(options, response => {
@@ -665,4 +652,20 @@ describe('test get article list', () => {
             })
         })
     })
+
+    it('should return 200, return a array with one content', done => {
+        options.url = '/article/list?skip=0'
+        addArticle(testArticleInfo, options.headers.Authorization)
+            .then(article => {
+                server.inject(options, response => {
+                    expect(response).to.have.property('statusCode', 200)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.be.an('array').with.lengthOf(1)
+                    done()
+                })
+            })
+            .catch(done)
+    })
+
+    afterTestOperations()
 })
