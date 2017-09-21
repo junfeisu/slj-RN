@@ -103,7 +103,7 @@ describe('test add article', () => {
 
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"title\" fails because [\"title\" is required]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             })
@@ -114,7 +114,7 @@ describe('test add article', () => {
         options.payload.title = {value: 'testarticle'}
         server.inject(options, response => {
             let badRequestMessage = 'child \"title\" fails because [\"title\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -123,7 +123,7 @@ describe('test add article', () => {
         options.payload.title = ''
         server.inject(options, response => {
             let badRequestMessage = 'child \"title\" fails because [\"title\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -135,7 +135,7 @@ describe('test add article', () => {
 
         server.inject(options, response => {
             let badRequestMessage = 'child \"content\" fails because [\"content\" is required]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -144,7 +144,7 @@ describe('test add article', () => {
         options.payload.content = {value: 'testarticle'}
         server.inject(options, response => {
             let badRequestMessage = 'child \"content\" fails because [\"content\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -153,7 +153,7 @@ describe('test add article', () => {
         options.payload.content = ''
         server.inject(options, response => {
             let badRequestMessage = 'child \"content\" fails because [\"content\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -165,7 +165,7 @@ describe('test add article', () => {
 
         server.inject(options, response => {
             let badRequestMessage = 'child \"author\" fails because [\"author\" is required]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -174,7 +174,7 @@ describe('test add article', () => {
         options.payload.author = {value: '1'}
         server.inject(options, response => {
             let badRequestMessage = 'child \"author\" fails because [\"author\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -183,7 +183,7 @@ describe('test add article', () => {
         options.payload.author = '1.1'
         server.inject(options, response => {
             let badRequestMessage = 'child \"author\" fails because [\"author\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -192,7 +192,7 @@ describe('test add article', () => {
         options.payload.author = '0'
         server.inject(options, response => {
             let badRequestMessage = 'child \"author\" fails because [\"author\" must be larger than or equal to 1]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -206,7 +206,7 @@ describe('test add article', () => {
 
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"tags\" fails because [\"tags\" is required]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             })
@@ -218,7 +218,7 @@ describe('test add article', () => {
 
         server.inject(options, response => {
             let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -287,7 +287,7 @@ describe('test get single article', () => {
         options.url += 'ss'
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -296,7 +296,7 @@ describe('test get single article', () => {
         options.url = '/article/1.1'
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -305,7 +305,7 @@ describe('test get single article', () => {
         options.url = '/article/0',
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -379,7 +379,7 @@ describe('test update article', () => {
         options.url += '/s'
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -388,7 +388,7 @@ describe('test update article', () => {
         options.url = '/article/update/1.1'
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -397,7 +397,7 @@ describe('test update article', () => {
         options.url = '/article/update/0',
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -412,7 +412,7 @@ describe('test update article', () => {
 
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"title\" fails because [\"title\" must be a string]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             })
@@ -422,7 +422,7 @@ describe('test update article', () => {
         options.payload.title = ''
         server.inject(options, response => {
             let badRequestMessage = 'child \"title\" fails because [\"title\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -435,7 +435,7 @@ describe('test update article', () => {
 
         server.inject(options, response => {
             let badRequestMessage = 'child \"content\" fails because [\"content\" must be a string]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -444,7 +444,7 @@ describe('test update article', () => {
         options.payload.content = ''
         server.inject(options, response => {
             let badRequestMessage = 'child \"content\" fails because [\"content\" is not allowed to be empty]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -457,7 +457,7 @@ describe('test update article', () => {
 
         server.inject(options, response => {
             let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -525,7 +525,7 @@ describe('test remove article', () => {
 
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" is required]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             })
@@ -538,7 +538,7 @@ describe('test remove article', () => {
         }
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -547,7 +547,7 @@ describe('test remove article', () => {
         options.payload.articleId = '1.1'
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -556,7 +556,7 @@ describe('test remove article', () => {
         options.payload.articleId = '0'
         server.inject(options, response => {
             let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -607,7 +607,7 @@ describe('test get article list', () => {
                 }
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"skip\" fails because [\"skip\" is required]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             })
@@ -618,7 +618,7 @@ describe('test get article list', () => {
         options.url += '?skip={name: 1}'
         server.inject(options, response => {
             let badRequestMessage = 'child \"skip\" fails because [\"skip\" must be a number]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -627,7 +627,7 @@ describe('test get article list', () => {
         options.url = '/article/list?skip=1.1'
         server.inject(options, response => {
             let badRequestMessage = 'child \"skip\" fails because [\"skip\" must be an integer]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -636,7 +636,7 @@ describe('test get article list', () => {
         options.url = '/article/list?skip=-1'
         server.inject(options, response => {
             let badRequestMessage = 'child \"skip\" fails because [\"skip\" must be larger than or equal to 0]'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })

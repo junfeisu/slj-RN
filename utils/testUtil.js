@@ -1,7 +1,7 @@
 const expect = require('chai').expect
 
 const utils = {
-    badParam (response, badRequestMessage) {
+    badRequest (response, badRequestMessage) {
         expect(response).to.have.property('statusCode', 400)
         expect(response).to.have.property('result')
         expect(response).to.have.property('statusMessage', 'Bad Request')

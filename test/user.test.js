@@ -27,7 +27,7 @@ const userParamsCheck = {
                     expect(response.result).to.have.property('message', 'Not Found')
                 } else {
                     let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" is required]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                 }
                 done()
             })
@@ -37,7 +37,7 @@ const userParamsCheck = {
             typeof subPath !== 'undefined' ? options.url = '/user' + subPath + '/s' : options.payload.user_id = 'test'
             server.inject(options, response => {
                 let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be a number]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -46,7 +46,7 @@ const userParamsCheck = {
             typeof subPath !== 'undefined' ? options.url = '/user' + subPath + '/1.1' : options.payload.user_id = '1.1'
             server.inject(options, response => {
                 let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be an integer]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -55,7 +55,7 @@ const userParamsCheck = {
             typeof subPath !== 'undefined' ? options.url = '/user' + subPath + '/0' : options.payload.user_id = '0'
             server.inject(options, response => {
                 let badRequestMessage = 'child \"user_id\" fails because [\"user_id\" must be larger than or equal to 1]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -72,7 +72,7 @@ const userParamsCheck = {
 
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"username\" fails because [\"username\" is required]'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             } else {
@@ -87,7 +87,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"username\" fails because [\"username\" must be a string]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -97,7 +97,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"username\" fails because [\"username\" is not allowed to be empty]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -113,7 +113,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"password\" fails because [\"password\" is required]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -125,7 +125,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"password\" fails because [\"password\" must be a string]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -135,7 +135,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"password\" fails because [\"password\" length must be at least 6 characters long]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -152,7 +152,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" must be a string]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -162,7 +162,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"slogan\" fails because [\"slogan\" is not allowed to be empty]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -179,7 +179,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" must be a string]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -189,7 +189,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"birthday\" fails because [\"birthday\" with value \"' + options.payload.birthday + '\" fails to match the required pattern: /^(19[0-9]{2}|20[0-1][0-7])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -206,7 +206,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" must be a string]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -216,7 +216,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'child \"user_icon\" fails because [\"user_icon\" with value \"http:&#x2f;&#x2f;test.jng\" fails to match the required pattern: /^.+\\.(jpg|jpeg|png|gif)$/]'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -231,7 +231,7 @@ const userParamsCheck = {
             options.headers = {}
             server.inject(options, response => {
                 let badRequestMessage = 'Authorization header is need'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -245,7 +245,7 @@ const userParamsCheck = {
 
             server.inject(options, response => {
                 let badRequestMessage = 'invalid signature'
-                testUtils.badParam(response, badRequestMessage)
+                testUtils.badRequest(response, badRequestMessage)
                 done()
             })
         })
@@ -258,7 +258,7 @@ const userParamsCheck = {
             setTimeout(() => {
                 server.inject(options, response => {
                     let badRequestMessage = 'jwt expired'
-                    testUtils.badParam(response, badRequestMessage)
+                    testUtils.badRequest(response, badRequestMessage)
                     done()
                 })
             }, 1000 * 2)
@@ -442,7 +442,7 @@ describe('user login API', () => {
 
         server.inject(options, response => {
             let badRequestMessage = 'user is not found'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -532,7 +532,7 @@ describe('get user API', () => {
         options.url = '/user/' + (+loginSuccessInfo.userId + 1)
         server.inject(options, response => {
             let badRequestMessage = 'user_id is not exist'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -631,7 +631,7 @@ describe('update user API', () => {
 
         server.inject(options, response => {
             let badRequestMessage = '"password" is not allowed'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
@@ -645,7 +645,7 @@ describe('update user API', () => {
 
         server.inject(options, response => {
             let badRequestMessage = '"user_id" is not allowed'
-            testUtils.badParam(response, badRequestMessage)
+            testUtils.badRequest(response, badRequestMessage)
             done()
         })
     })
