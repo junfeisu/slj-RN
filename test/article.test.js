@@ -1,6 +1,6 @@
 const Lab = require('lab')
 const lab = exports.lab = Lab.script()
-const { describe, it, before, beforeEach, after } = lab
+const { describe, it, before, after } = lab
 const expect = require('chai').expect
 const Hapi = require('hapi')
 const server = require('../server').server
@@ -63,6 +63,13 @@ const afterTestOperations = () => {
     })
 }
 
+// 测试用户信息
+const testUserInfo = {
+    user_id: '1',
+    username: 'testarticle',
+    password: 'article'
+}
+
 // 在所有测试之前先删除以前的测试文章
 describe('remove article before test', () => {
     before(done => {
@@ -78,12 +85,6 @@ describe('test add article', () => {
         method: 'PUT',
         url: '/article/add',
         payload: {}
-    }
-
-    const testUserInfo = {
-        user_id: '1',
-        username: 'testarticle',
-        password: 'article'
     }
 
     beforeTestOperations(testUserInfo)
@@ -249,12 +250,6 @@ describe('test get single article', () => {
         url: '/article/'
     }
 
-    const testUserInfo = {
-        user_id: '1',
-        username: 'testarticle',
-        password: 'article'
-    }
-
     const testArticleInfo = {
         title: 'test add',
         content: 'this is test',
@@ -336,12 +331,6 @@ describe('test update article', () => {
         method: 'POST',
         url: '/article/update',
         payload: {}
-    }
-
-    const testUserInfo = {
-        username: 'testarticle',
-        password: 'article',
-        user_id: '1'
     }
 
     const testArticleInfo = {
@@ -495,12 +484,6 @@ describe('test remove article', () => {
         payload: {}
     }
 
-    const testUserInfo = {
-        username: 'testarticle',
-        password: 'article',
-        user_id: '1'
-    }
-
     const testArticleInfo = {
         title: 'test delete',
         content: 'this is test',
@@ -576,12 +559,6 @@ describe('test get article list', () => {
     const options = {
         method: 'GET',
         url: '/article/list'
-    }
-
-    const testUserInfo = {
-        username: 'testarticle',
-        password: 'article',
-        user_id: '1'
     }
 
     const testArticleInfo = {
