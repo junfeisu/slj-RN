@@ -153,17 +153,17 @@ let updateArticle = {
 // 删除文章
 let removeArticle = {
     method: 'DELETE',
-    path: '/article/remove',
+    path: '/article/remove/{articleId}',
     config: {
         validate: {
-            payload: {
+            params: {
                 articleId: Joi.number().integer().min(1).required()
             }
         }
     },
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
-            let articleId = req.payload.articleId
+            let articleId = req.params.articleId
             let events = new EventEmitter()
 
             commentUtil.getComments(articleId, events)

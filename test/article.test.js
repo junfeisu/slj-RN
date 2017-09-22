@@ -108,8 +108,7 @@ const articleParamCheck = {
         })
 
         it('should return 400, articleId is less than 1', done => {
-            options.url = subPath ? 'article/' + subPath + '/0' : '/article/0',
-            console.log(options)
+            options.url = subPath ? '/article/' + subPath + '/0' : '/article/0'
             server.inject(options, response => {
                 let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
                 testUtils.badRequest(response, badRequestMessage)
@@ -372,35 +371,28 @@ describe('test update article', () => {
     beforeTestOperations(testUserInfo)
 
     articleParamCheck.articleId(options, testArticleInfo, 'update')
-    articleParamCheck.title(options, false)
-    articleParamCheck.content(options, false)
 
-    // it('should return 400, tags is not an array', done => {
-    //     options.payload = {
-    //         content: 'this is the updated content',
-    //         tags: {name: 'test'}
-    //     }
 
-    //     server.inject(options, response => {
-    //         let badRequestMessage = 'child "tags" fails because ["tags" must be an array]'
-    //         testUtils.badRequest(response, badRequestMessage)
-    //         done()
-    //     })
-    // })
-    articleParamCheck.tags(options, false)
+    articleParamCheck.title(Object.assign({}, options, {url: '/article/update/1'}), false)
+    articleParamCheck.content(Object.assign({}, options, {url: '/article/update/1'}), false)
+    articleParamCheck.tags(Object.assign({}, options, {url: '/article/update/1', payload: {title: 'test update', content: 'this is test'}}), false)
 
     it('should return 200, update fail because none is update', done => {
-        options.payload = {
-            title: 'test update',
-            content: 'this is test'
-        }
-
-        server.inject(options, response => {
-            expect(response).to.have.property('statusCode', 200)
-            expect(response).to.have.property('result')
-            expect(response.result).to.have.property('message', '修改文章失败')
-            done()
-        })
+        addArticle(testArticleInfo, options.headers.Authorization)
+            .then(article => {
+                options.payload = {
+                    title: 'test update',
+                    content: 'this is test'
+                }
+                options.url = '/article/update/' + article.article_id
+                server.inject(options, response => {
+                    expect(response).to.have.property('statusCode', 200)
+                    expect(response).to.have.property('result')
+                    expect(response.result).to.have.property('message', '修改文章失败')
+                    done()
+                })
+            })
+            .catch(done)
     })
 
     it('should return 200, update success', done => {
@@ -424,7 +416,7 @@ describe('test update article', () => {
 describe('test remove article', () => {
     const options = {
         method: 'DELETE',
-        url: '/article/remove',
+        url: '/article/',
         payload: {}
     }
 
@@ -437,55 +429,11 @@ describe('test remove article', () => {
 
     beforeTestOperations(testUserInfo)
 
-    it('should be return 400, articleId is need', done => {
-        login(testUserInfo)
-            .then(user => {
-                options.headers = {
-                    Authorization: user.token
-                }
-
-                server.inject(options, response => {
-                    let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" is required]'
-                    testUtils.badRequest(response, badRequestMessage)
-                    done()
-                })
-            })
-            .catch(done)
-    })
-
-    it('should be return 400, articleId is not a number', done => {
-        options.payload = {
-            articleId: {value: 1}
-        }
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be a number]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should be return 400, articleId is not an integer', done => {
-        options.payload.articleId = '1.1'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be an integer]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
-    it('should be return 400, articleId is less than 1', done => {
-        options.payload.articleId = '0'
-        server.inject(options, response => {
-            let badRequestMessage = 'child \"articleId\" fails because [\"articleId\" must be larger than or equal to 1]'
-            testUtils.badRequest(response, badRequestMessage)
-            done()
-        })
-    })
-
+    articleParamCheck.articleId(options, testUserInfo, 'remove')
     it('should return 200, delete success', done => {
         addArticle(testArticleInfo, options.headers.Authorization)
             .then(article => {
-                options.payload.articleId = article.article_id
+                options.url = '/article/remove/' + article.article_id
                 server.inject(options, response => {
                     expect(response).to.have.property('statusCode', 200)
                     expect(response).to.have.property('result')
