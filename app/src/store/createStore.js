@@ -19,13 +19,13 @@ export default (initialState = {}) => {
         enhancer
     )
 
-    if (module.hot) {
-        // Enable hot module replacement for reducers
-        module.hot.accept(() => {
-          const nextRootReducer = require('./reducer/index').default;
-          store.replaceReducer(nextRootReducer);
-        });
-    }
+    // if (module.hot) {
+    //     // Enable hot module replacement for reducers
+    //     module.hot.accept(() => {
+    //       const nextRootReducer = require('./reducer/index').default;
+    //       store.replaceReducer(nextRootReducer);
+    //     });
+    // }
 
     return store
 }

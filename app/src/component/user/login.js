@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import Button from 'react-native-button'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
-import axios from 'axios'
+import { login, loading } from '../../store/actions/login'
 
 const styles = StyleSheet.create({
     background: {
@@ -82,33 +82,27 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => ({
-    user: state.user,
-    status: state.status,
-    err: state.err
+    user: state.loginState.user,
+    status: state.loginState.status,
+    err: state.loginState.err
 })
 
 class Login extends Component {
     constructor () {
         super()
         this.state = {
-            username: '',
-            password: '',
+            username: 'sujunfei',
+            password: 'sjf978977',
             keyboardSpaceHeight: 0
         }
     }
 
     login = () => {
-        axios.post('http://localhost:8000/user/login', {
+        let userInfo = {
             username: this.state.username,
             password: this.state.password
-        })
-            .then(response => {
-                console.log('response')
-                Actions.main()
-            })
-            .catch(err => {
-                console.log('err is ', err)
-            })
+        }
+        login(userInfo)(this.props.dispatch)
     }
 
     forgetPassword = () => {
@@ -134,6 +128,10 @@ class Login extends Component {
         this.setState({
             keyboardSpaceHeight: 0
         })
+    }
+
+    componentWillReceiveProps (nextProps) {
+        console.log('nextProps', nextProps)
     }
 
     componentWillMount () {
@@ -163,7 +161,7 @@ class Login extends Component {
                                 underlineColorAndroid='transparent'
                                 onChangeText={(text) => this.setState({username: text})}
                             />
-                            <TextInput 
+                            <TextInput
                                 style={styles.loginInput}
                                 value={password}
                                 placeholder="Password"

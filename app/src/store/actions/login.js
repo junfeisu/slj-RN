@@ -4,8 +4,8 @@ const SET_USER_INFO = 'SET_USER_INFO'
 const LOGIN_FAIL = 'LOGIN_FAIL'
 const LOGINING = 'LOGINING'
 
-export function login () {
-    return function (dispatch, userInfo) {
+export function login (userInfo) {
+    return function (dispatch) {
         axios.post('http://localhost:8000/user/login', userInfo)
             .then(response => {
                 dispatch({
