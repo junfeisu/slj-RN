@@ -93,7 +93,8 @@ class Login extends Component {
         this.state = {
             username: 'sujunfei',
             password: 'sjf978977',
-            keyboardSpaceHeight: 0
+            keyboardSpaceHeight: 0,
+            loginBtnText: '登录'
         }
     }
 
@@ -102,6 +103,7 @@ class Login extends Component {
             username: this.state.username,
             password: this.state.password
         }
+        loading()(this.props.dispatch)
         login(userInfo)(this.props.dispatch)
     }
 
@@ -131,7 +133,14 @@ class Login extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        console.log('nextProps', nextProps)
+        if (nextProps.user !== this.props.user) {
+            Actions.main()
+        }
+        if (nextProps.status !== this.props.status) {
+            this.setState({
+                loginBtnText: nextProps.status === 'logining' ? '正在登录' : '登录'
+            })
+        }
     }
 
     componentWillMount () {
