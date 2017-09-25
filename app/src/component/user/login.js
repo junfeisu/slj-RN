@@ -99,12 +99,16 @@ class Login extends Component {
     }
 
     login = () => {
-        let userInfo = {
-            username: this.state.username,
-            password: this.state.password
+        if (this.props.status !== 'logining') {
+            let userInfo = {
+                username: this.state.username,
+                password: this.state.password
+            }
+            this.props.dispatch(loading())
+            login(userInfo)(this.props.dispatch)
+        } else {
+            alert('正在登录中')
         }
-        loading()(this.props.dispatch)
-        login(userInfo)(this.props.dispatch)
     }
 
     forgetPassword = () => {
@@ -138,8 +142,11 @@ class Login extends Component {
         }
         if (nextProps.status !== this.props.status) {
             this.setState({
-                loginBtnText: nextProps.status === 'logining' ? '正在登录' : '登录'
+                loginBtnText: nextProps.status === 'logining' ? '正在登录...' : '登录'
             })
+        }
+        if (nextProps.err !== this.props.err) {
+            alert('登录失败， 失败原因是' + nextProps.err.message)
         }
     }
 
@@ -154,7 +161,7 @@ class Login extends Component {
     }
 
     render () {
-        const { username, password, keyboardSpaceHeight } = this.state
+        const { username, password, keyboardSpaceHeight, loginBtnText } = this.state
         return (
                 <Image 
                     style={styles.background} 
@@ -182,7 +189,7 @@ class Login extends Component {
                                 style={styles.loginBtn}
                                 onPress={this.login}
                             >
-                                登录
+                                {loginBtnText}
                             </Button>
                             <View style={styles.otherOperation}>
                                 <Text style={styles.otherOperationText} onPress={this.forgetPassword}>忘记密码</Text>

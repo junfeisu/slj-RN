@@ -25,10 +25,8 @@ export function login (userInfo) {
 }
 
 export function loading() {
-    return function (dispatch) {
-        dispatch({
-            type: LOGINING,
-            loginStatus: 'logining'
-        })
+    return {
+        type: LOGINING,
+        status: 'logining'
     }
 }
