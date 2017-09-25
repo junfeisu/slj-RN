@@ -150,4 +150,39 @@ let loginUser = {
     }
 }
 
-module.exports = [getUser, addUser, updateUser, loginUser]
+// 更改密码
+let updatePassword = {
+    method: 'POST',
+    path: '/user/password',
+    config: {
+        validate: {
+            payload: {
+                user_id: Joi.number().integer().min(1).required(),
+                oldPassword: Joi.string().min(6).required(),
+                newPassword: Joi.string().min(6).required()
+            }
+        }
+    },
+    handler: (req, reply) => {
+        if (validateToken(req, reply)) {
+            const { user_id, oldPassword, newPassword } = req.payload
+            if (newPassword === oldPassword) {
+                reply(Boom.badRequest('新旧密码不能相同'))
+            } else {
+                let searchInfo = {
+                    user_id: user_id,
+                    password: cryptic(oldPassword)
+                }
+                userModel.update(searchInfo, {$set: {password: cryptic(newPassword)}}, (err, result) => {
+                    if (result.n) {
+                        result.nModified ? reply({message: '修改密码成功，请重新登录'}) : reply({message: '修改密码失败'})
+                    } else {
+                        reply(Boom.badRequest('旧密码输入不正确'))
+                    }
+                })
+            }
+        }
+    }
+}
+
+module.exports = [getUser, addUser, updateUser, loginUser, updatePassword]
