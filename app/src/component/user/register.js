@@ -8,6 +8,8 @@ import {
 } from 'react-native'
 import Button from 'react-native-button'
 import { Actions } from 'react-native-router-flux'
+import { connect } from 'react-redux'
+import { register, registering } from '../../store/actions/register'
 
 const styles = StyleSheet.create({
     register: {
@@ -52,7 +54,13 @@ const styles = StyleSheet.create({
     }
 })
 
-export default class Register extends Component {
+const mapStateToProps = (state) => ({
+    user: state.registerState.user,
+    err: state.registerState.err,
+    status: state.registerState.status,
+})
+
+class Register extends Component {
     constructor () {
         super()
         this.state = {
@@ -122,3 +130,5 @@ export default class Register extends Component {
         )
     }
 }
+
+export default connect(mapStateToProps)(Register)

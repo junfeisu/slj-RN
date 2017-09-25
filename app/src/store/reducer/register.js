@@ -1,25 +1,24 @@
-import { SET_USER_INFO, LOGIN_FAIL, LOGINING } from '../actions/login'
+import { REGISTER_SUCC, REGISTER_FAIL, REGISTERING } from '../actions/login'
 
 const initState = {
     user: {
         username: '',
         user_id: '',
         slogan: '',
-        birthday: '',
-        user_icon: 'https://ohjoq511u.qnssl.com/2016-10-19-07-21-15-290709/1-14092G22551.jpg'
+        birthday: ''
     },
-    status: 'unLogin',
+    status: 'unRegister',
     err: null
 }
 
 const actionHandlers = {
-    SET_USER_INFO: (state, action) => {
+    REGISTER_SUCC: (state, action) => {
         return {...state, user: action.user, status: action.status}
     },
-    LOGIN_FAIL: (state, action) => {
+    REGISTER_FAIL: (state, action) => {
         return {...state, status: action.status, err: action.err}
     },
-    LOGINING: (state, action) => {
+    REGISTERING: (state, action) => {
         return {...state, status: action.status}
     }
 }
