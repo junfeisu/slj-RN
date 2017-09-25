@@ -111,14 +111,6 @@ class Login extends Component {
         }
     }
 
-    forgetPassword = () => {
-        console.log('forget password')
-    }
-
-    jumpRegister = () => {
-        Actions.register()
-    }
-
     keyboardDidShowHandler = () => {
         if (!this.endCoordinates) {
             return
@@ -174,7 +166,7 @@ class Login extends Component {
                     <ScrollView contentContainerStyle={styles.login}>
                         <View style={styles.loginContainer}>
                             <Text style={styles.title}>登录</Text>
-                            <TextInput 
+                            <TextInput
                                 style={styles.loginInput}
                                 value={username}
                                 placeholder="Username"
@@ -196,9 +188,9 @@ class Login extends Component {
                                 {loginBtnText}
                             </Button>
                             <View style={styles.otherOperation}>
-                                <Text style={styles.otherOperationText} onPress={this.forgetPassword}>忘记密码</Text>
+                                <Text style={styles.otherOperationText} onPress={Actions.forgotPassword}>忘记密码</Text>
                                 <Text style={styles.separator}></Text>
-                                <Text style={styles.otherOperationText} onPress={this.jumpRegister}>注册</Text>
+                                <Text style={styles.otherOperationText} onPress={Actions.register}>注册</Text>
                             </View>
                         </View>
                         <KeyboardSpacer keyboardSpaceHeight={keyboardSpaceHeight} />
@@ -209,4 +201,3 @@ class Login extends Component {
 }
 
 export default connect(mapStateToProps)(Login)
-
