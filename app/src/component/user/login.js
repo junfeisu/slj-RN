@@ -137,7 +137,11 @@ class Login extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.user !== this.props.user) {
+        if (nextProps.user !== this.props.user ** nextProps.user_id) {
+            storage.save({
+                key: 'user',
+                data: nextProps.user
+            })
             Actions.main()
         }
         if (nextProps.status !== this.props.status) {
@@ -146,7 +150,7 @@ class Login extends Component {
             })
         }
         if (nextProps.err !== this.props.err) {
-            alert('登录失败， 失败原因是' + nextProps.err.message)
+            alert('登录失败，失败原因是' + nextProps.err.message)
         }
     }
 
