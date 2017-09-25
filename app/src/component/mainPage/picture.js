@@ -17,15 +17,6 @@ export default class Picture extends Component {
         super()
     }
     
-    componentWillMount () {
-        Actions.refresh({title: '美图'})
-    }
-
-    shouldComponentUpdate () {
-        Actions.refresh({title: '美图'})
-        return false
-    }
-
     render () {
         return (
             <ScrollView>

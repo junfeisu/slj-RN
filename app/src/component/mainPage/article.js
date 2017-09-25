@@ -17,15 +17,6 @@ export default class Article extends Component {
         super()
     }
 
-    componentWillMount () {
-        Actions.refresh({title: '话题'})
-    }
-
-    shouldComponentUpdate () {
-        Actions.refresh({title: '话题'})
-        return false
-    }
-
     render () {
         return (
             <ScrollView>

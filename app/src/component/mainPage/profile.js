@@ -17,15 +17,6 @@ export default class Profile extends Component {
         super()
     }
 
-    componentWillMount () {
-        Actions.refresh({title: '我的'})
-    }
-
-    shouldComponentUpdate () {
-        Actions.refresh({title: '我的'})
-        return false
-    }
-
     render () {
         return (
             <ScrollView>

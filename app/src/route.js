@@ -6,9 +6,9 @@ import Main from './component/main'
 
 const Scenes = Actions.create(
     <Scene>
-        <Scene key="login" component={Login} title="登录"></Scene>
-        <Scene key="register" component={Register} title="注册"></Scene>
-        <Scene key="main" component={Main} title="主页"></Scene>
+        <Scene key="login" component={Login} hideNavBar={true}></Scene>
+        <Scene key="register" component={Register} hideNavBar={true}></Scene>
+        <Scene key="main" component={Main} hideNavBar={true}></Scene>
     </Scene>
 )
 
