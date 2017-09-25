@@ -69,16 +69,47 @@ class Register extends Component {
             ensurePassword: '',
             slogan: '',
             birthday: '',
-            user_icon: ''
+            user_icon: '',
+            registerBtnText: '注册'
         }
     }
 
     register = () => {
-        Actions.login()
+        if (this.props.status !== 'registering') {
+            const { username, password, ensurePassword, birthday, slogan } = this.state
+            if (password !== ensurePassword) {
+                alert('密码和再次确认的密码不一样')
+            } else {
+                let userInfo = {
+                    username,
+                    password,
+                    birthday,
+                    slogan
+                }
+                this.props.dispatch(registering())
+                register(userInfo)(this.props.dispatch)
+            }
+        } else {
+            alert('正在注册中')
+        }
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.user !== this.props.user && nextProps.user_id) {
+            Actions.login()
+        }
+        if (nextProps.err !== this.props.err) {
+            alert('注册失败，原因是' + nextProps.err.response.data.message)
+        }
+        if (nextProps.status !== this.props.status) {
+            this.setState({
+                registerBtnText: nextProps.status === 'registering' ? '正在注册...' : '注册'
+            })
+        }
     }
 
     render () {
-        const { username, password, ensurePassword, slogan, birthday } = this.state
+        const { username, password, ensurePassword, slogan, birthday, registerBtnText } = this.state
         return (
             <ScrollView contentContainerStyle={styles.register}>
                 <View style={styles.containerStyle}>
@@ -94,6 +125,7 @@ class Register extends Component {
                         style={styles.registerInput}
                         value={password}
                         placeholder="Password"
+                        secureTextEntry={true}
                         underlineColorAndroid='transparent'
                         onChangeText={(text) => this.setState({password: text})}
                     />
@@ -101,6 +133,7 @@ class Register extends Component {
                         style={styles.registerInput}
                         value={ensurePassword}
                         placeholder="ensure password"
+                        secureTextEntry={true}
                         underlineColorAndroid='transparent'
                         onChangeText={(text) => this.setState({ensurePassword: text})}
                     />
@@ -122,7 +155,7 @@ class Register extends Component {
                         style={styles.registerBtn}
                         onPress={this.register}
                     >
-                        注册
+                        {registerBtnText}
                     </Button>
                     <Text onPress={Actions.login} style={{marginTop: 10}}>已有账号去登录</Text>
                 </View>

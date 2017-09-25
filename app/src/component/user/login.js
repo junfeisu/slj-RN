@@ -142,7 +142,7 @@ class Login extends Component {
             })
         }
         if (nextProps.err !== this.props.err) {
-            alert('登录失败，失败原因是' + nextProps.err.message)
+            alert('登录失败，失败原因是' + nextProps.err.response.data.message)
         }
     }
 
