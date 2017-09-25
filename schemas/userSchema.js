@@ -4,8 +4,7 @@ const userGenerate = require('./sequence').user
 
 const userSchema = new Schema({
     user_id: {
-        type: Number,
-        required: true
+        type: Number
     },
     username: {
         type: String,

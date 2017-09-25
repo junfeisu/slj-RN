@@ -279,13 +279,10 @@ describe('add user API', () => {
         method: 'PUT',
         url: '/user/add',
         payload: {
-            user_id: '1',
             username: 'test',
             password: 'testadd'
         }
     }
-
-    userParamsCheck.userId(deepCopy(options))
 
     userParamsCheck.username(deepCopy(options), true)
 
