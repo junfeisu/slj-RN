@@ -9,7 +9,7 @@ import {
     StyleSheet
 } from 'react-native'
 import { connect } from 'react-redux'
-import Button from 'react-native-button'
+import { Button } from 'antd-mobile'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
 import { login, loading } from '../../store/actions/login'
@@ -94,7 +94,7 @@ class Login extends Component {
             username: '',
             password: '',
             keyboardSpaceHeight: 0,
-            loginBtnText: '登录'
+            loading: false
         }
     }
 
@@ -138,7 +138,7 @@ class Login extends Component {
         }
         if (nextProps.status !== this.props.status) {
             this.setState({
-                loginBtnText: nextProps.status === 'logining' ? '正在登录...' : '登录'
+                loading: nextProps.status === 'logining'
             })
         }
         if (nextProps.err !== this.props.err) {
@@ -157,7 +157,7 @@ class Login extends Component {
     }
 
     render () {
-        const { username, password, keyboardSpaceHeight, loginBtnText } = this.state
+        const { username, password, keyboardSpaceHeight, loading } = this.state
         return (
                 <Image 
                     style={styles.background} 
@@ -183,9 +183,12 @@ class Login extends Component {
                             />
                             <Button
                                 style={styles.loginBtn}
-                                onPress={this.login}
+                                onClick={this.login}
+                                type="primary"
+                                loading={loading}
+                                disabled={loading}
                             >
-                                {loginBtnText}
+                                {loading ? '正在登录...' : '登录'}
                             </Button>
                             <View style={styles.otherOperation}>
                                 <Text style={styles.otherOperationText} onPress={Actions.forgotPassword}>忘记密码</Text>

@@ -5,7 +5,7 @@ import {
     TextInput,
     StyleSheet
 } from 'react-native'
-import Button from 'react-native-button'
+import { Button } from 'antd-mobile'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { updatePassword, updatePasswording } from '../../store/actions/updatePassword'
@@ -36,7 +36,7 @@ class UpdatePassword extends Component {
         this.state = {
             oldPassword: '',
             newPassWord: '',
-            updateBtnText: '修改',
+            loading: false,
             user_id: ''
         }
     }
@@ -79,13 +79,13 @@ class UpdatePassword extends Component {
         }
         if (nextProps.status !== this.props.status) {
             this.setState({
-                updateBtnText: nextProps.status === 'updating' ? '正在修改...' : '修改'
+                loading: nextProps.status === 'updating'
             })
         }
     }
 
     render () {
-        const { oldPassword, newPassWord, updateBtnText } = this.state
+        const { oldPassword, newPassWord, loading } = this.state
         return (
             <View>
                 <Text>修改密码</Text>
@@ -106,9 +106,12 @@ class UpdatePassword extends Component {
                     onChangeText={(text) => this.setState({newPassWord: text})}
                 />
                 <Button
-                    onPress={this.updatePassword}
+                    type="primary"
+                    loading={loading}
+                    disabled={loading}
+                    onClick={this.updatePassword}
                 >
-                    {updateBtnText}
+                    {loading ? '正在修改...' : '修改'}
                 </Button>
             </View>
         )

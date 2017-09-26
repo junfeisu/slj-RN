@@ -433,6 +433,10 @@ babel-plugin-external-helpers@^6.18.0:
   dependencies:
     babel-runtime "^6.22.0"
 
+babel-plugin-import@^1.5.0:
+  version "1.5.0"
+  resolved "http://registry.npm.taobao.org/babel-plugin-import/download/babel-plugin-import-1.5.0.tgz#0a388368b0811f27facef80740e1078c5322692a"
+
 babel-plugin-istanbul@^4.0.0:
   version "4.1.4"
   resolved "http://registry.npm.taobao.org/babel-plugin-istanbul/download/babel-plugin-istanbul-4.1.4.tgz#18dde84bf3ce329fddf3f4103fae921456d8e587"
@@ -4053,7 +4057,7 @@ react-devtools-core@^2.5.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
-react-native-button@^2.0.0, react-native-button@^2.1.0:
+react-native-button@^2.0.0:
   version "2.1.0"
   resolved "http://registry.npm.taobao.org/react-native-button/download/react-native-button-2.1.0.tgz#a39e23292922afeea4f7be141dd43e18f1b51876"
   dependencies:

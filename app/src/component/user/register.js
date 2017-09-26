@@ -6,7 +6,7 @@ import {
     Text,
     StyleSheet
 } from 'react-native'
-import Button from 'react-native-button'
+import { Button } from 'antd-mobile'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import { register, registering } from '../../store/actions/register'
@@ -70,7 +70,7 @@ class Register extends Component {
             slogan: '',
             birthday: '',
             user_icon: '',
-            registerBtnText: '注册'
+            loading: false
         }
     }
 
@@ -113,13 +113,13 @@ class Register extends Component {
         }
         if (nextProps.status !== this.props.status) {
             this.setState({
-                registerBtnText: nextProps.status === 'registering' ? '正在注册...' : '注册'
+                loading: nextProps.status === 'registering'
             })
         }
     }
 
     render () {
-        const { username, password, ensurePassword, slogan, birthday, registerBtnText } = this.state
+        const { username, password, ensurePassword, slogan, birthday, loading } = this.state
         return (
             <ScrollView contentContainerStyle={styles.register}>
                 <View style={styles.containerStyle}>
@@ -163,9 +163,12 @@ class Register extends Component {
                     />
                     <Button
                         style={styles.registerBtn}
-                        onPress={this.register}
+                        type="primary"
+                        onClick={this.register}
+                        loading={loading}
+                        disabled={loading}
                     >
-                        {registerBtnText}
+                        {loading ? '正在注册...' : '注册'}
                     </Button>
                     <Text onPress={Actions.login} style={{marginTop: 10}}>已有账号去登录</Text>
                 </View>
