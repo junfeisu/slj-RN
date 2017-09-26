@@ -74,6 +74,15 @@ class Register extends Component {
         }
     }
 
+    removeUnnecessaeyKey = (userInfo) => {
+        if (!userInfo.birthday) {
+            delete userInfo.birthday
+        }
+        if (!userInfo.slogan) {
+            delete userInfo.slogan
+        }
+    }
+
     register = () => {
         if (this.props.status !== 'registering') {
             const { username, password, ensurePassword, birthday, slogan } = this.state
@@ -87,6 +96,7 @@ class Register extends Component {
                     slogan
                 }
                 this.props.dispatch(registering())
+                this.removeUnnecessaeyKey(userInfo)
                 register(userInfo)(this.props.dispatch)
             }
         } else {
@@ -95,7 +105,7 @@ class Register extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.user !== this.props.user && nextProps.user_id) {
+        if (nextProps.user !== this.props.user && nextProps.user.user_id) {
             Actions.login()
         }
         if (nextProps.err !== this.props.err) {

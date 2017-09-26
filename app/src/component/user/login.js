@@ -91,8 +91,8 @@ class Login extends Component {
     constructor () {
         super()
         this.state = {
-            username: 'sujunfei',
-            password: 'sjf978977',
+            username: '',
+            password: '',
             keyboardSpaceHeight: 0,
             loginBtnText: '登录'
         }
@@ -129,7 +129,7 @@ class Login extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.user !== this.props.user ** nextProps.user_id) {
+        if (nextProps.user !== this.props.user ** nextProps.user.user_id) {
             storage.save({
                 key: 'user',
                 data: nextProps.user
