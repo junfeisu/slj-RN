@@ -1,5 +1,6 @@
 module.exports = [
     require('./user'),
     require('./article'),
-    require('./comment')
+    require('./comment'),
+    require('./upload')
 ]

@@ -29,6 +29,7 @@
     "joi": "^10.6.0",
     "jsonwebtoken": "^8.0.0",
     "mongoose": "^4.11.10",
+    "qiniu": "^7.0.8",
     "socket.io": "^2.0.3"
   },
   "devDependencies": {
