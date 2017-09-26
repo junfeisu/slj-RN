@@ -5,7 +5,7 @@ import {
     TextInput,
     StyleSheet
 } from 'react-native'
-import { Button } from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { updatePassword, updatePasswording } from '../../store/actions/updatePassword'
@@ -68,13 +68,15 @@ class UpdatePassword extends Component {
 
     componetWillReceiveProps (nextProps) {
         if (nextProps.err !== this.props.err) {
-            alert('更改密码失败，原因是' + nextProps.err.message)
+            Toast.fail('更改密码失败，原因是' + nextProps.err.message, 2)
         }
         if (nextProps.result !== this.props.result) {
             alert(nextProps.result.message)
             if (nextProps.result.message === '修改密码成功，请重新登录') {
-                storage.clearMapForKey('user')
-                Actions.login()
+                Toast.success('修改密码成功，请重新登录', 2, () => {
+                    storage.clearMapForKey('user')
+                    Actions.login()
+                })
             }
         }
         if (nextProps.status !== this.props.status) {

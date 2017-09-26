@@ -17,7 +17,7 @@ export function register(userInfo) {
             .catch(err => {
                 dispatch({
                     type: REGISTER_FAIL,
-                    err: err,
+                    err: err.response.data,
                     status: 'fail'
                 })
             })

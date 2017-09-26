@@ -18,7 +18,7 @@ export function login (userInfo) {
                 dispatch({
                     type: LOGIN_FAIL,
                     status: 'fail',
-                    err: err
+                    err: err.response.data
                 })
             })
     }

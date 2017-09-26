@@ -9,7 +9,7 @@ import {
     StyleSheet
 } from 'react-native'
 import { connect } from 'react-redux'
-import { Button } from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
 import { login, loading } from '../../store/actions/login'
@@ -99,16 +99,12 @@ class Login extends Component {
     }
 
     login = () => {
-        if (this.props.status !== 'logining') {
-            let userInfo = {
-                username: this.state.username,
-                password: this.state.password
-            }
-            this.props.dispatch(loading())
-            login(userInfo)(this.props.dispatch)
-        } else {
-            alert('正在登录中')
+        let userInfo = {
+            username: this.state.username,
+            password: this.state.password
         }
+        this.props.dispatch(loading())
+        login(userInfo)(this.props.dispatch)
     }
 
     keyboardDidShowHandler = () => {
@@ -142,7 +138,7 @@ class Login extends Component {
             })
         }
         if (nextProps.err !== this.props.err) {
-            alert('登录失败，失败原因是' + nextProps.err.response.data.message)
+            Toast.fail('登录失败，失败原因是' + nextProps.err.message, 2)
         }
     }
 

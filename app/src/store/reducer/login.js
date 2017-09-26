@@ -1,5 +1,3 @@
-import { SET_USER_INFO, LOGIN_FAIL, LOGINING } from '../actions/login'
-
 const initState = {
     user: {
         username: '',

@@ -1,5 +1,3 @@
-import { REGISTER_SUCC, REGISTER_FAIL, REGISTERING } from '../actions/login'
-
 const initState = {
     user: {
         username: '',

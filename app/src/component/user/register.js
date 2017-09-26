@@ -6,7 +6,7 @@ import {
     Text,
     StyleSheet
 } from 'react-native'
-import { Button } from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import { Actions } from 'react-native-router-flux'
 import { connect } from 'react-redux'
 import { register, registering } from '../../store/actions/register'
@@ -84,23 +84,19 @@ class Register extends Component {
     }
 
     register = () => {
-        if (this.props.status !== 'registering') {
-            const { username, password, ensurePassword, birthday, slogan } = this.state
-            if (password !== ensurePassword) {
-                alert('密码和再次确认的密码不一样')
-            } else {
-                let userInfo = {
-                    username,
-                    password,
-                    birthday,
-                    slogan
-                }
-                this.props.dispatch(registering())
-                this.removeUnnecessaeyKey(userInfo)
-                register(userInfo)(this.props.dispatch)
-            }
+        const { username, password, ensurePassword, birthday, slogan } = this.state
+        if (password !== ensurePassword) {
+            Toast.info('密码和再次确认的密码不一样', 1)
         } else {
-            alert('正在注册中')
+            let userInfo = {
+                username,
+                password,
+                birthday,
+                slogan
+            }
+            this.props.dispatch(registering())
+            this.removeUnnecessaeyKey(userInfo)
+            register(userInfo)(this.props.dispatch)
         }
     }
 
@@ -109,7 +105,7 @@ class Register extends Component {
             Actions.login()
         }
         if (nextProps.err !== this.props.err) {
-            alert('注册失败，原因是' + nextProps.err.response.data.message)
+            Toast.fail('注册失败，原因是' + nextProps.err.message, 2)
         }
         if (nextProps.status !== this.props.status) {
             this.setState({
