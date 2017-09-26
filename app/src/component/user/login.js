@@ -129,7 +129,7 @@ class Login extends Component {
     }
 
     componentWillReceiveProps (nextProps) {
-        if (nextProps.user !== this.props.user ** nextProps.user.user_id) {
+        if (nextProps.user !== this.props.user && nextProps.user.user_id) {
             storage.save({
                 key: 'user',
                 data: nextProps.user
