@@ -16,7 +16,7 @@ export function updatePassword (info) {
             })
             .catch(err => {
                 dispatch({
-                    type: UPDATE_PASSWORD_FAIL
+                    type: UPDATE_PASSWORD_FAIL,
                     status: 'fail',
                     err: err.response.data
                 })

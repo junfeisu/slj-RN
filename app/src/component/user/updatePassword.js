@@ -105,7 +105,9 @@ class UpdatePassword extends Component {
                     underlineColorAndroid='transparent'
                     onChangeText={(text) => this.setState({newPassWord: text})}
                 />
-                <Button>
+                <Button
+                    onPress={this.updatePassword}
+                >
                     {updateBtnText}
                 </Button>
             </View>
