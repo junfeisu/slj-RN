@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Dimensions } from 'react-native'
-import TabNavigator from 'react-native-tab-navigator'
-import Icon from 'react-native-vector-icons/FontAwesome'
+import { View, StyleSheet, Dimensions, Image } from 'react-native'
+import { TabBar, Icon } from 'antd-mobile'
 
 import Article from './mainPage/article'
 import Picture from './mainPage/picture'
@@ -39,39 +38,46 @@ export default class Test extends Component {
     }
 
     render() {
+        const { selectedTab } = this.state
         return (
-            <TabNavigator style={styles.container}>
-                <TabNavigator.Item
-                    selected={this.state.selectedTab === 'main'}
+            <TabBar
+                unselectedTintColor="#949494"
+                tintColor="#33A3F4"
+                barTintColor="white"
+            >
+                <TabBar.Item
+                    selected={selectedTab === 'main'}
                     title="首页"
-                    titleStyle={styles.tabText}
-                    selectedTitleStyle={styles.selectedTabText}
-                    renderIcon={() => <Icon name="home" size={px2dp(22)} color="#666666"/>}
+                    key="首页"
+                    icon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/love.png'}}
+                    selectedIcon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/love-selected.png'}}
                     onPress={() => this.setState({selectedTab: 'main'})}
                 >
                     <Article />
-                </TabNavigator.Item>
-                <TabNavigator.Item
-                    selected={this.state.selectedTab === 'picture'}
+                </TabBar.Item>
+                <TabBar.Item
+                    selected={selectedTab === 'picture'}
                     title="美图"
-                    titleStyle={styles.tabText}
+                    key="美图"
+                    icon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/picture.png'}}
+                    selectedIcon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/picture-selected.png'}}
                     selectedTitleStyle={styles.selectedTabText}
-                    renderIcon={() => <Icon name="photo" size={px2dp(22)} color="#3496f0"/>}
                     onPress={() => this.setState({selectedTab: 'picture'})}
                 >
                     <Picture />
-                </TabNavigator.Item>
-                <TabNavigator.Item
-                    selected={this.state.selectedTab === 'profile'}
+                </TabBar.Item>
+                <TabBar.Item
+                    selected={selectedTab === 'profile'}
                     title="我的"
-                    titleStyle={styles.tabText}
+                    key="我的"
+                    icon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/user.png'}}
+                    selectedIcon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/user-selected.png'}}
                     selectedTitleStyle={styles.selectedTabText}
-                    renderIcon={() => <Icon name="user" size={px2dp(22)} color="#3496f0"/>}
                     onPress={() => this.setState({selectedTab: 'profile'})}
                 >
                     <Profile />
-                </TabNavigator.Item>
-            </TabNavigator>
+                </TabBar.Item>
+            </TabBar>
         )
     }
 }
