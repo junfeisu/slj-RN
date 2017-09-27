@@ -49,8 +49,8 @@ export default class Test extends Component {
                     selected={selectedTab === 'main'}
                     title="首页"
                     key="首页"
-                    icon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/love.png'}}
-                    selectedIcon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/love-selected.png'}}
+                    icon={require('../assets/image/love.png')}
+                    selectedIcon={require('../assets/image/love-selected.png')}
                     onPress={() => this.setState({selectedTab: 'main'})}
                 >
                     <Article />
@@ -59,8 +59,8 @@ export default class Test extends Component {
                     selected={selectedTab === 'picture'}
                     title="美图"
                     key="美图"
-                    icon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/picture.png'}}
-                    selectedIcon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/picture-selected.png'}}
+                    icon={require('../assets/image/picture.png')}
+                    selectedIcon={require('../assets/image/picture-selected.png')}
                     selectedTitleStyle={styles.selectedTabText}
                     onPress={() => this.setState({selectedTab: 'picture'})}
                 >
@@ -70,8 +70,8 @@ export default class Test extends Component {
                     selected={selectedTab === 'profile'}
                     title="我的"
                     key="我的"
-                    icon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/user.png'}}
-                    selectedIcon={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/user-selected.png'}}
+                    icon={require('../assets/image/user.png')}
+                    selectedIcon={require('../assets/image/user-selected.png')}
                     selectedTitleStyle={styles.selectedTabText}
                     onPress={() => this.setState({selectedTab: 'profile'})}
                 >
