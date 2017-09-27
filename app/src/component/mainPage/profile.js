@@ -1,20 +1,44 @@
 import React, { Component } from 'react'
-import { ScrollView, View, Text, Image, Dimensions, StyleSheet } from 'react-native'
+import { View, Text, Image, Dimensions, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
+import { Popover } from 'antd-mobile'
+
+const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
 
 const styles = StyleSheet.create({
     profile: {
         alignItems: 'center',
-        height: Dimensions.get('window').height,
+        height: windowHeight,
         backgroundColor: '#ccc'
     },
+    menu: {
+        width: windowWidth,
+        height: 30,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: '#000',
+        position: 'relative'
+    },
+    menuTitle: {
+        color: '#fff',
+        flex: 1,
+        textAlign: 'right',
+        marginLeft: 20
+    },
+    popover: {
+        width: 20,
+        // height: 20,
+        left: 160
+    },
     backUserIcon: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height * 0.35
+        width: windowWidth,
+        height: windowHeight * 0.35
     },
     backShadow: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height * 0.35,
+        width: windowWidth,
+        height: windowHeight * 0.35,
         backgroundColor: '#000',
         opacity: 0.6,
         position: 'absolute'
@@ -49,7 +73,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     item: {
-        width: Dimensions.get('window').width,
+        width: windowWidth,
         height: 45,
         lineHeight: 30,
         paddingLeft: 10,
@@ -87,6 +111,7 @@ export default class Profile extends Component {
 
     render () {
         const { username, slogan, birthday, user_icon } = this.state.user
+        const Item = Popover.Item
         return (
             <View style={styles.profile}>
                 <Image source={{uri: user_icon}} style={styles.backUserIcon}>
