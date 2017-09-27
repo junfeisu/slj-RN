@@ -97,6 +97,10 @@ export default class Profile extends Component {
         }
     }
 
+    updatePassword = () => {
+        Actions.updatePassword()
+    }
+
     componentWillMount () {
         storage.load({
             key: 'user'
@@ -126,7 +130,7 @@ export default class Profile extends Component {
                 </Image>
                 <View style={styles.operation}>
                     <Text style={styles.item}>关于作者</Text>
-                    <Text style={styles.item}>修改密码</Text>
+                    <Text style={styles.item} onPress={this.updatePassword}>修改密码</Text>
                     <Text style={styles.item}>退出</Text>
                 </View>
             </View>

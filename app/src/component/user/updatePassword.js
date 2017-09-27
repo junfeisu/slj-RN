@@ -1,16 +1,35 @@
 import React, { Component } from 'react'
-import {
-    View,
-    Text,
-    TextInput,
-    StyleSheet
-} from 'react-native'
+import { View, Text, TextInput, Image, StyleSheet, Dimensions } from 'react-native'
 import { Button, Toast } from 'antd-mobile'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { updatePassword, updatePasswording } from '../../store/actions/updatePassword'
 
+const windowWidth = Dimensions.get('window').width
+const windowHeight = Dimensions.get('window').height
+
 const styles = StyleSheet.create({
+    background: {
+        resizeMode: 'cover',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: null,
+        height: null
+    },
+    updateForm: {
+        width: windowWidth * 0.7,
+        height: windowWidth * 0.7,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 4,
+        backgroundColor: '#fff'
+    },
+    title: {
+        fontSize: 18,
+        color: '#000',
+        marginBottom: 20
+    },
     input: {
         width: 200,
         height: 40,
@@ -22,6 +41,9 @@ const styles = StyleSheet.create({
         padding: 0,
         paddingLeft: 10
     },
+    button: {
+        width: 200
+    }
 })
 
 const mapStateToProps = (state) => ({
@@ -35,21 +57,22 @@ class UpdatePassword extends Component {
         super()
         this.state = {
             oldPassword: '',
-            newPassWord: '',
+            newPassword: '',
             loading: false,
-            user_id: ''
+            user_id: '',
+            token: ''
         }
     }
 
     updatePassword = () => {
-        const { oldPassword, newPassWord, user_id } = this.state
-        if (!oldPassword && !newPassWord) {
-            alert('新旧密码为必填项')
+        const { oldPassword, newPassword, user_id, token } = this.state
+        if (!oldPassword && !newPassword) {
+            Toast.info('新旧密码为必填项', 2)
         } else {
-            if (user_id) {
-                let info = { oldPassword, newPassWord, user_id }
+            if (user_id && token) {
+                let info = { oldPassword, newPassword, user_id }
                 this.props.dispatch(updatePasswording())
-                updatePassword(info)(this.props.dispatch)
+                updatePassword(info, token)(this.props.dispatch)
             }
         }
     }
@@ -59,7 +82,8 @@ class UpdatePassword extends Component {
             key: 'user'
         }).then(ret => {
             this.setState({
-                user_id: user.user_id
+                user_id: ret.user_id,
+                token: ret.token
             })
         }).catch(err => {
             Actions.login()
@@ -70,8 +94,8 @@ class UpdatePassword extends Component {
         if (nextProps.err !== this.props.err) {
             Toast.fail('更改密码失败，原因是' + nextProps.err.message, 2)
         }
+        console.log(nextProps)
         if (nextProps.result !== this.props.result) {
-            alert(nextProps.result.message)
             if (nextProps.result.message === '修改密码成功，请重新登录') {
                 Toast.success('修改密码成功，请重新登录', 2, () => {
                     storage.clearMapForKey('user')
@@ -87,35 +111,41 @@ class UpdatePassword extends Component {
     }
 
     render () {
-        const { oldPassword, newPassWord, loading } = this.state
+        const { oldPassword, newPassword, loading } = this.state
         return (
-            <View>
-                <Text>修改密码</Text>
-                <TextInput
-                    style={styles.input}
-                    value={oldPassword}
-                    placeholder="old password"
-                    secureTextEntry={true}
-                    underlineColorAndroid='transparent'
-                    onChangeText={(text) => this.setState({oldPassword: text})}
-                />
-                <TextInput
-                    style={styles.input}
-                    value={newPassWord}
-                    placeholder="new passWord"
-                    secureTextEntry={true}
-                    underlineColorAndroid='transparent'
-                    onChangeText={(text) => this.setState({newPassWord: text})}
-                />
-                <Button
-                    type="primary"
-                    loading={loading}
-                    disabled={loading}
-                    onClick={this.updatePassword}
-                >
-                    {loading ? '正在修改...' : '修改'}
-                </Button>
-            </View>
+            <Image 
+                style={styles.background}
+                source={require('../../assets/image/updatePasswordBackground.png')}
+            >
+                <View style={styles.updateForm}>
+                    <Text style={styles.title}>修改密码</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={oldPassword}
+                        placeholder="old password"
+                        secureTextEntry={true}
+                        underlineColorAndroid='transparent'
+                        onChangeText={(text) => this.setState({oldPassword: text})}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        value={newPassword}
+                        placeholder="new passWord"
+                        secureTextEntry={true}
+                        underlineColorAndroid='transparent'
+                        onChangeText={(text) => this.setState({newPassword: text})}
+                    />
+                    <Button
+                        style={styles.button}
+                        type="primary"
+                        loading={loading}
+                        disabled={loading}
+                        onClick={this.updatePassword}
+                    >
+                        {loading ? '正在修改...' : '修改'}
+                    </Button>
+                </View>
+            </Image>
         )
     }
 }

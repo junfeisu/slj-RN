@@ -1,11 +1,5 @@
 import React, { Component } from 'react'
-import {
-    ScrollView,
-    View,
-    Image,
-    Text,
-    StyleSheet
-} from 'react-native'
+import { ScrollView, View, Image, Text, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 
 const styles = StyleSheet.create({
