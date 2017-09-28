@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import { View, Text, Image, Dimensions, StyleSheet } from 'react-native'
+import { View, Text, Image, TouchableHighlight, Dimensions, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { Popup, List } from 'antd-mobile'
+import ImagePicker from 'react-native-image-crop-picker'
+import axios from 'axios'
+import uploadFile from '../../common/uploadFile'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -65,23 +68,16 @@ const styles = StyleSheet.create({
 })
 
 class UploadAvatarPopup extends Component {
-    onSelect = (num) => {
-        console.log(num)
-    }
-
     render () {
         const Item = List.Item
         return (
             <List renderHeader={() => `上传头像`}>
-                <Item onClick={this.onSelect('1')}>拍照</Item>
-                <Item onClick={this.onSelect('2')}>从图库选择</Item>
+                <Item onClick={this.props.openCamera}>拍照</Item>
+                <Item onClick={this.props.openImageLibrary}>从图库选择</Item>
+                <Item onClick={this.props.onClose}>取消</Item>
             </List>
         )
     }
-}
-
-const onMaskClose = () => {
-    console.log('onMaskClose')
 }
 
 export default class Profile extends Component {
@@ -92,14 +88,43 @@ export default class Profile extends Component {
                 username: '',
                 slogan: '',
                 birthday: '',
-                user_icon: ''
+                user_icon: '',
+                upToken: ''
             }
         }
     }
 
-
     showPopup = () => {
-        Popup.show(<UploadAvatarPopup onClose={() => Popup.hide()} />, { onMaskClose })
+        Popup.show(
+            <UploadAvatarPopup 
+                onClose={() => Popup.hide()} 
+                openCamera={this.openCamera} 
+                openImageLibrary={this.openImageLibrary} 
+            />
+        )
+    }
+
+    openCamera = () => {
+        ImagePicker.openCamera({
+            width: 300,
+            height: 400,
+            cropping: true
+        }).then(image => {
+            console.log('camera image', image)
+        })
+    }
+
+    openImageLibrary = () => {
+        let self = this
+        ImagePicker.openPicker({
+            multiple: false
+        }).then(image => {
+            uploadFile({
+                token: self.state.upToken,
+                key: image.path.split('Camera/')[1],
+                path: image.path
+            })
+        })
     }
 
     updatePassword = () => {
@@ -107,7 +132,7 @@ export default class Profile extends Component {
     }
 
     loginOut = () => {
-        storage.clearMapForKey('user')
+        storage.remove({key: 'user'})
         Actions.login()
     }
 
@@ -118,6 +143,14 @@ export default class Profile extends Component {
             this.setState({
                 user: ret
             })
+            axios.get('http://localhost:8000/upload/up', {headers: {
+                Authorization: ret.token
+            }})
+                .then(upToken => {
+                    this.setState({
+                        upToken: upToken.data.uploadToken
+                    })
+                })
         }).catch(err => {
             Actions.login()
         })
@@ -127,10 +160,15 @@ export default class Profile extends Component {
         const { username, slogan, birthday, user_icon } = this.state.user
         return (
             <View style={styles.profile}>
-                <Image source={{uri: user_icon}} style={styles.backUserIcon} onPress={this.showPopup}>
+                <Image source={{uri: user_icon}} style={styles.backUserIcon}>
                     <View style={styles.backShadow}></View>
                     <View style={styles.desc}>
-                        <Image source={{uri: user_icon}} style={styles.avatar}></Image>
+                        <TouchableHighlight
+                            underlayColor="rgba(0,0,0,.6)"
+                            onPress={this.showPopup}
+                        >
+                            <Image source={{uri: user_icon}} style={styles.avatar}></Image>
+                        </TouchableHighlight>
                         <View style={styles.info}>
                             <Text style={styles.username}>{username}</Text>
                             <Text style={styles.slogan}>{slogan}</Text>
