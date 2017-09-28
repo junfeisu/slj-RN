@@ -90,11 +90,10 @@ class UpdatePassword extends Component {
         })
     }
 
-    componetWillReceiveProps (nextProps) {
+    componentWillReceiveProps (nextProps) {
         if (nextProps.err !== this.props.err) {
-            Toast.fail('更改密码失败，原因是' + nextProps.err.message, 2)
+            Toast.fail(nextProps.err.message, 2)
         }
-        console.log(nextProps)
         if (nextProps.result !== this.props.result) {
             if (nextProps.result.message === '修改密码成功，请重新登录') {
                 Toast.success('修改密码成功，请重新登录', 2, () => {
