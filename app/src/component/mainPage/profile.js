@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, Image, Dimensions, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { Popover } from 'antd-mobile'
+import { Popup, List } from 'antd-mobile'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -11,26 +11,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: windowHeight,
         backgroundColor: '#ccc'
-    },
-    menu: {
-        width: windowWidth,
-        height: 30,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#000',
-        position: 'relative'
-    },
-    menuTitle: {
-        color: '#fff',
-        flex: 1,
-        textAlign: 'right',
-        marginLeft: 20
-    },
-    popover: {
-        width: 20,
-        // height: 20,
-        left: 160
     },
     backUserIcon: {
         width: windowWidth,
@@ -84,6 +64,26 @@ const styles = StyleSheet.create({
     }
 })
 
+class UploadAvatarPopup extends Component {
+    onSelect = (num) => {
+        console.log(num)
+    }
+
+    render () {
+        const Item = List.Item
+        return (
+            <List renderHeader={() => `上传头像`}>
+                <Item onClick={this.onSelect('1')}>拍照</Item>
+                <Item onClick={this.onSelect('2')}>从图库选择</Item>
+            </List>
+        )
+    }
+}
+
+const onMaskClose = () => {
+    console.log('onMaskClose')
+}
+
 export default class Profile extends Component {
     constructor () {
         super()
@@ -97,8 +97,18 @@ export default class Profile extends Component {
         }
     }
 
+
+    showPopup = () => {
+        Popup.show(<UploadAvatarPopup onClose={() => Popup.hide()} />, { onMaskClose })
+    }
+
     updatePassword = () => {
         Actions.updatePassword()
+    }
+
+    loginOut = () => {
+        storage.clearMapForKey('user')
+        Actions.login()
     }
 
     componentWillMount () {
@@ -115,10 +125,9 @@ export default class Profile extends Component {
 
     render () {
         const { username, slogan, birthday, user_icon } = this.state.user
-        const Item = Popover.Item
         return (
             <View style={styles.profile}>
-                <Image source={{uri: user_icon}} style={styles.backUserIcon}>
+                <Image source={{uri: user_icon}} style={styles.backUserIcon} onPress={this.showPopup}>
                     <View style={styles.backShadow}></View>
                     <View style={styles.desc}>
                         <Image source={{uri: user_icon}} style={styles.avatar}></Image>
@@ -131,7 +140,7 @@ export default class Profile extends Component {
                 <View style={styles.operation}>
                     <Text style={styles.item}>关于作者</Text>
                     <Text style={styles.item} onPress={this.updatePassword}>修改密码</Text>
-                    <Text style={styles.item}>退出</Text>
+                    <Text style={styles.item} onPress={this.loginOut}>退出</Text>
                 </View>
             </View>
         )
