@@ -143,6 +143,13 @@ class Login extends Component {
     }
 
     componentWillMount () {
+        storage.load({
+            key: 'user'
+        }).then(ret => {
+            Actions.main()
+        }).catch(err => {
+            console.log('err', err)
+        })
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler)
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler)
     }
