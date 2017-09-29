@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         width: windowWidth,
         height: windowHeight * 0.35,
         backgroundColor: '#000',
-        opacity: 0.6,
+        opacity: 0.2,
         position: 'absolute'
     },
     desc: {
@@ -116,19 +116,29 @@ class Profile extends Component {
     }
     // 打开相机
     openCamera = () => {
+        const { token, user_id } = this.state.user
+        const { upToken } = this.state
+
         ImagePicker.openCamera({
             width: 300,
             height: 400,
             cropping: true
         }).then(image => {
-            console.log('camera image', image)
+            let filename = image.path.split('Camera/')[1]
+            let key = new Date().getTime() + '-' + filename
+            uploadFile({
+                token: upToken,
+                key: key,
+                path: image.path,
+                type: 'AVATAR'
+            }, updateAvatar({key: key, token: token, userId: user_id}))(this.props.dispatch)
         })
     }
     // 打开图库
     openImageLibrary = () => {
         const { token, user_id } = this.state.user
         const { upToken } = this.state
-        console.log('upToken')
+
         ImagePicker.openPicker({
             multiple: false
         }).then(image => {
@@ -164,6 +174,7 @@ class Profile extends Component {
                 key: 'user',
                 data: newUser
             })
+            Popup.hide()
         }
         if (nextProps.progress < 1 && nextProps.status === 'uploading') {
             Toast.loading('上传' + nextProps.progress.toFixed(2).slice(2, 4) + '%')
