@@ -14,12 +14,12 @@ const getUpToken = () => {
     return putPolicy.uploadToken(mac)
 }
 
-const getDownloadUrl = (domain, key, expires = 3600) => {
+const getDownloadUrl = (domain, key) => {
     let mac = new qiniu.auth.digest.Mac(ACCESS_KEY, SECRET_KEY)
     let config = new qiniu.conf.Config()
     let bucketManager = new qiniu.rs.BucketManager(mac, config)
     // 俩小时过期
-    let deadline = parseInt(Date.now() / 1000) + expires
+    let deadline = parseInt(Date.now() / 1000) + 3600 * 24 * 7
     let downloadUrl = bucketManager.privateDownloadUrl(domain, key, deadline)
     return downloadUrl
 }

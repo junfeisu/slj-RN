@@ -100,8 +100,8 @@ class Profile extends Component {
                 birthday: '',
                 user_icon: '',
                 token: '',
-                upToken: ''
-            }
+            },
+            upToken: ''
         }
     }
     // 显示上传头像的Popup
@@ -126,7 +126,9 @@ class Profile extends Component {
     }
     // 打开图库
     openImageLibrary = () => {
-        const { upToken, token, user_id } = this.state.user
+        const { token, user_id } = this.state.user
+        const { upToken } = this.state
+        console.log('upToken')
         ImagePicker.openPicker({
             multiple: false
         }).then(image => {

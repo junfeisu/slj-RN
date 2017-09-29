@@ -28,7 +28,7 @@ let getDownloadUrl = {
     handler: (req, reply) => {
         if (validateToken(req, reply)) {
             const { domain, key } = req.payload
-            let downloadUrl = tokenGenerator.down(domain, key, 7200)
+            let downloadUrl = tokenGenerator.down(domain, key)
             reply({url: downloadUrl})
         }
     }
