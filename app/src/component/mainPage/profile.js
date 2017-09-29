@@ -126,7 +126,6 @@ class Profile extends Component {
         }).then(image => {
             let filename = Array.from(Array.from(image.path).reverse().join('').split('/')[0]).reverse().join('')
             let key = new Date().getTime() + '-' + filename
-            console.log('key', key)
             uploadFile({
                 token: upToken,
                 key: key,
@@ -155,8 +154,8 @@ class Profile extends Component {
     }
     // 跳转到修改密码
     updatePassword = () => {
-        const { user_id } = this.state.user
-        Actions.updatePassword({userId: user_id})
+        const { user_id, token } = this.state.user
+        Actions.updatePassword({userId: user_id, token: token})
     }
     // 退出登录并清空storage
     loginOut = () => {

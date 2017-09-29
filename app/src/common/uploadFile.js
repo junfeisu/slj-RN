@@ -28,7 +28,6 @@ export default function uploadFile (uploadInfo, cb) {
             })
             .then(response => response.json())
             .then(response => {
-                console.log('upload success')
                 cb(dispatch, getState)
             })
             .catch(err => {

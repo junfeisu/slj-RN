@@ -78,16 +78,24 @@ class UpdatePassword extends Component {
     }
 
     componentWillMount () {
-        storage.load({
-            key: 'user'
-        }).then(ret => {
+        const { userId, token } = this.props
+        if (userId && token) {
             this.setState({
-                user_id: ret.user_id,
-                token: ret.token
+                user_id: userId,
+                token: token
             })
-        }).catch(err => {
-            Actions.login()
-        })
+        } else {
+            storage.load({
+                key: 'user'
+            }).then(ret => {
+                this.setState({
+                    user_id: ret.user_id,
+                    token: ret.token
+                })
+            }).catch(err => {
+                Actions.login()
+            })
+        }
     }
 
     componentWillReceiveProps (nextProps) {
@@ -97,7 +105,9 @@ class UpdatePassword extends Component {
         if (nextProps.result !== this.props.result) {
             if (nextProps.result.message === '修改密码成功，请重新登录') {
                 Toast.success('修改密码成功，请重新登录', 2, () => {
-                    storage.clearMapForKey('user')
+                    storage.remove({
+                        key: 'user'
+                    })
                     Actions.login()
                 })
             }

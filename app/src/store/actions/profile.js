@@ -3,7 +3,6 @@ import axios from 'axios'
 const domain = 'http://owu5dbb9y.bkt.clouddn.com'
 
 const getDownloadUrl = (info, dispatch) => {
-    console.log('get download url')
     axios.post('http://localhost:8000/upload/download', {
         domain: domain,
         key: info.key
@@ -27,7 +26,6 @@ const getDownloadUrl = (info, dispatch) => {
 }
 
 export function updateAvatar (info) {
-    console.log('updatePassword')
     return function (dispatch) {
         axios.post('http://localhost:8000/user/update/' + info.userId, {
             user_icon: domain + '/' + info.key
