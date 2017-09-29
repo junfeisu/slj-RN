@@ -124,8 +124,9 @@ class Profile extends Component {
             height: 400,
             cropping: true
         }).then(image => {
-            let filename = image.path.split('Camera/')[1]
+            let filename = Array.from(Array.from(image.path).reverse().join('').split('/')[0]).reverse().join('')
             let key = new Date().getTime() + '-' + filename
+            console.log('key', key)
             uploadFile({
                 token: upToken,
                 key: key,
@@ -142,7 +143,7 @@ class Profile extends Component {
         ImagePicker.openPicker({
             multiple: false
         }).then(image => {
-            let filename = image.path.split('Camera/')[1]
+            let filename = Array.from(Array.from(image.path).reverse().join('').split('/')[0]).reverse().join('')
             let key = new Date().getTime() + '-' + filename
             uploadFile({
                 token: upToken,
