@@ -348,7 +348,7 @@ describe('add user API', () => {
             server.inject(options, response => {
                 expect(response).to.have.property('statusCode', 200)
                 expect(response).to.have.property('result')
-                expect(response.result).to.have.property('user_icon', 'https://ohjoq511u.qnssl.com/2016-10-19-07-21-15-290709/1-14092G22551.jpg') // default value
+                expect(response.result).to.have.property('user_icon', 'default.jpg') // default value
                 done()
             })
         })

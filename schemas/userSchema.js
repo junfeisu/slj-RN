@@ -22,7 +22,7 @@ const userSchema = new Schema({
     user_icon: {
         type: String,
         required: false,
-        default: "https://ohjoq511u.qnssl.com/2016-10-19-07-21-15-290709/1-14092G22551.jpg"
+        default: "default.jpg"
     },
     slogan: {
         type: String,
