@@ -28,7 +28,7 @@ const getDownloadUrl = (info, dispatch) => {
 export function updateAvatar (info) {
     return function (dispatch) {
         axios.post('http://localhost:8000/user/update/' + info.userId, {
-            user_icon: domain + '/' + info.key
+            user_icon: info.key
         }, {headers: {
             Authorization: info.token
         }})

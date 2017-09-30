@@ -146,7 +146,9 @@ class Login extends Component {
         storage.load({
             key: 'user'
         }).then(ret => {
-            Actions.main()
+            if (ret) {
+                Actions.main()
+            }
         }).catch(err => {
             console.log('err', err)
         })

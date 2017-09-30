@@ -148,7 +148,7 @@ let loginUser = {
                     }
                     reply(Boom.forbidden('password is not right'))
                 } else {
-                    reply(Boom.badRequest('user is not found'))
+                    reply(Boom.badRequest('user has not register'))
                 }
             }
         })
