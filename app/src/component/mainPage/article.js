@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { View, ListView, Image, Text, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { List } from 'antd-mobile'
+import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
 
 const styles = StyleSheet.create({
     container: {
@@ -91,6 +92,12 @@ class Article extends Component {
                 </View>
             </View>
         )
+    }
+
+    componentWillMount () {
+        const { token, dispatch } = this.props
+        dispatch(gettingArticleList())
+        getArticleList(0, token)(dispatch)
     }
 
     render () {

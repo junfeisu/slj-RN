@@ -18,5 +18,5 @@ const actionHandlers = {
 
 export default function article (state = initState, action) {
     let currentActionHandler = actionHandlers[action.type]
-    return currentActionHandler ? currentActionHandler(state, type) : state
+    return currentActionHandler ? currentActionHandler(state, action) : state
 }
