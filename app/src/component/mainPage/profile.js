@@ -140,7 +140,10 @@ class Profile extends Component {
         const { upToken } = this.state
 
         ImagePicker.openPicker({
-            multiple: false
+            multiple: false,
+            width: 300,
+            height: 400,
+            cropping: true
         }).then(image => {
             let filename = Array.from(Array.from(image.path).reverse().join('').split('/')[0]).reverse().join('')
             let key = new Date().getTime() + '-' + filename
