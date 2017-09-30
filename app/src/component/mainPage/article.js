@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { View, ListView, Image, Text, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { List } from 'antd-mobile'
@@ -41,7 +42,13 @@ const styles = StyleSheet.create({
     }
 })
 
-export default class Article extends Component {
+const mapStateToProps = (state) => ({
+    articleList: state.articleListState.articleList,
+    err: state.articleListState.err,
+    status: state.articleListState.status
+})
+
+class Article extends Component {
     constructor (props) {
         super(props)
         let ds = new ListView.DataSource({
@@ -97,11 +104,11 @@ export default class Article extends Component {
                     dataSource={dataSource}
                     renderRow={(rowData) => this.renderArticle(rowData)}
                     initialListSize={3}
-                >
-                    
-                </ListView>
-                
+                />
             </View>
         )
     }
 }
+
+export default connect(mapStateToProps)(Article)
+
