@@ -21,6 +21,7 @@ let getArticleList = {
             let skipNum = req.query.skip
             let events = new EventEmitter()
             
+            // skip一定要放在limit前面，这样的结果是limit(skipNum + limitNum)-->skip(skipNum)
             articleModel.aggregate({$skip: skipNum}, {$sort: {article_id: -1}}, {$limit: 10}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))

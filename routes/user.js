@@ -4,6 +4,7 @@ const cryptic = require('../utils/cryptic')
 const userModel = require('../schemas/userSchema')
 const token = require('../utils/token')
 const validateToken = require('../utils/interceptor')
+const getDownloadUrl = require('../utils/qiniu').down
 
 const returnInfo = {
     _id: 0,
@@ -136,6 +137,10 @@ let loginUser = {
                         if (result[i].password === userInfo.password) {
                             delete result[i]._doc.password
                             delete result[i]._doc._id
+                            if (result[i]._doc.user_icon) {
+                                let domain = 'http://owu5dbb9y.bkt.clouddn.com'
+                                result[i]._doc.user_icon = getDownloadUrl(domain, result[i]._doc.user_icon)
+                            }
                             result[i]._doc['token'] = process.env.NODE_ENV === 'test' ? token.generateToken('2s') : token.generateToken()
                             reply(result[i]._doc)
                             return
