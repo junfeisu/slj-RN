@@ -66,7 +66,7 @@ class Article extends Component {
     renderArticle = (article) => {
         const Item = List.Item
         const Brief = Item.Brief
-        console.log('article', article)
+
         return (
             <View style={styles.articleItem}>
                 <List>
