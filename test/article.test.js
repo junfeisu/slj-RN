@@ -469,6 +469,7 @@ describe('test get article list', () => {
                 options.headers = {
                     Authorization: user.token
                 }
+                testArticleInfo.author = user.user_id
                 server.inject(options, response => {
                     let badRequestMessage = 'child \"skip\" fails because [\"skip\" is required]'
                     testUtils.badRequest(response, badRequestMessage)
