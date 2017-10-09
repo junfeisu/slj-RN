@@ -30,8 +30,8 @@ function px2dp(px) {
 }
 
 export default class Test extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             selectedTab: 'main'
         }
@@ -53,7 +53,7 @@ export default class Test extends Component {
                     selectedIcon={require('../assets/image/love-selected.png')}
                     onPress={() => this.setState({selectedTab: 'main'})}
                 >
-                    <Article />
+                    <Article {...this.props} />
                 </TabBar.Item>
                 <TabBar.Item
                     selected={selectedTab === 'picture'}
@@ -64,7 +64,7 @@ export default class Test extends Component {
                     selectedTitleStyle={styles.selectedTabText}
                     onPress={() => this.setState({selectedTab: 'picture'})}
                 >
-                    <Picture />
+                    <Picture {...this.props}/>
                 </TabBar.Item>
                 <TabBar.Item
                     selected={selectedTab === 'profile'}
@@ -75,7 +75,7 @@ export default class Test extends Component {
                     selectedTitleStyle={styles.selectedTabText}
                     onPress={() => this.setState({selectedTab: 'profile'})}
                 >
-                    <Profile />
+                    <Profile {...this.props}/>
                 </TabBar.Item>
             </TabBar>
         )

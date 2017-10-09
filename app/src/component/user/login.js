@@ -130,7 +130,7 @@ class Login extends Component {
                 key: 'user',
                 data: nextProps.user
             })
-            Actions.main()
+            Actions.main({token: nextProps.user.token})
         }
         if (nextProps.status !== this.props.status) {
             this.setState({

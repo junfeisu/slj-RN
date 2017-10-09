@@ -94,9 +94,14 @@ class Article extends Component {
         )
     }
 
+    loadingNextArticle = () => {
+        console.log('nextArticles')
+    }
+
     componentWillMount () {
         const { token, dispatch } = this.props
         dispatch(gettingArticleList())
+        console.log('token', token)
         getArticleList(0, token)(dispatch)
     }
 
@@ -111,6 +116,8 @@ class Article extends Component {
                     dataSource={dataSource}
                     renderRow={(rowData) => this.renderArticle(rowData)}
                     initialListSize={3}
+                    onEndReached={this.loadingNextArticle}
+                    onEndReachedThreshold={5}
                 />
             </View>
         )
@@ -118,4 +125,3 @@ class Article extends Component {
 }
 
 export default connect(mapStateToProps)(Article)
-
