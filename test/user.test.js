@@ -428,14 +428,14 @@ describe('user login API', () => {
     })
 
     // username is not exist
-    it('should return 400, user is not found', done => {
+    it('should return 400, user has not register', done => {
         options.payload = {
             username: 'testlogin',
             password: addSuccessInfo.password
         }
 
         server.inject(options, response => {
-            let badRequestMessage = 'user is not found'
+            let badRequestMessage = 'user has not register'
             testUtils.badRequest(response, badRequestMessage)
             done()
         })
