@@ -75,7 +75,7 @@ class Article extends Component {
                     <Item
                       thumb={article.user && article.user.user_icon}
                       multipleLine
-                      onClick={() => {}}
+                      onClick={() => {Actions.articleDetail()}}
                       extra={article.user && article.user.username}
                     >
                       {article.title}
@@ -106,7 +106,11 @@ class Article extends Component {
     fetchData = () => {
         const { user, dispatch } = this.props
         dispatch(gettingArticleList())
-        getArticleList(this.state.skipNum, user.token)(dispatch)
+        if (user && user.token) {
+            getArticleList(this.state.skipNum, user.token)(dispatch)
+        } else {
+            console.log('test')
+        }
     }
 
     onRefresh = () => {
