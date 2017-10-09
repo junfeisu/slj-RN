@@ -22,28 +22,28 @@ let getArticleList = {
             let events = new EventEmitter()
             
             // skip一定要放在limit前面，这样的结果是limit(skipNum + limitNum)-->skip(skipNum)
-            articleModel.aggregate({$skip: skipNum}, {$sort: {article_id: -1}}, {$limit: 10}, (err, result) => {
+            articleModel.aggregate({$skip: skipNum}, {$sort: {article_id: -1}}, {$limit: 10}, {$lookup: {
+                from: 'users',
+                localField: 'author',
+                foreignField: 'user_id',
+                as: 'user'
+            }}, {$unwind: '$user'}, {$project: {
+                _id: 0,
+                user: 1,
+                title: 1,
+                content: 1, 
+                create_date: 1,
+                tags: 1
+            }}, {$project: {
+                user: {
+                    _id: 0,
+                    password: 0
+                }
+            }}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    if (result.length) {
-                        result.forEach((article, index) => {
-                            commentUtil.getComments(article.article_id, events, index)
-                        })
-                        
-                        events.on('Error', err => {
-                            reply(Boom.badImplementation(err))
-                        })
-
-                        events.on('getCommentsNormal', (comments, index) => {
-                            result[index]['comments'] = comments
-                            if (index === result.length - 1) {
-                                reply(result)
-                            }
-                        })
-                    } else {
-                        reply(result)
-                    }
+                    reply(result)
                 }
             })
         }

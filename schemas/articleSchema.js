@@ -28,8 +28,7 @@ let articleSchema = new Schema({
     tags: {
         type: [String],
         required: true
-    },
-    comments: [commentSchema]
+    }
 }, {versionKey: false})
 
 articleSchema.index({author: -1, title: 1}, {unique: true})
