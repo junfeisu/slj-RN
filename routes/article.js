@@ -4,6 +4,7 @@ const EventEmitter = require('events')
 const validateToken = require('../utils/interceptor')
 const articleModel = require('../schemas/articleSchema')
 const commentUtil = require('../utils/commentUtil')
+const getDownloadUrl = require('../utils/qiniu').down
 
 // 获取文章列表
 let getArticleList = {
@@ -43,6 +44,11 @@ let getArticleList = {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
+                    let domain = 'http://owu5dbb9y.bkt.clouddn.com'
+                    let newResult = result.map(article => {
+                        article.user.user_icon = getDownloadUrl(domain, article.user.user_icon)
+                        return article
+                    })
                     reply(result)
                 }
             })

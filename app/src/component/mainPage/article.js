@@ -4,6 +4,7 @@ import { View, ListView, Image, Text, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { List } from 'antd-mobile'
 import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
+import axios from 'axios'
 
 const styles = StyleSheet.create({
     container: {
@@ -63,19 +64,18 @@ class Article extends Component {
     }
 
     renderArticle = (article) => {
-        console.log('article', article)
         const Item = List.Item
         const Brief = Item.Brief
-        
+        console.log('article', article)
         return (
             <View style={styles.articleItem}>
                 <List>
                     <Item
-                      thumb={article.user_icon}
+                      thumb={article.user && article.user.user_icon}
                       multipleLine
                       onClick={() => {}}
                     >
-                      {article.title} <Brief>{article.author}</Brief>
+                      {article.title} <Brief>{article.user && article.user.username}</Brief>
                     </Item>
                 </List>
                 <List>
@@ -112,11 +112,6 @@ class Article extends Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.articleList !== this.props.articleList) {
-            console.log('change', nextProps.articleList)
-            let ds = new ListView.DataSource({
-                rowHasChanged: (r1, r2) => r1 !== r2
-            })
-
             this.setState({
                 data: nextProps.articleList
             })
