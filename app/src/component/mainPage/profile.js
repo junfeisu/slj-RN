@@ -188,23 +188,19 @@ class Profile extends Component {
     }
 
     componentWillMount () {
-        storage.load({
-            key: 'user'
-        }).then(ret => {
-            this.setState({
-                user: ret
-            })
-            axios.get('http://localhost:8000/upload/up', {headers: {
-                Authorization: ret.token
-            }})
-                .then(upToken => {
-                    this.setState({
-                        upToken: upToken.data.uploadToken
-                    })
-                })
-        }).catch(err => {
-            Actions.login()
+        const { user } = this.props
+        this.setState({
+            user: user
         })
+        axios.get('http://localhost:8000/upload/up', {headers: {
+            Authorization: user.token
+        }})
+            .then(upToken => {
+                this.setState({
+                    upToken: upToken.data.uploadToken
+                })
+            })
+            .catch(err => Toast.info(err))
     }
 
     render () {
