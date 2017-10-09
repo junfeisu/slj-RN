@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, ListView, Image, Text, StyleSheet } from 'react-native'
+import { View, ListView, Image, Text, RefreshControl, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { List } from 'antd-mobile'
 import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
-import axios from 'axios'
+import moment from 'moment'
 
 const styles = StyleSheet.create({
     container: {
@@ -59,13 +59,15 @@ class Article extends Component {
 
         this.state = {
             dataSource: ds,
-            data: ds.cloneWithRows(this.props.articleList)
+            data: ds.cloneWithRows(this.props.articleList),
+            skipNum: 0,
+            refreshing: true,
+            loadMore: false
         }
     }
 
     renderArticle = (article) => {
         const Item = List.Item
-        const Brief = Item.Brief
 
         return (
             <View style={styles.articleItem}>
@@ -74,8 +76,9 @@ class Article extends Component {
                       thumb={article.user && article.user.user_icon}
                       multipleLine
                       onClick={() => {}}
+                      extra={article.user && article.user.username}
                     >
-                      {article.title} <Brief>{article.user && article.user.username}</Brief>
+                      {article.title}
                     </Item>
                 </List>
                 <List>
@@ -87,11 +90,11 @@ class Article extends Component {
                     </Item>
                 </List>
                 <View style={styles.articleDesc}>
-                    <Text>{article.create_date}</Text>
+                    <Text>{article.create_date && moment(article.create_date).format('YYYY-MM-DD HH:MM')}</Text>
                     <View style={styles.articleTags}>
                         {
                             article.tags && article.tags.map(tag => {
-                                return <Text>{tag}</Text>
+                                return <Text key={tag}>{tag}</Text>
                             })
                         }
                     </View>
@@ -100,14 +103,31 @@ class Article extends Component {
         )
     }
 
+    fetchData = () => {
+        const { user, dispatch } = this.props
+        dispatch(gettingArticleList())
+        getArticleList(this.state.skipNum, user.token)(dispatch)
+    }
+
+    onRefresh = () => {
+        this.setState({
+            skipNum: this.props.articleList.length
+        }, () => {
+            this.fetchData()
+        })
+    }
+
     loadingNextArticle = () => {
-        console.log('nextArticles')
+        this.setState({
+            skipNum: this.props.articleList.length,
+            loadMore: true
+        }, () => {
+            this.fetchData()
+        })
     }
 
     componentWillMount () {
-        const { user, dispatch } = this.props
-        dispatch(gettingArticleList())
-        getArticleList(0, user.token)(dispatch)
+        this.fetchData()
     }
 
     componentWillReceiveProps (nextProps) {
@@ -116,21 +136,38 @@ class Article extends Component {
                 data: nextProps.articleList
             })
         }
+        if (nextProps.status !== this.props.status) {
+            this.setState({
+                loadMore: false,
+                refreshing: false
+            })
+        }
     }
 
     render () {
-        const { dataSource, data } = this.state
+        const { dataSource, data, refreshing, loadMore } = this.state
+        const FooterView = loadMore ?
+            <View style={styles.footer}>
+                <Text style={{fontSize: 16, color: '#777'}}>加载更多...</Text>
+            </View> : null
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>只属于你和ta的空间</Text>
                 </View>
                 <ListView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={this.onRefresh}
+                        />
+                    }
                     dataSource={dataSource.cloneWithRows(data)}
                     renderRow={(rowData) => this.renderArticle(rowData)}
                     initialListSize={3}
                     onEndReached={this.loadingNextArticle}
                     onEndReachedThreshold={5}
+                    renderFooter={() => FooterView}
                 />
             </View>
         )

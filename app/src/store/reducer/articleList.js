@@ -6,7 +6,8 @@ const initState = {
 
 const actionHandlers = {
     'GET_ARTICLELIST_SUCC': (state, action) => {
-        return {...state, articleList: action.articleList, status: action.status}
+        const oldArticleList = Object.assign([], state.articleList)
+        return {...state, articleList: oldArticleList.concat(action.articleList), status: action.status}
     },
     'GET_ARTICLELIST_FAIL': (state, action) => {
         return {...state, err: action.err, status: action.status}
