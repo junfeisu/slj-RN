@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export function getArticleList (skipNum, token) {
     return function (dispatch) {
-        axios.get('http://localhsot:8000/article/list?skip=' + skipNum, {
+        axios.get('http://localhost:8000/article/list?skip=' + skipNum, {
             headers: {
                 Authorization: token
             }

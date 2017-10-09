@@ -130,7 +130,7 @@ class Login extends Component {
                 key: 'user',
                 data: nextProps.user
             })
-            Actions.main({token: nextProps.user.token})
+            Actions.main({user: nextProps.user})
         }
         if (nextProps.status !== this.props.status) {
             this.setState({
@@ -147,7 +147,7 @@ class Login extends Component {
             key: 'user'
         }).then(ret => {
             if (ret) {
-                Actions.main()
+                Actions.main({user: ret})
             }
         }).catch(err => {
             console.log('err', err)

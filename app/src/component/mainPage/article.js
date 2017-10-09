@@ -57,22 +57,25 @@ class Article extends Component {
         })
 
         this.state = {
-            dataSource: ds.cloneWithRows(['13223', '43434', '43434', '43434', '43434', '43434'])
+            dataSource: ds,
+            data: ds.cloneWithRows(this.props.articleList)
         }
     }
 
-    renderArticle = () => {
+    renderArticle = (article) => {
+        console.log('article', article)
         const Item = List.Item
         const Brief = Item.Brief
+        
         return (
             <View style={styles.articleItem}>
                 <List>
                     <Item
-                      thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png"
+                      thumb={article.user_icon}
                       multipleLine
                       onClick={() => {}}
                     >
-                      Title <Brief>subtitle</Brief>
+                      {article.title} <Brief>{article.author}</Brief>
                     </Item>
                 </List>
                 <List>
@@ -80,14 +83,17 @@ class Article extends Component {
                       multipleLine
                       wrap
                     >
-                        这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容
+                        {article.content}
                     </Item>
                 </List>
                 <View style={styles.articleDesc}>
-                    <Text>2017-09-28 08:32</Text>
+                    <Text>{article.create_date}</Text>
                     <View style={styles.articleTags}>
-                        <Text>test</Text>
-                        <Text>test</Text>
+                        {
+                            article.tags && article.tags.map(tag => {
+                                return <Text>{tag}</Text>
+                            })
+                        }
                     </View>
                 </View>
             </View>
@@ -99,21 +105,33 @@ class Article extends Component {
     }
 
     componentWillMount () {
-        const { token, dispatch } = this.props
+        const { user, dispatch } = this.props
         dispatch(gettingArticleList())
-        console.log('token', token)
-        getArticleList(0, token)(dispatch)
+        getArticleList(0, user.token)(dispatch)
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.articleList !== this.props.articleList) {
+            console.log('change', nextProps.articleList)
+            let ds = new ListView.DataSource({
+                rowHasChanged: (r1, r2) => r1 !== r2
+            })
+
+            this.setState({
+                data: nextProps.articleList
+            })
+        }
     }
 
     render () {
-        const { dataSource } = this.state
+        const { dataSource, data } = this.state
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>只属于你和ta的空间</Text>
                 </View>
                 <ListView
-                    dataSource={dataSource}
+                    dataSource={dataSource.cloneWithRows(data)}
                     renderRow={(rowData) => this.renderArticle(rowData)}
                     initialListSize={3}
                     onEndReached={this.loadingNextArticle}
