@@ -77,8 +77,7 @@ const styles = StyleSheet.create({
     },
     commentDetail: {
         flexDirection: 'row',
-        marginTop: 10,
-        paddingRight: 30
+        marginTop: 10
     },
     commentInfo: {
         flexDirection: 'row',
@@ -86,8 +85,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     commentDetailContent: {
+        flex: 1,
         marginLeft: 10,
         marginRight: 10
+    },
+    commentUserIcon: {
+        width: 35,
+        height: 35,
+        borderRadius: 35
     },
     noneCommentContainer: {
         flex: 1,
@@ -162,7 +167,8 @@ class ArticleDetail extends Component {
     componentWillReceiveProps (nextProps) {
         if (nextProps.article !== this.props.article) {
             this.setState({
-                data: nextProps.article.comments
+                data: nextProps.article.comments.reverse(),
+                commentContent: ''
             })
         }
         if (nextProps.err !== this.props.err) {
@@ -180,7 +186,7 @@ class ArticleDetail extends Component {
 
         return (
             <View style={styles.commentDetail}>
-                <Image style={{width: 35, height: 35, borderRadius: 35}} width={35} height={35} source={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/sjfblog.png'}}></Image>
+                <Image style={styles.commentUserIcon} width={35} height={35} source={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/sjfblog.png'}}></Image>
                 <View style={styles.commentDetailContent}>
                     <View style={styles.commentInfo}>
                         <Text>{comment.comment_user}</Text>
@@ -197,7 +203,7 @@ class ArticleDetail extends Component {
         const { title, content, tags, create_date, author, comments } = this.props.article
 
         return (
-            <ScrollView contentContainerStyle={{flex: 1}}>
+            <ScrollView>
                 <HeadBar title="标题" />
                 <View>
                     <Image style={styles.backImage} height={windowHeight * 0.3} source={require('../../assets/image/article-background.jpg')}></Image>
@@ -217,9 +223,7 @@ class ArticleDetail extends Component {
                     </View>
                 </View>
                 <View style={styles.articleContentContainer}>
-                    <Text style={styles.articleContentText}>
-                        {content}
-                    </Text>
+                    <Text style={styles.articleContentText}>{content}</Text>
                 </View>
                 <View style={styles.commentContainer}>
                     <TextInput 
