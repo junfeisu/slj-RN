@@ -22,6 +22,24 @@ export function getSingleArticle (articleId, token) {
     }
 }
 
+export function uploadComment (commentInfo, token) {
+    return function (dispatch) {
+        axios.put('http://localhost:8000/comment/add', commentInfo, {
+            headers: {
+                Authorization: token
+            }
+        }).then(response => {
+            getSingleArticle(response.data.article_id, token)(dispatch)
+        }).catch(err => {
+            dispatch({
+                type: 'GET_ARTICLE_FAIL',
+                err: err.response.data,
+                status: 'fail'
+            })
+        })
+    }
+}
+
 export function gettingArticle () {
     return {
         type: 'GETTING_ARTICLE',

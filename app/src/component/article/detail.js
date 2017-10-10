@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
-import { ScrollView, ListView, View, Image, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { 
+    ScrollView, ListView, View, Image, Text, TextInput, StyleSheet, 
+    Dimensions, TouchableOpacity, Keyboard 
+} from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { Button, Toast } from 'antd-mobile'
 import HeadBar from '../../common/headBar'
+import KeyboardSpacer from '../../common/KeyboardSpacer'
 import moment from 'moment'
-import { getSingleArticle, gettingArticle } from '../../store/actions/articleDetail'
+import { getSingleArticle, gettingArticle, uploadComment } from '../../store/actions/articleDetail'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
@@ -67,6 +71,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end'
     },
     commentListContainer: {
+        flex: 1,
         padding: 10,
         paddingTop: 0
     },
@@ -83,6 +88,15 @@ const styles = StyleSheet.create({
     commentDetailContent: {
         marginLeft: 10,
         marginRight: 10
+    },
+    noneCommentContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    noneCommentText: {
+        fontSize: 18,
+        color: '#000'
     }
 })
 
@@ -102,14 +116,47 @@ class ArticleDetail extends Component {
         this.state = {
             commentContent: '',
             dataSource: ds,
-            data: this.props.article.comments
+            data: this.props.article.comments,
+            keyboardSpaceHeight: 0
         }
+    }
+
+    keyboardDidShowHandler = () => {
+        if (!this.endCoordinates) {
+            return
+        }
+
+        let keyboardHeight = this.endCoordinates.height
+        this.setState({
+            keyboardSpaceHeight: keyboardHeight
+        })
+    }
+
+    keyboardDidHideHandler = () => {
+        this.setState({
+            keyboardSpaceHeight: 0
+        })
+    }
+
+    addComment = () => {
+        const { user, article, dispatch } = this.props
+        const { commentContent } = this.state
+
+        let commentInfo = {
+            comment_user: user.user_id,
+            comment_content: commentContent,
+            article_id: article.article_id
+        }
+        uploadComment(commentInfo, user.token)(dispatch)
     }
 
     componentWillMount () {
         const { articleId, user, dispatch } = this.props
         dispatch(gettingArticle())
         getSingleArticle(articleId, user.token)(dispatch)
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler)
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler)
     }
 
     componentWillReceiveProps (nextProps) {
@@ -121,6 +168,11 @@ class ArticleDetail extends Component {
         if (nextProps.err !== this.props.err) {
             Toast.fail(err)
         }
+    }
+
+    componentWillUnmount () {
+        this.keyboardDidShowListener.remove()
+        this.keyboardDidHideListener.remove()
     }
 
     renderCommentList = (comment) => {
@@ -141,11 +193,11 @@ class ArticleDetail extends Component {
     }
 
     render () {
-        const { dataSource, data, commentContent } = this.state
+        const { dataSource, data, commentContent, keyboardSpaceHeight } = this.state
         const { title, content, tags, create_date, author, comments } = this.props.article
 
         return (
-            <ScrollView>
+            <ScrollView contentContainerStyle={{flex: 1}}>
                 <HeadBar title="标题" />
                 <View>
                     <Image style={styles.backImage} height={windowHeight * 0.3} source={require('../../assets/image/article-background.jpg')}></Image>
@@ -180,18 +232,24 @@ class ArticleDetail extends Component {
                     <Button
                         type="primary"
                         style={styles.commentBtn}
+                        onClick={this.addComment}
                     >
                         评论
                     </Button>
                 </View>
                 <View style={styles.commentListContainer}>
                     <Text>评论列表</Text>
-                    <ListView
-                        dataSource={dataSource.cloneWithRows(data)}
-                        renderRow={(rowData) => this.renderCommentList(rowData)}
-                        initialListSize={3}
-                    />
+                    {
+                        comments.length ? (<ListView
+                            dataSource={dataSource.cloneWithRows(data)}
+                            renderRow={(rowData) => this.renderCommentList(rowData)}
+                            initialListSize={3}
+                        />) : (<View style={styles.noneCommentContainer}>
+                            <Text style={styles.noneCommentText}>暂无评论，快来占个沙发</Text>
+                        </View>)
+                    }
                 </View>
+                <KeyboardSpacer keyboardSpaceHeight={keyboardSpaceHeight} />
             </ScrollView>
         )
     }
