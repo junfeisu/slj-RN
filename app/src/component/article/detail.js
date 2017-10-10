@@ -3,33 +3,14 @@ import { ScrollView, ListView, View, Image, Text, TextInput, StyleSheet, Dimensi
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { Button } from 'antd-mobile'
+import HeadBar from '../../common/headBar'
 import moment from 'moment'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const styles = StyleSheet.create({
-    navBar: {
-        height: 30,
-        flexDirection: 'row',
-        backgroundColor: '#00b5ad',
-        alignItems: 'center',
-        position: 'relative',
-        zIndex: 99
-    },
-    backIcon: {
-        position: 'absolute',
-        width: 20,
-        height: 20,
-        left: 10,
-        top: 5
-    },
-    title: {
-        flex: 1,
-        color: 'white',
-        fontSize: 18,
-        textAlign: 'center'
-    },
+    
     backImage: {
         width: windowWidth,
         height: windowHeight * 0.3
@@ -147,24 +128,7 @@ class ArticleDetail extends Component {
 
         return (
             <ScrollView>
-                <View style={styles.navBar}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            Actions.pop()
-                        }}
-                        activeOpacity={1}
-                        style={{width: 30, height: 30}}
-                    >
-                        <Image source={{
-                                uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/arrow.png'
-                            }}
-                            height={20}
-                            width={20}
-                            style={styles.backIcon}
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.title}>文章标题</Text>
-                </View>
+                <HeadBar title="标题" />
                 <View>
                     <Image style={styles.backImage} height={windowHeight * 0.3} source={require('../../assets/image/article-background.jpg')}></Image>
                 </View>
