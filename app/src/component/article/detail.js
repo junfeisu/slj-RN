@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Image, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { ScrollView, ListView, View, Image, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { Button } from 'antd-mobile'
@@ -81,29 +81,66 @@ const styles = StyleSheet.create({
         paddingLeft: 10
     },
     commentBtn: {
-        width: 100,
+        width: 80,
         height: 35,
         alignSelf: 'flex-end'
     },
     commentListContainer: {
-        margin: 10,
-        marginTop: 0
+        padding: 10,
+        paddingTop: 0
+    },
+    commentDetail: {
+        flexDirection: 'row',
+        marginTop: 10,
+        paddingRight: 30
+    },
+    commentInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    commentDetailContent: {
+        marginLeft: 10,
+        marginRight: 10
     }
 })
 
 class ArticleDetail extends Component {
     constructor (props) {
         super(props)
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
+        })
+
         this.state = {
-            commentContent: ''
+            commentContent: '',
+            dataSource: ds,
+            data: ds.cloneWithRows([])
         }
     }
 
-    render () {
-        const { commentContent } = this.state
+    renderCommentList = (comment) => {
+        const Item = ListView.Item
 
         return (
-            <View>
+            <View style={styles.commentDetail}>
+                <Image style={{width: 35, height: 35, borderRadius: 35}} width={35} height={35} source={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/sjfblog.png'}}></Image>
+                <View style={styles.commentDetailContent}>
+                    <View style={styles.commentInfo}>
+                        <Text>苏俊飞</Text>
+                        <Text>2017-08-09 12:43</Text>
+                    </View>
+                    <Text>这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容</Text>
+                </View>
+            </View>
+        )
+    }
+
+    render () {
+        const { dataSource, data, commentContent } = this.state
+
+        return (
+            <ScrollView>
                 <View style={styles.navBar}>
                     <TouchableOpacity
                         onPress={() => {
@@ -121,6 +158,9 @@ class ArticleDetail extends Component {
                         />
                     </TouchableOpacity>
                     <Text style={styles.title}>文章标题</Text>
+                </View>
+                <View>
+                    <Image style={styles.backImage} height={windowHeight * 0.3} source={require('../../assets/image/article-background.jpg')}></Image>
                 </View>
                 <View style={styles.articleDesc}>
                     <View style={styles.articleDescInfo}>
@@ -158,12 +198,13 @@ class ArticleDetail extends Component {
                 </View>
                 <View style={styles.commentListContainer}>
                     <Text>评论列表</Text>
-                    <View>
-                        <Image style={{width: 35, height: 35, borderRadius: 35}} width={35} height={35} source={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/sjfblog.png'}}></Image>
-                        <Text>苏俊飞</Text>
-                    </View>
+                    <ListView
+                        dataSource={dataSource.cloneWithRows(data)}
+                        renderRow={(rowData) => this.renderCommentList(rowData)}
+                        initialListSize={3}
+                    />
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 }
