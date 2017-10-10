@@ -75,7 +75,7 @@ class Article extends Component {
                     <Item
                       thumb={article.user && article.user.user_icon}
                       multipleLine
-                      onClick={() => {Actions.articleDetail()}}
+                      onClick={() => {Actions.articleDetail({articleId: article.article_id, user: this.props.user})}}
                       extra={article.user && article.user.username}
                     >
                       {article.title}

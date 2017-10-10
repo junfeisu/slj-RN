@@ -2,15 +2,15 @@ import React, { Component } from 'react'
 import { ScrollView, ListView, View, Image, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import { Button } from 'antd-mobile'
+import { Button, Toast } from 'antd-mobile'
 import HeadBar from '../../common/headBar'
 import moment from 'moment'
+import { getSingleArticle, gettingArticle } from '../../store/actions/articleDetail'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const styles = StyleSheet.create({
-    
     backImage: {
         width: windowWidth,
         height: windowHeight * 0.3
@@ -102,7 +102,24 @@ class ArticleDetail extends Component {
         this.state = {
             commentContent: '',
             dataSource: ds,
-            data: ds.cloneWithRows([])
+            data: this.props.article.comments
+        }
+    }
+
+    componentWillMount () {
+        const { articleId, user, dispatch } = this.props
+        dispatch(gettingArticle())
+        getSingleArticle(articleId, user.token)(dispatch)
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.article !== this.props.article) {
+            this.setState({
+                data: nextProps.article.comments
+            })
+        }
+        if (nextProps.err !== this.props.err) {
+            Toast.fail(err)
         }
     }
 
@@ -114,10 +131,10 @@ class ArticleDetail extends Component {
                 <Image style={{width: 35, height: 35, borderRadius: 35}} width={35} height={35} source={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/sjfblog.png'}}></Image>
                 <View style={styles.commentDetailContent}>
                     <View style={styles.commentInfo}>
-                        <Text>苏俊飞</Text>
-                        <Text>2017-08-09 12:43</Text>
+                        <Text>{comment.comment_user}</Text>
+                        <Text>{moment(comment.comment_date).format('YYYY-MM-DD HH:MM')}</Text>
                     </View>
-                    <Text>这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容</Text>
+                    <Text>{comment.comment_content}</Text>
                 </View>
             </View>
         )
@@ -125,6 +142,7 @@ class ArticleDetail extends Component {
 
     render () {
         const { dataSource, data, commentContent } = this.state
+        const { title, content, tags, create_date, author, comments } = this.props.article
 
         return (
             <ScrollView>
@@ -135,20 +153,20 @@ class ArticleDetail extends Component {
                 <View style={styles.articleDesc}>
                     <View style={styles.articleDescInfo}>
                         <Image style={styles.articleInfoIcon} source={require('../../assets/image/author.png')}></Image>
-                        <Text>作者名</Text>
+                        <Text>{author.username}</Text>
                     </View>
                     <View style={styles.articleDescInfo}>
                         <Image style={styles.articleInfoIcon} source={require('../../assets/image/comment.png')}></Image>
-                        <Text>0</Text>
+                        <Text>{comments.length}</Text>
                     </View>
                     <View style={styles.articleDescInfo}>
                         <Image style={styles.articleInfoIcon} source={require('../../assets/image/clock.png')}></Image>
-                        <Text>2017-10-09 12:38</Text>
+                        <Text>{moment(create_date).format('YYYY-MM-DD HH:MM')}</Text>
                     </View>
                 </View>
                 <View style={styles.articleContentContainer}>
                     <Text style={styles.articleContentText}>
-                        这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容这是内容
+                        {content}
                     </Text>
                 </View>
                 <View style={styles.commentContainer}>
