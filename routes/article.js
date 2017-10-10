@@ -32,7 +32,13 @@ let getArticleList = {
                 as: 'user'
             }}, {$unwind: '$user'}, {$project: {
                 _id: 0,
-                user: 1,
+                user: {
+                    user_id: 1,
+                    username: 1,
+                    slogan: 1,
+                    birthday: 1,
+                    user_icon: 1
+                },
                 article_id: 1,
                 title: 1,
                 content: 1, 
@@ -40,8 +46,7 @@ let getArticleList = {
                 tags: 1
             }}, {$project: {
                 user: {
-                    _id: 0,
-                    password: 0
+                    _id: 0
                 }
             }}, (err, result) => {
                 if (err) {
@@ -86,17 +91,20 @@ let getSingleArticle = {
                 foreignField: 'article_id',
                 as: 'comments'
             }}, {$match: {article_id: articleId}}, {$project: {
-                author: 1,
+                _id: 0,
+                author: {
+                    user_id: 1,
+                    username: 1,
+                    slogan: 1,
+                    birthday: 1,
+                    user_icon: 1
+                },
                 comments: 1,
+                article_id: 1,
                 title: 1,
                 content: 1,
                 tags: 1,
                 create_date: 1
-            }}, {$project: {
-                author: {
-                    _id: 0,
-                    password: 0
-                }
             }}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
