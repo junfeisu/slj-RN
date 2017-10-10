@@ -1,10 +1,6 @@
 # OSX
 #
 .DS_Store
-app/.DS_Store
-
-# test/reporter
-test/reporters/*
 
 # Xcode
 #
@@ -40,14 +36,14 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
-app/node_modules/
-app/npm-debug.log
-app/yarn-error.log
+node_modules/
+npm-debug.log
+yarn-error.log
 
 # BUCK
-app/buck-out/
-app/\.buckd/
-app/*.keystore
+buck-out/
+\.buckd/
+*.keystore
 
 buck-out/
 \.buckd/
@@ -60,10 +56,7 @@ buck-out/
 # For more information about the recommended setup visit:
 # https://github.com/fastlane/fastlane/blob/master/fastlane/docs/Gitignore.md
 
-app/fastlane/report.xml
-app/fastlane/Preview.html
-app/fastlane/screenshots
-
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+
