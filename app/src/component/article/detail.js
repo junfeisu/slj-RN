@@ -204,7 +204,7 @@ class ArticleDetail extends Component {
 
         return (
             <ScrollView>
-                <HeadBar title="标题" />
+                <HeadBar title={title} />
                 <View>
                     <Image style={styles.backImage} height={windowHeight * 0.3} source={require('../../assets/image/article-background.jpg')}></Image>
                 </View>
