@@ -105,6 +105,12 @@ const styles = StyleSheet.create({
     }
 })
 
+const mapStateToProps = (state) => ({
+    article: state.articleDetailState.article,
+    err: state.articleDetailState.err,
+    status: state.articleDetailState.status
+})
+
 class ArticleDetail extends Component {
     constructor (props) {
         super(props)
@@ -209,4 +215,4 @@ class ArticleDetail extends Component {
     }
 }
 
-export default ArticleDetail
+export default connect(mapStateToProps)(ArticleDetail)
