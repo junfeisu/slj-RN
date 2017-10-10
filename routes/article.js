@@ -44,10 +44,6 @@ let getArticleList = {
                 content: 1, 
                 create_date: 1,
                 tags: 1
-            }}, {$project: {
-                user: {
-                    _id: 0
-                }
             }}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
