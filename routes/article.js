@@ -6,6 +6,8 @@ const articleModel = require('../schemas/articleSchema')
 const commentUtil = require('../utils/commentUtil')
 const getDownloadUrl = require('../utils/qiniu').down
 
+const domain = 'http://owu5dbb9y.bkt.clouddn.com'
+
 // 获取文章列表
 let getArticleList = {
     method: 'GET',
@@ -31,6 +33,7 @@ let getArticleList = {
             }}, {$unwind: '$user'}, {$project: {
                 _id: 0,
                 user: 1,
+                article_id: 1,
                 title: 1,
                 content: 1, 
                 create_date: 1,
@@ -44,7 +47,7 @@ let getArticleList = {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
-                    let domain = 'http://owu5dbb9y.bkt.clouddn.com'
+                    
                     let newResult = result.map(article => {
                         article.user.user_icon = getDownloadUrl(domain, article.user.user_icon)
                         return article
@@ -72,7 +75,29 @@ let getSingleArticle = {
             let events = new EventEmitter()
             let articleId = req.params.articleId
 
-            articleModel.find({article_id: articleId}, (err, result) => {
+            articleModel.aggregate({$lookup: {
+                from: 'users',
+                localField: 'author',
+                foreignField: 'user_id',
+                as: 'author'
+            }}, {$lookup: {
+                from: 'comments',
+                localField: 'article_id',
+                foreignField: 'article_id',
+                as: 'comments'
+            }}, {$match: {article_id: articleId}}, {$project: {
+                author: 1,
+                comments: 1,
+                title: 1,
+                content: 1,
+                tags: 1,
+                create_date: 1
+            }}, {$project: {
+                author: {
+                    _id: 0,
+                    password: 0
+                }
+            }}, (err, result) => {
                 if (err) {
                     reply(Boom.badImplementation(err.message))
                 } else {
@@ -80,16 +105,10 @@ let getSingleArticle = {
                         reply(Boom.badRequest('article_id is not found'))
                         return
                     }
-                    
-                    commentUtil.getComments(result[0].article_id, events)
-                    events.on('Error', err => {
-                        reply(Boom.badImplementation(err))
-                    })
 
-                    events.on('getCommentsNormal', comments => {
-                        result[0]['comments'] = comments
-                        reply(result[0])
-                    })
+                    result[0].author.user_icon = getDownloadUrl(domain, result[0].author.user_icon)
+                    
+                    reply(result[0])
                 }
             })
         }
