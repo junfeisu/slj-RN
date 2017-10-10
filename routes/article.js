@@ -80,7 +80,7 @@ let getSingleArticle = {
                 localField: 'author',
                 foreignField: 'user_id',
                 as: 'author'
-            }}, {$lookup: {
+            }}, {$unwind: '$author'}, {$lookup: {
                 from: 'comments',
                 localField: 'article_id',
                 foreignField: 'article_id',
