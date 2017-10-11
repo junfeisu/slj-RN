@@ -50,7 +50,6 @@ export default class ArticleDesc extends Component {
     }
 
     render () {
-        console.log('desc render')
         const { username, create_date, commentsLength, content } = this.props
 
         return (

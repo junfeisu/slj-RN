@@ -33,7 +33,6 @@ class HeadBar extends Component {
     }
 
     render () {
-        console.log('render')
         return (
             <View style={styles.navBar}>
                 <TouchableOpacity

@@ -12,9 +12,6 @@ import ArticleDesc from './articleDesc'
 import moment from 'moment'
 import { getSingleArticle, gettingArticle, uploadComment } from '../../store/actions/articleDetail'
 
-const windowWidth = Dimensions.get('window').width
-const windowHeight = Dimensions.get('window').height
-
 const styles = StyleSheet.create({
     commentContainer: {
         margin: 10,
@@ -149,10 +146,8 @@ class ArticleDetail extends Component {
     }
 
     renderCommentList = (comment) => {
-        const Item = ListView.Item
-
         return (
-            <View style={styles.commentDetail}>
+            <View style={styles.commentDetail} key={comment.comment_id}>
                 <Image style={styles.commentUserIcon} width={35} height={35} source={{uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/sjfblog.png'}}></Image>
                 <View style={styles.commentDetailContent}>
                     <View style={styles.commentInfo}>
