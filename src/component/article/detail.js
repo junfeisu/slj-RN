@@ -8,6 +8,7 @@ import { Actions } from 'react-native-router-flux'
 import { Button, Toast } from 'antd-mobile'
 import HeadBar from '../../common/headBar'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
+import ArticleDesc from './articleDesc'
 import moment from 'moment'
 import { getSingleArticle, gettingArticle, uploadComment } from '../../store/actions/articleDetail'
 
@@ -15,40 +16,6 @@ const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const styles = StyleSheet.create({
-    backImage: {
-        width: windowWidth,
-        height: windowHeight * 0.3
-    },
-    articleDesc: {
-        flexDirection: 'row',
-        height: 40,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        paddingLeft: 10,
-        paddingRight: 10
-    },
-    articleDescInfo: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: 20
-    },
-    articleInfoIcon: {
-        width: 20,
-        height: 20,
-        marginRight: 8
-    },
-    articleContentContainer: {
-        marginLeft: 10,
-        marginRight: 10,
-        paddingBottom: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc'
-    },
-    articleContentText: {
-        lineHeight: 25,
-        fontSize: 16,
-        color: '#000',
-    },
     commentContainer: {
         margin: 10,
         borderBottomWidth: 1,
@@ -205,26 +172,12 @@ class ArticleDetail extends Component {
         return (
             <ScrollView>
                 <HeadBar title={title} />
-                <View>
-                    <Image style={styles.backImage} height={windowHeight * 0.3} source={require('../../assets/image/article-background.jpg')}></Image>
-                </View>
-                <View style={styles.articleDesc}>
-                    <View style={styles.articleDescInfo}>
-                        <Image style={styles.articleInfoIcon} source={require('../../assets/image/author.png')}></Image>
-                        <Text>{author.username}</Text>
-                    </View>
-                    <View style={styles.articleDescInfo}>
-                        <Image style={styles.articleInfoIcon} source={require('../../assets/image/comment.png')}></Image>
-                        <Text>{comments.length}</Text>
-                    </View>
-                    <View style={styles.articleDescInfo}>
-                        <Image style={styles.articleInfoIcon} source={require('../../assets/image/clock.png')}></Image>
-                        <Text>{moment(create_date).format('YYYY-MM-DD HH:MM')}</Text>
-                    </View>
-                </View>
-                <View style={styles.articleContentContainer}>
-                    <Text style={styles.articleContentText}>{content}</Text>
-                </View>
+                <ArticleDesc
+                    username={author.username}
+                    create_date={create_date}
+                    commentsLength={comments.length}
+                    content={content}
+                />
                 <View style={styles.commentContainer}>
                     <TextInput 
                         style={styles.commentInput}
