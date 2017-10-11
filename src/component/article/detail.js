@@ -136,7 +136,7 @@ class ArticleDetail extends Component {
             })
         }
         if (nextProps.err !== this.props.err) {
-            Toast.fail(err)
+            Toast.fail(nextProps.err.message)
         }
     }
 
