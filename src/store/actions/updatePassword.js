@@ -6,7 +6,7 @@ const UPDATE_PASSWORDING = 'UPDATE_PASSWORDING'
 
 export function updatePassword (info, token) {
     return function (dispatch) {
-        axios.post('http://localhost:8000/user/password', info, {
+        axios.post('http://slj.sujunfei.cn/user/password', info, {
             headers: {
                 Authorization: token
             }

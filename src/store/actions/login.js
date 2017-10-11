@@ -6,7 +6,7 @@ const LOGINING = 'LOGINING'
 
 export function login (userInfo) {
     return function (dispatch) {
-        axios.post('http://localhost:8000/user/login', userInfo)
+        axios.post('http://slj.sujunfei.cn/user/login', userInfo)
             .then(response => {
                 dispatch({
                     type: SET_USER_INFO,

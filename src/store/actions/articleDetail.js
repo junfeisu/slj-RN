@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export function getSingleArticle (articleId, token) {
     return function (dispatch) {
-        axios.get('http://localhost:8000/article/' + articleId, {
+        axios.get('http://slj.sujunfei.cn/article/' + articleId, {
             headers: {
                 Authorization: token
             }
@@ -24,7 +24,7 @@ export function getSingleArticle (articleId, token) {
 
 export function uploadComment (commentInfo, token) {
     return function (dispatch) {
-        axios.put('http://localhost:8000/comment/add', commentInfo, {
+        axios.put('http://slj.sujunfei.cn/comment/add', commentInfo, {
             headers: {
                 Authorization: token
             }

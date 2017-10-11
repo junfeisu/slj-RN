@@ -6,7 +6,7 @@ const REGISTERING = 'REGISTERING'
 
 export function register(userInfo) {
     return function (dispatch) {
-        axios.put('http://localhost:8000/user/add', userInfo)
+        axios.put('http://slj.sujunfei.cn/user/add', userInfo)
             .then(response => {
                 dispatch({
                     type: REGISTER_SUCC,
