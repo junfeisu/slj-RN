@@ -183,7 +183,7 @@ class Profile extends Component {
             Toast.loading('上传' + nextProps.progress.toFixed(2).slice(2, 4) + '%')
         }
         if (nextProps.err !== this.props.err) {
-            Toast.fail(nextProps.err, 2)
+            Toast.fail(nextProps.err.message, 2)
         }
     }
 

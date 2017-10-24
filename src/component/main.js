@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Dimensions, Image } from 'react-native'
+import { View, StyleSheet, Image } from 'react-native'
 import { TabBar, Icon } from 'antd-mobile'
 
 import Article from './mainPage/article'
@@ -21,13 +21,6 @@ const styles = StyleSheet.create({
         color: '#D81E06'
     }
 })
-
-const deviceW = Dimensions.get('window').width
-const basePx = 375
-
-function px2dp(px) {
-  return px *  deviceW / basePx
-}
 
 export default class Test extends Component {
     constructor(props) {
