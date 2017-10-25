@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-export function getArticleList (skipNum, token) {
+export function getArticleList (getArticleListFilter, token) {
     return function (dispatch) {
-        axios.get('http://slj.sujunfei.cn/article/list?skip=' + skipNum, {
+        axios.get('http://slj.sujunfei.cn/article/list', getArticleListFilter, {
             headers: {
                 Authorization: token
             }

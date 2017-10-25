@@ -105,9 +105,14 @@ class Article extends Component {
 
     fetchData = () => {
         const { user, dispatch } = this.props
+        const getArticleListFilter = {
+            skip: this.state.skipNum,
+            user_id: user.user_id,
+            friend: user.friend
+        }
         dispatch(gettingArticleList())
         if (user && user.token) {
-            getArticleList(this.state.skipNum, user.token)(dispatch)
+            getArticleList(getArticleListFilter, user.token)(dispatch)
         } else {
             console.log('test')
         }
