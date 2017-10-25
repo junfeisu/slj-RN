@@ -1,4 +1,5 @@
 import axios from 'axios'
+import host from '../../common/config'
 
 const REGISTER_SUCC = 'REGISTER_SUCC'
 const REGISTER_FAIL = 'REGISTER_FAIL'
@@ -6,7 +7,7 @@ const REGISTERING = 'REGISTERING'
 
 export function register(userInfo) {
     return function (dispatch) {
-        axios.put('http://slj.sujunfei.cn/user/add', userInfo)
+        axios.put(host + '/user/add', userInfo)
             .then(response => {
                 dispatch({
                     type: REGISTER_SUCC,

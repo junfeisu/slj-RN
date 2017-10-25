@@ -1,9 +1,10 @@
 import axios from 'axios'
+import host from '../../common/config'
 
 const domain = 'http://owu5dbb9y.bkt.clouddn.com'
 
 const getDownloadUrl = (info, dispatch) => {
-    axios.post('http://slj.sujunfei.cn/upload/download', {
+    axios.post(host + '/upload/download', {
         domain: domain,
         key: info.key
     }, {headers: {
@@ -27,7 +28,7 @@ const getDownloadUrl = (info, dispatch) => {
 
 export function updateAvatar (info) {
     return function (dispatch) {
-        axios.post('http://slj.sujunfei.cn/user/update/' + info.userId, {
+        axios.post(host + '/user/update/' + info.userId, {
             user_icon: info.key
         }, {headers: {
             Authorization: info.token

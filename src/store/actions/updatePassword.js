@@ -1,4 +1,5 @@
 import axios from 'axios'
+import host from '../../common/config'
 
 const UPDATE_PASSWORD_SUCC = 'UPDATE_PASSWORD_SUCC'
 const UPDATE_PASSWORD_FAIL = 'UPDATE_PASSWORD_FAIL'
@@ -6,7 +7,7 @@ const UPDATE_PASSWORDING = 'UPDATE_PASSWORDING'
 
 export function updatePassword (info, token) {
     return function (dispatch) {
-        axios.post('http://slj.sujunfei.cn/user/password', info, {
+        axios.post(host + '/user/password', info, {
             headers: {
                 Authorization: token
             }

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import host from '../../common/config'
 
 const SET_USER_INFO = 'SET_USER_INFO'
 const LOGIN_FAIL = 'LOGIN_FAIL'
@@ -6,7 +7,7 @@ const LOGINING = 'LOGINING'
 
 export function login (userInfo) {
     return function (dispatch) {
-        axios.post('http://slj.sujunfei.cn/user/login', userInfo)
+        axios.post(host + '/user/login', userInfo)
             .then(response => {
                 dispatch({
                     type: SET_USER_INFO,

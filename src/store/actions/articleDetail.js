@@ -1,8 +1,9 @@
 import axios from 'axios'
+import host from '../../common/config'
 
 export function getSingleArticle (articleId, token) {
     return function (dispatch) {
-        axios.get('http://slj.sujunfei.cn/article/' + articleId, {
+        axios.get(host + '/article/' + articleId, {
             headers: {
                 Authorization: token
             }
@@ -24,7 +25,7 @@ export function getSingleArticle (articleId, token) {
 
 export function uploadComment (commentInfo, token) {
     return function (dispatch) {
-        axios.put('http://slj.sujunfei.cn/comment/add', commentInfo, {
+        axios.put(host + '/comment/add', commentInfo, {
             headers: {
                 Authorization: token
             }
