@@ -3,7 +3,8 @@ import host from '../../common/config'
 
 export function getArticleList (getArticleListFilter, token) {
     return function (dispatch) {
-        axios.get(host + '/article/list', getArticleListFilter, {
+        axios.get(host + '/article/list', {
+            params: getArticleListFilter,
             headers: {
                 Authorization: token
             }

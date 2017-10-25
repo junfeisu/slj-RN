@@ -107,8 +107,10 @@ class Article extends Component {
         const { user, dispatch } = this.props
         const getArticleListFilter = {
             skip: this.state.skipNum,
-            user_id: user.user_id,
-            friend: user.friend
+            user_id: user.user_id
+        }
+        if (user.friend) {
+            getArticleListFilter.friend = user.friend
         }
         dispatch(gettingArticleList())
         if (user && user.token) {
