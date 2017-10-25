@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"start": "set NODE_ENV='DEV' && node node_modules/react-native/local-cli/cli.js start",
 		"test": "jest",
 		"postinstall": "remotedev-debugger --hostname localhost --port 5000 --injectserver"
 	},
