@@ -166,6 +166,10 @@ class Profile extends Component {
         Actions.login()
     }
 
+    addFriend = () => {
+        Actions.addFriend({user: this.state.user})
+    }
+
     componentWillReceiveProps (nextProps) {
         const { user } = this.state
         if (nextProps.user_icon !== this.props.user_icon) {
@@ -228,6 +232,7 @@ class Profile extends Component {
                     renderHeader={() => `用户操作`}
                 >
                     <Item>关于作者</Item>
+                    <Item onClick={this.addFriend}>添加朋友</Item>
                     <Item onClick={this.updatePassword}>修改密码</Item>
                     <Item onClick={this.loginOut}>退出</Item>
                 </List>

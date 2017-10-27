@@ -138,7 +138,7 @@ class Login extends Component {
             })
         }
         if (nextProps.err !== this.props.err) {
-            Toast.fail('登录失败，失败原因是' + nextProps.err.message, 2)
+            Toast.fail(nextProps.err.message, 2)
         }
     }
 

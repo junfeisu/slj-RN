@@ -111,6 +111,11 @@ class ArticleDetail extends Component {
         const { user, article, dispatch } = this.props
         const { commentContent } = this.state
 
+        if (!commentContent) {
+            Toast.info('评论内容不能为空', 1)
+            return
+        }
+
         let commentInfo = {
             comment_user: user.user_id,
             comment_content: commentContent,
@@ -136,7 +141,7 @@ class ArticleDetail extends Component {
             })
         }
         if (nextProps.err !== this.props.err) {
-            Toast.fail(nextProps.err.message)
+            Toast.fail(nextProps.err.message, 2)
         }
     }
 
@@ -165,7 +170,7 @@ class ArticleDetail extends Component {
         const { title, content, tags, create_date, author, comments } = this.props.article
 
         return (
-            <ScrollView>
+            <ScrollView contentContainerStyle={{flex:1}}>
                 <HeadBar title={title} />
                 <ArticleDesc
                     username={author.username}
