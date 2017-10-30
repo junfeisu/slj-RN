@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, ListView, Image, Text, RefreshControl, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { List } from 'antd-mobile'
+import { List, Toast } from 'antd-mobile'
 import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
 import moment from 'moment'
 
@@ -41,6 +41,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         maxWidth: 100
+    },
+    footer: {
+        height: 40,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    loadMore: {
+        fontSize: 16,
+        color: '#777'
     }
 })
 
@@ -59,10 +69,11 @@ class Article extends Component {
 
         this.state = {
             dataSource: ds,
-            data: ds.cloneWithRows(this.props.articleList),
+            data: [],
             skipNum: 0,
             refreshing: true,
-            loadMore: false
+            loadMore: false,
+            hasMoreData: true
         }
     }
 
@@ -109,42 +120,40 @@ class Article extends Component {
             skip: this.state.skipNum,
             user_id: user.user_id
         }
-        if (user.friend) {
+        if (user && user.friend) {
             getArticleListFilter.friend = user.friend
         }
-        dispatch(gettingArticleList())
         if (user && user.token) {
+            dispatch(gettingArticleList())
             getArticleList(getArticleListFilter, user.token)(dispatch)
-        } else {
-            console.log('test')
         }
     }
 
     onRefresh = () => {
         this.setState({
-            skipNum: this.props.articleList.length
-        }, () => {
-            this.fetchData()
-        })
+            skipNum: 0,
+            data: []
+        }, this.fetchData)
     }
 
     loadingNextArticle = () => {
-        this.setState({
-            skipNum: this.props.articleList.length,
-            loadMore: true
-        }, () => {
-            this.fetchData()
-        })
+        if (this.state.hasMoreData) {
+            this.setState({
+                skipNum: this.props.articleList.length,
+                loadMore: true
+            }, this.fetchData)
+        }
     }
 
-    componentWillMount () {
+    componentDidMount () {
         this.fetchData()
     }
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.articleList !== this.props.articleList) {
             this.setState({
-                data: nextProps.articleList
+                data: [].concat(this.state.data, nextProps.articleList),
+                hasMoreData: !(nextProps.articleList.length < 7)
             })
         }
         if (nextProps.status !== this.props.status) {
@@ -159,7 +168,7 @@ class Article extends Component {
         const { dataSource, data, refreshing, loadMore } = this.state
         const FooterView = loadMore ?
             <View style={styles.footer}>
-                <Text style={{fontSize: 16, color: '#777'}}>加载更多...</Text>
+                <Text style={styles.loadMore}>加载更多...</Text>
             </View> : null
         return (
             <View style={styles.container}>
@@ -175,9 +184,9 @@ class Article extends Component {
                     }
                     dataSource={dataSource.cloneWithRows(data)}
                     renderRow={(rowData) => this.renderArticle(rowData)}
-                    initialListSize={3}
+                    initialListSize={4}
                     onEndReached={this.loadingNextArticle}
-                    onEndReachedThreshold={5}
+                    onEndReachedThreshold={20}
                     renderFooter={() => FooterView}
                 />
             </View>
