@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { Button, Toast, SearchBar } from 'antd-mobile'
 import { Actions } from 'react-native-router-flux'
 import searchUser from '../../store/actions/searchUser'
+import HeadBar from '../../common/headBar'
 
 const styles = StyleSheet.create({
     searchResult: {
@@ -81,9 +82,10 @@ class AddFriend extends Component {
         const { searchContent, users } = this.state
         return (
             <ScrollView>
+                <HeadBar title="搜索"></HeadBar>
                 <SearchBar
                     placeholder="搜索用户"
-                    cancelText="搜索"
+                    cancelText="取消"
                     value={searchContent}
                     onChange={(value) => this.changeHandler(value)}
                     onCancel={this.searchUserHandler}
