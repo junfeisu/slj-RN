@@ -59,38 +59,35 @@ class UpdatePassword extends Component {
             oldPassword: '',
             newPassword: '',
             loading: false,
-            user_id: '',
-            token: ''
+            user_id: ''
         }
     }
 
     updatePassword = () => {
-        const { oldPassword, newPassword, user_id, token } = this.state
+        const { oldPassword, newPassword, user_id } = this.state
         if (!oldPassword && !newPassword) {
             Toast.info('新旧密码为必填项', 2)
         } else {
-            if (user_id && token) {
+            if (user_id) {
                 let info = { oldPassword, newPassword, user_id }
                 this.props.dispatch(updatePasswording())
-                updatePassword(info, token)(this.props.dispatch)
+                updatePassword(info)(this.props.dispatch)
             }
         }
     }
 
     componentWillMount () {
-        const { userId, token } = this.props
-        if (userId && token) {
+        const { userId } = this.props
+        if (userId) {
             this.setState({
-                user_id: userId,
-                token: token
+                user_id: userId
             })
         } else {
             storage.load({
                 key: 'user'
             }).then(ret => {
                 this.setState({
-                    user_id: ret.user_id,
-                    token: ret.token
+                    user_id: ret.user_id
                 })
             }).catch(err => {
                 Actions.login()

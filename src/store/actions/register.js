@@ -1,33 +1,31 @@
-import axios from 'axios'
-import host from '../../common/config'
-
-const REGISTER_SUCC = 'REGISTER_SUCC'
-const REGISTER_FAIL = 'REGISTER_FAIL'
-const REGISTERING = 'REGISTERING'
+import fetch from '../../common/fetch'
 
 export function register(userInfo) {
     return function (dispatch) {
-        axios.put(host + '/user/add', userInfo)
-            .then(response => {
-                dispatch({
-                    type: REGISTER_SUCC,
-                    user: response.data,
-                    status: 'succ'
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: REGISTER_FAIL,
-                    err: err.response.data,
-                    status: 'fail'
-                })
-            })
+        fetch({
+            url: '/user/add',
+            method: 'PUT',
+            data: userInfo
+        }).then(response => {
+              dispatch({
+                  type: 'REGISTER_SUCC',
+                  user: response.data,
+                  status: 'succ'
+              })
+          })
+          .catch(err => {
+              dispatch({
+                  type: 'REGISTER_FAIL',
+                  err: err.response.data,
+                  status: 'fail'
+              })
+          })
     }
 }
 
 export function registering() {
     return {
-        type: REGISTERING,
+        type: 'REGISTERING',
         status: 'registering'
     }
 }

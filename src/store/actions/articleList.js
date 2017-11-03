@@ -1,15 +1,11 @@
-import axios from 'axios'
-import host from '../../common/config'
+import fetch from '../../common/fetch'
 
-export function getArticleList (getArticleListFilter, token) {
+export function getArticleList (getArticleListFilter) {
     return function (dispatch) {
-        axios.get(host + '/article/list', {
-            params: getArticleListFilter,
-            headers: {
-                Authorization: token
-            }
-        })
-            .then(response => {
+        fetch({
+            url: '/article/list',
+            params: getArticleListFilter
+        }).then(response => {
                 dispatch({
                     type: 'GET_ARTICLELIST_SUCC',
                     articleList: response.data,

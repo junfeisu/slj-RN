@@ -121,13 +121,13 @@ class ArticleDetail extends Component {
             comment_content: commentContent,
             article_id: article.article_id
         }
-        uploadComment(commentInfo, user.token)(dispatch)
+        uploadComment(commentInfo)(dispatch)
     }
 
     componentWillMount () {
         const { articleId, user, dispatch } = this.props
         dispatch(gettingArticle())
-        getSingleArticle(articleId, user.token)(dispatch)
+        getSingleArticle(articleId)(dispatch)
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler)
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler)

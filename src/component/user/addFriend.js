@@ -69,7 +69,7 @@ class AddFriend extends Component {
             return
         }
 
-        searchUser(searchContent, user.token)(dispatch)
+        searchUser(searchContent)(dispatch)
     }
 
     changeHandler = (searchContent) => {

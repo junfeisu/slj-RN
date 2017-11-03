@@ -5,8 +5,6 @@ import { Actions } from 'react-native-router-flux'
 import { List, Toast } from 'antd-mobile'
 import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
 import moment from 'moment'
-import SocketIOClient from 'socket.io-client'
-import host from '../../common/config'
 
 const styles = StyleSheet.create({
     container: {
@@ -77,9 +75,6 @@ class Article extends Component {
             loadMore: false,
             hasMoreData: true
         }
-
-        this.socket = SocketIOClient(host)
-        this.socket.on('test', console.log('client test connect'))
     }
 
     renderArticle = (article) => {
@@ -128,10 +123,8 @@ class Article extends Component {
         if (user && user.friend) {
             getArticleListFilter.friend = user.friend
         }
-        if (user && user.token) {
-            dispatch(gettingArticleList())
-            getArticleList(getArticleListFilter, user.token)(dispatch)
-        }
+        dispatch(gettingArticleList())
+        getArticleList(getArticleListFilter)(dispatch)
     }
 
     onRefresh = () => {

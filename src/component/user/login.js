@@ -1,18 +1,11 @@
 import React, { Component } from 'react'
-import {
-    ScrollView,
-    View,
-    Text,
-    Image,
-    TextInput,
-    Keyboard,
-    StyleSheet
-} from 'react-native'
+import { ScrollView, View, Text, Image, TextInput, Keyboard, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import { Button, Toast } from 'antd-mobile'
 import KeyboardSpacer from '../../common/KeyboardSpacer'
 import { Actions } from 'react-native-router-flux'
 import { login, loading } from '../../store/actions/login'
+import { updateToken } from '../../common/fetch'
 
 const styles = StyleSheet.create({
     background: {
@@ -94,7 +87,8 @@ class Login extends Component {
             username: '',
             password: '',
             keyboardSpaceHeight: 0,
-            loading: false
+            loading: false,
+            user: null
         }
     }
 
@@ -130,6 +124,7 @@ class Login extends Component {
                 key: 'user',
                 data: nextProps.user
             })
+            updateToken(nextProps.user.token)
             Actions.main({user: nextProps.user})
         }
         if (nextProps.status !== this.props.status) {
@@ -147,11 +142,22 @@ class Login extends Component {
             key: 'user'
         }).then(ret => {
             if (ret) {
-                Actions.main({user: ret})
+                this.setState({
+                    user: ret
+                })
+                socket.emit('login', ret)
             }
         }).catch(err => {
             console.log('err', err)
         })
+
+        socket.on('updateToken', newToken => {
+            if (newToken) {
+                updateToken(newToken)
+            }
+            Actions.main({user: this.state.user})
+        })
+
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShowHandler)
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHideHandler)
     }

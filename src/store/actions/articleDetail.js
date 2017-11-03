@@ -1,12 +1,9 @@
-import axios from 'axios'
-import host from '../../common/config'
+import fetch from '../../common/fetch'
 
-export function getSingleArticle (articleId, token) {
+export function getSingleArticle (articleId) {
     return function (dispatch) {
-        axios.get(host + '/article/' + articleId, {
-            headers: {
-                Authorization: token
-            }
+        fetch({
+            url: '/article/' + articleId
         }).then(response => {
             dispatch({
                 type: 'GET_ARTICLE_SUCC',
@@ -23,14 +20,14 @@ export function getSingleArticle (articleId, token) {
     }
 }
 
-export function uploadComment (commentInfo, token) {
+export function uploadComment (commentInfo) {
     return function (dispatch) {
-        axios.put(host + '/comment/add', commentInfo, {
-            headers: {
-                Authorization: token
-            }
+        fetch({
+            url: '/comment/add',
+            method: 'PUT',
+            data: commentInfo
         }).then(response => {
-            getSingleArticle(response.data.article_id, token)(dispatch)
+            getSingleArticle(response.data.article_id)(dispatch)
         }).catch(err => {
             dispatch({
                 type: 'GET_ARTICLE_FAIL',

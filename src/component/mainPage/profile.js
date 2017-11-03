@@ -4,7 +4,7 @@ import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet } from 'rea
 import { Actions } from 'react-native-router-flux'
 import { Popup, List, Toast } from 'antd-mobile'
 import ImagePicker from 'react-native-image-crop-picker'
-import axios from 'axios'
+import fetch from '../../common/fetch'
 import uploadFile from '../../common/uploadFile'
 import { updateAvatar } from '../../store/actions/profile'
 
@@ -116,7 +116,7 @@ class Profile extends Component {
     }
     // 打开相机
     openCamera = () => {
-        const { token, user_id } = this.state.user
+        const { user_id } = this.state.user
         const { upToken } = this.state
 
         ImagePicker.openCamera({
@@ -131,7 +131,7 @@ class Profile extends Component {
                 key: key,
                 path: image.path,
                 type: 'AVATAR'
-            }, updateAvatar({key: key, token: token, userId: user_id}))(this.props.dispatch)
+            }, updateAvatar({key: key, userId: user_id}))(this.props.dispatch)
         })
     }
     // 打开图库
@@ -157,8 +157,8 @@ class Profile extends Component {
     }
     // 跳转到修改密码
     updatePassword = () => {
-        const { user_id, token } = this.state.user
-        Actions.updatePassword({userId: user_id, token: token})
+        const { user_id } = this.state.user
+        Actions.updatePassword({userId: user_id})
     }
     // 退出登录并清空storage
     loginOut = () => {
@@ -196,15 +196,15 @@ class Profile extends Component {
         this.setState({
             user: user
         })
-        axios.get('http://localhost:8000/upload/up', {headers: {
-            Authorization: user.token
-        }})
-            .then(upToken => {
-                this.setState({
-                    upToken: upToken.data.uploadToken
-                })
-            })
-            .catch(err => Toast.info(err))
+        
+        fetch({
+            url: '/upload/up',
+        }).then(upToken => {
+              this.setState({
+                  upToken: upToken.data.uploadToken
+              })
+          })
+          .catch(err => Toast.info(err))
     }
 
     render () {
