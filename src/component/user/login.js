@@ -124,7 +124,7 @@ class Login extends Component {
                 key: 'user',
                 data: nextProps.user
             })
-            updateToken(nextProps.user.token)
+            updateToken(nextProps.user.token + '|' + nextProps.user.user_id)
             Actions.main({user: nextProps.user})
         }
         if (nextProps.status !== this.props.status) {
@@ -152,9 +152,7 @@ class Login extends Component {
         })
 
         socket.on('updateToken', newToken => {
-            if (newToken) {
-                updateToken(newToken)
-            }
+            updateToken(newToken)
             Actions.main({user: this.state.user})
         })
 
