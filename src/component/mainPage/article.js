@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { View, ListView, Image, Text, RefreshControl, StyleSheet } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import { List, Toast } from 'antd-mobile'
+import { List, Toast, Button } from 'antd-mobile'
 import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
 import moment from 'moment'
 
@@ -51,6 +51,35 @@ const styles = StyleSheet.create({
     loadMore: {
         fontSize: 16,
         color: '#777'
+    },
+    noneArticleView: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    noneArticleIcon: {
+        width: 110,
+        height: 100
+    },
+    noneArticleText: {
+        fontSize: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 5,
+        marginBottom: 10
+    },
+    jumpBtn: {
+        width: 150,
+        height: 35,
+        borderRadius: 30,
+        backgroundColor: 'rgb(255, 205, 0)',
+        borderColor: '#ffc900',
+        borderWidth: 1,
+        fontSize: 14,
+        color: '#ffffff',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })
 
@@ -168,25 +197,35 @@ class Article extends Component {
             <View style={styles.footer}>
                 <Text style={styles.loadMore}>加载更多...</Text>
             </View> : null
+
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>只属于你和ta的空间</Text>
                 </View>
-                <ListView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={this.onRefresh}
-                        />
-                    }
-                    dataSource={dataSource.cloneWithRows(data)}
-                    renderRow={(rowData) => this.renderArticle(rowData)}
-                    initialListSize={4}
-                    onEndReached={this.loadingNextArticle}
-                    onEndReachedThreshold={20}
-                    renderFooter={() => FooterView}
-                />
+                {
+                    !data.length 
+                        ? <View style={styles.noneArticleView}>
+                            <Image style={styles.noneArticleIcon} source={require('../../assets/image/none-article.jpg')}></Image>
+                            <Text style={styles.noneArticleText}>暂未发表文章</Text>
+                            <Button style={styles.jumpBtn} onClick={this.jumpNewArticle} type="primary">前去发表文章</Button>
+                          </View>
+                        : <ListView
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={refreshing}
+                                    onRefresh={this.onRefresh}
+                                />
+                            }
+                            dataSource={dataSource.cloneWithRows(data)}
+                            renderRow={(rowData) => this.renderArticle(rowData)}
+                            initialListSize={4}
+                            onEndReached={this.loadingNextArticle}
+                            onEndReachedThreshold={20}
+                            renderFooter={() => FooterView}
+                          />
+                        
+                }
             </View>
         )
     }
