@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     navBar: {
         height: 30,
         flexDirection: 'row',
-        backgroundColor: '#00b5ad',
+        backgroundColor: '#f6f6f6',
         alignItems: 'center',
         position: 'relative'
     },
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     },
     title: {
         flex: 1,
-        color: 'white',
+        color: '#383838',
         fontSize: 18,
         textAlign: 'center'
     }
@@ -42,9 +42,8 @@ class HeadBar extends Component {
                     activeOpacity={1}
                     style={{width: 30, height: 30}}
                 >
-                    <Image source={{
-                            uri: 'http://7xrp7o.com1.z0.glb.clouddn.com/arrow.png'
-                        }}
+                    <Image 
+                        source={require('../assets/image/back.png')}
                         height={20}
                         width={20}
                         style={styles.backIcon}

@@ -6,9 +6,11 @@ import UpdatePassword from './component/user/updatePassword'
 import AddFriend from './component/user/addFriend'
 import ArticleDetail from './component/article/detail'
 import Main from './component/mainPage'
+import AddNewArticle from './component/AddNewArticle/'
 
 const Scenes = Actions.create(
     <Scene>
+        <Scene key="addNewArticle" component={AddNewArticle} hideNavBar={true}></Scene>
         <Scene key="login" component={Login} hideNavBar={true}></Scene>
         <Scene key="addFriend" component={AddFriend} hideNavBar={true}></Scene>
         <Scene key="register" component={Register} hideNavBar={true}></Scene>
