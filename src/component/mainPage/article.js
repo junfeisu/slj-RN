@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, ListView, Image, Text, RefreshControl, StyleSheet } from 'react-native'
+import { View, ListView, Image, Text, RefreshControl, StyleSheet, TouchableOpacity, Dimensions } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { List, Toast, Button } from 'antd-mobile'
 import { getArticleList, gettingArticleList } from '../../store/actions/articleList'
@@ -12,16 +12,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc'
     },
     header: {
+        position: 'relative',
         alignItems: 'center',
+        flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#ffffff',
         height: 40,
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd'
+        borderBottomColor: '#dddddd'
     },
     headerTitle: {
         color: '#f2928b',
         fontSize: 16
+    },
+    addContainer: {
+        position: 'absolute',
+        top: 5,
+        right: 10,
+        width: 30,
+        height: 30,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    addIcon: {
+        width: 20,
+        height: 20
     },
     articleItem: {
         marginTop: 8,
@@ -172,6 +187,10 @@ class Article extends Component {
         }
     }
 
+    jumpNewArticle = () => {
+        Actions.addNewArticle({user: this.props.user})
+    }
+
     componentDidMount () {
         this.fetchData()
     }
@@ -202,13 +221,31 @@ class Article extends Component {
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerTitle}>只属于你和ta的空间</Text>
+                    {
+                        data.length
+                            ? <TouchableOpacity
+                                onPress={() => {
+                                    Actions.addNewArticle({user: this.props.user})
+                                }}
+                                activeOpacity={1}
+                                style={styles.addContainer}
+                              >
+                                <Image
+                                    source={require('../../assets/image/add.png')}
+                                    height={20}
+                                    width={20}
+                                    style={styles.addIcon}
+                                />
+                              </TouchableOpacity>
+                            : null
+                    }
                 </View>
                 {
-                    !data.length 
+                    !data.length && this.props.status !== 'loading'
                         ? <View style={styles.noneArticleView}>
                             <Image style={styles.noneArticleIcon} source={require('../../assets/image/none-article.jpg')}></Image>
                             <Text style={styles.noneArticleText}>暂未发表文章</Text>
-                            <Button style={styles.jumpBtn} onClick={this.jumpNewArticle} type="primary">前去发表文章</Button>
+                            <Button style={styles.jumpBtn} ghost="true" onClick={this.jumpNewArticle} type="primary">前去发表文章</Button>
                           </View>
                         : <ListView
                             refreshControl={

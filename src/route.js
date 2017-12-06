@@ -10,13 +10,13 @@ import AddNewArticle from './component/AddNewArticle/'
 
 const Scenes = Actions.create(
     <Scene>
-        <Scene key="addNewArticle" component={AddNewArticle} hideNavBar={true}></Scene>
         <Scene key="login" component={Login} hideNavBar={true}></Scene>
         <Scene key="addFriend" component={AddFriend} hideNavBar={true}></Scene>
         <Scene key="register" component={Register} hideNavBar={true}></Scene>
         <Scene key="main" component={Main} hideNavBar={true}></Scene>
         <Scene key="updatePassword" component={UpdatePassword} hideNavBar={true}></Scene>
         <Scene key="articleDetail" component={ArticleDetail} hideNavBar={true}></Scene>
+        <Scene key="addNewArticle" component={AddNewArticle} hideNavBar={true}></Scene>
     </Scene>
 )
 
