@@ -11,6 +11,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'relative'
     },
+    backContainer: {
+        width: 30,
+        height: 30
+    },
     backIcon: {
         position: 'absolute',
         width: 20,
@@ -23,6 +27,10 @@ const styles = StyleSheet.create({
         color: '#383838',
         fontSize: 18,
         textAlign: 'center'
+    },
+    otherComponent: {
+        position: 'absolute',
+        right: 10
     }
 })
 
@@ -40,7 +48,7 @@ class HeadBar extends Component {
                         Actions.pop()
                     }}
                     activeOpacity={1}
-                    style={{width: 30, height: 30}}
+                    style={styles.backContainer}
                 >
                     <Image 
                         source={require('../assets/image/back.png')}
@@ -50,6 +58,14 @@ class HeadBar extends Component {
                     />
                 </TouchableOpacity>
                 <Text style={styles.title}>{this.props.title}</Text>
+                {
+                    this.props.otherComponent
+                        ? <View style={styles.otherComponent}>
+                            {this.props.otherComponent}
+                          </View>
+                        : null
+                    
+                }
             </View>
         )
     }

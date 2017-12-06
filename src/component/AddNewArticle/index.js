@@ -37,6 +37,13 @@ const styles = StyleSheet.create({
         lineHeight: 16,
         fontSize: 14,
         textAlignVertical: 'top'
+    },
+    publishBtn: {
+        height: 20,
+        width: 40,
+        color: '#1890ff',
+        fontSize: 16,
+        backgroundColor: '#f6f6f6'
     }
 })
 
@@ -51,11 +58,16 @@ class AddNewArticle extends Component {
         }
     }
 
+    publishArticle () {
+        console.log('finish')
+    }
+
     render () {
         const { title, content, tags } = this.state
+        const publishBtn = <Text style={styles.publishBtn} onPress={this.publishArticle}>发布</Text>
         return (
             <ScrollView>
-                <HeadBar title="添加文章" />
+                <HeadBar title="添加文章" otherComponent={publishBtn} />
                 <View style={styles.titleContainer}>
                     <TextInput
                         style={styles.titleInput}
