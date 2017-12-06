@@ -3,12 +3,16 @@ import { View, Text, TextInput, Image, StyleSheet, Dimensions } from 'react-nati
 import { Button, Toast } from 'antd-mobile'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
+import HeadBar from '../../common/headBar'
 import { updatePassword, updatePasswording } from '../../store/actions/updatePassword'
 
 const windowWidth = Dimensions.get('window').width
 const windowHeight = Dimensions.get('window').height
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     background: {
         resizeMode: 'cover',
         flex: 1,
@@ -119,39 +123,42 @@ class UpdatePassword extends Component {
     render () {
         const { oldPassword, newPassword, loading } = this.state
         return (
-            <Image 
-                style={styles.background}
-                source={require('../../assets/image/updatePasswordBackground.png')}
-            >
-                <View style={styles.updateForm}>
-                    <Text style={styles.title}>修改密码</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={oldPassword}
-                        placeholder="old password"
-                        secureTextEntry={true}
-                        underlineColorAndroid='transparent'
-                        onChangeText={(text) => this.setState({oldPassword: text})}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        value={newPassword}
-                        placeholder="new passWord"
-                        secureTextEntry={true}
-                        underlineColorAndroid='transparent'
-                        onChangeText={(text) => this.setState({newPassword: text})}
-                    />
-                    <Button
-                        style={styles.button}
-                        type="primary"
-                        loading={loading}
-                        disabled={loading}
-                        onClick={this.updatePassword}
-                    >
-                        {loading ? '正在修改...' : '修改'}
-                    </Button>
-                </View>
-            </Image>
+            <View style={styles.container}>
+                <HeadBar title="修改密码" />
+                <Image 
+                    style={styles.background}
+                    source={require('../../assets/image/updatePasswordBackground.png')}
+                >
+                    <View style={styles.updateForm}>
+                        <Text style={styles.title}>修改密码</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={oldPassword}
+                            placeholder="old password"
+                            secureTextEntry={true}
+                            underlineColorAndroid='transparent'
+                            onChangeText={(text) => this.setState({oldPassword: text})}
+                        />
+                        <TextInput
+                            style={styles.input}
+                            value={newPassword}
+                            placeholder="new passWord"
+                            secureTextEntry={true}
+                            underlineColorAndroid='transparent'
+                            onChangeText={(text) => this.setState({newPassword: text})}
+                        />
+                        <Button
+                            style={styles.button}
+                            type="primary"
+                            loading={loading}
+                            disabled={loading}
+                            onClick={this.updatePassword}
+                        >
+                            {loading ? '正在修改...' : '修改'}
+                        </Button>
+                    </View>
+                </Image>
+            </View>
         )
     }
 }
